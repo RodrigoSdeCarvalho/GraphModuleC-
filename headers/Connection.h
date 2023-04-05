@@ -9,7 +9,7 @@ using namespace std;
 
 namespace GraphModule
 {
-    class Connection
+    class Graph::Connection
     {
         public:
             Connection(float weight, Node* startNode, Node* endNode, bool goesBothWays);

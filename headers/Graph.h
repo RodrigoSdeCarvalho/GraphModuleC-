@@ -10,6 +10,9 @@ namespace GraphModule
 {
     class Graph
     {
+        class Node;
+        class Connection;
+
         public:
             Graph(string nodesFilePath);
 

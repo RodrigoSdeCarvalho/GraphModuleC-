@@ -4,12 +4,13 @@
 #include <iostream>
 #include <vector> // Will perhaps be replaced by list if adds and removes are more common than reads. Vector is cache friendly.
 #include "Connection.h"
+#include "Graph.h"
 
 using namespace std;
 
 namespace GraphModule
 {
-    class Node
+    class Graph::Node
     {
         public:
             Node(int number, string name = "");
