@@ -5,6 +5,7 @@
 #include <vector>
 #include "Node.h"
 #include "Connection.h"
+#include "MinHeap.h"
 
 namespace GraphModule
 {
@@ -12,6 +13,8 @@ namespace GraphModule
     {
         class Node;
         class Connection;
+        class MinHeap;
+        class HeapNode;
 
         public:
             Graph(string nodesFilePath);
