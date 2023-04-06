@@ -4,15 +4,14 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include "MinHeap.h"
-#include "Graph.h"
-#include "Node.h"
 
 using namespace std;
 
 namespace GraphModule
 {
-    class Graph::HeapNode
+    class Node;
+
+    class HeapNode
     {
         public:
             int key; // All attributes are public because they can be both read and written.

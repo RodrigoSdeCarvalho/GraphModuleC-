@@ -3,14 +3,15 @@
 
 #include <iostream>
 #include <vector>
-#include <random>
-#include "HeapNode.h"
 
 using namespace std;
 
 namespace GraphModule
 {
-    class Graph::MinHeap
+    class HeapNode;
+    class Node;
+
+    class MinHeap
     {
         public:
             MinHeap(vector<HeapNode*> heapNodes);

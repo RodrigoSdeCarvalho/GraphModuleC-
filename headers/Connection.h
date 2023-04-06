@@ -3,14 +3,15 @@
 
 #include <iostream>
 #include <vector>
-#include "Node.h"
-#include "Graph.h"
+#include <tuple>
 
 using namespace std;
 
 namespace GraphModule
 {
-    class Graph::Connection
+    class Node;
+
+    class Connection
     {
         public:
             Connection(float weight, Node* startNode, Node* endNode, bool goesBothWays);

@@ -3,19 +3,16 @@
 
 #include <iostream>
 #include <vector>
-#include "Node.h"
-#include "Connection.h"
-#include "MinHeap.h"
+#include <string>
+
+using namespace std;
 
 namespace GraphModule
 {
+    class Node;    
+
     class Graph
     {
-        class Node;
-        class Connection;
-        class MinHeap;
-        class HeapNode;
-
         public:
             Graph(string nodesFilePath);
 

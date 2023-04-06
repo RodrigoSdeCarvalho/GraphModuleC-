@@ -3,17 +3,18 @@
 
 #include <iostream>
 #include <vector> // Will perhaps be replaced by list if adds and removes are more common than reads. Vector is cache friendly.
-#include "Connection.h"
-#include "Graph.h"
+#include <tuple>
 
 using namespace std;
 
 namespace GraphModule
 {
-    class Graph::Node
+    class Connection;
+
+    class Node
     {
         public:
-            Node(int number, string name = "");
+            Node(int number, string name);
             
             int getNumber();
             
@@ -45,7 +46,7 @@ namespace GraphModule
 
             vector<Node*> getIncomingNeighbours();
 
-            ~Node();
+            ~Node();    
 
         private:
             int number;
@@ -53,7 +54,6 @@ namespace GraphModule
             vector<Connection*> connections;
             vector<Connection*> incomingConnections;
             vector<Connection*> outgoingConnections;
-
     };
 }
 
