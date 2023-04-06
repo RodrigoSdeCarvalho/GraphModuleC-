@@ -1,5 +1,5 @@
 # Name of the project
-PROJ_NAME=main
+PROJ_NAME=Main
 
 # .c files
 CC_SOURCE=$(wildcard ./source/*.cc)
@@ -20,6 +20,7 @@ CC_FLAGS=-c         \
          -ansi      \
          -pedantic  \
 		 -g         \
+		 -I ./headers \
          -std=c++17 \
 # Command used at clean target
 RM = rm -rf
@@ -40,7 +41,7 @@ $(PROJ_NAME): $(OBJ)
 	$(CC) $< $(CC_FLAGS) -o $@
 	@ echo ' '
 
-./objects/main.o: ./source/main.cc $(H_SOURCE)
+./objects/Main.o: ./source/Main.cc $(H_SOURCE)
 	@ echo 'Building target using GCC compiler: $<'
 	$(CC) $< $(CC_FLAGS) -o $@
 	@ echo ' '
