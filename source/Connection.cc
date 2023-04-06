@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <tuple>
-#include "../headers/Connection.h"
+#include "Connection.h"
 
 using namespace std;
 using namespace GraphModule;

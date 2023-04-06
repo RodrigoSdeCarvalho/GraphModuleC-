@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector> // Will perhaps be replaced by list if adds and removes are more common than reads. Vector is cache friendly.
 #include <tuple>
-#include "../headers/Node.h"
+#include "Node.h"
 
 using namespace std;
 using namespace GraphModule;
