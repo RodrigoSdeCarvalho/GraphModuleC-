@@ -18,7 +18,7 @@ namespace GraphModule
 
             void insert(Node* node, int priority);
 
-            int* min();
+            int minPriority();
 
             Node* popMin();
 

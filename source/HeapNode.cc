@@ -1,9 +1,17 @@
 #include <iostream>
 #include "HeapNode.h"
 #include <cmath>
+#include "Node.h"
 
 using namespace std;
 using namespace GraphModule;
+
+HeapNode::HeapNode(int key, Node* node, int priority) 
+{
+    this->key = key;
+    this->node = node;
+    this->priority = priority;
+}
 
 int HeapNode::getParent() 
 {
@@ -68,4 +76,9 @@ bool HeapNode::operator ==(const HeapNode& other)
 bool HeapNode::operator !=(const HeapNode& other) 
 {
     return priority != other.priority;
+}
+
+HeapNode::~HeapNode() 
+{
+    //DESTRUCTOR
 }
