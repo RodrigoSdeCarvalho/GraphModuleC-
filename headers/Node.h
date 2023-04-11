@@ -15,9 +15,9 @@ namespace GraphModule
     {
         public:
             Node(int number, string name);
-            
+
             int getNumber();
-            
+
             string getName();
 
             vector<Connection*> getConnections();
