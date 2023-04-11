@@ -1,11 +1,13 @@
 //Main file
 
 #include <iostream>
+#include "MainClass.h"
 
 using namespace std;
+using namespace GraphModule;
 
 int main()
 {
-    cout << "Hello world!" << endl;
+    MainClass::A1Main();
     return 0;
 }
