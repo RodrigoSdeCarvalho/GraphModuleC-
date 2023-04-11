@@ -108,11 +108,6 @@ vector<Connection*> Node::getOutgoingConnections()
     return this->outgoingConnections;
 }
 
-void Node::addConnection(Connection* connectionToAdd)
-{
-    this->connections.push_back(connectionToAdd);
-}
-
 void Node::addIncomingConnection(Connection* connectionToAdd)
 {
     this->incomingConnections.push_back(connectionToAdd);
