@@ -16,6 +16,8 @@ namespace GraphModule
         public:
             Graph(string nodesFilePath);
 
+            vector<Node*> buildGraphFromInputFile(string nodesFilePath);
+
             void BFS(int startNodeIndex);
 
             void eulerianCycle(int startNodeIndex);
