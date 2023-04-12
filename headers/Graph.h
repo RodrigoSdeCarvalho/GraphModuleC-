@@ -14,9 +14,9 @@ namespace GraphModule
     class Graph
     {
         public:
-            Graph(string nodesFilePath);
+            Graph(string inputFilePath);
 
-            vector<Node*> buildGraphFromInputFile(string nodesFilePath);
+            void buildGraphFromInputFile(string inputFilePath);
 
             void BFS(int startNodeIndex);
 
@@ -30,7 +30,7 @@ namespace GraphModule
 
             void addEdge(Node* node1, Node* node2, int weight);
 
-            void addArc(Node* startNode, Node* endNode, int weight, bool goesBothWays);
+            void addArc(Node* startNode, Node* endNode, int weight);
 
             ~Graph();
 

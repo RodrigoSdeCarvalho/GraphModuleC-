@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 #include "Graph.h"
 #include "Node.h"
@@ -9,18 +11,85 @@
 using namespace std;
 using namespace GraphModule;
 
-Graph::Graph(string nodesFilePath)
+Graph::Graph(string inputFilePath)
 {
     this->numberOfVertices = 0;
     this->numberOfVertices = 0;
     this->numberOfEdges = 0;
 
-    this->nodes = this->buildGraphFromInputFile(nodesFilePath);
+    this->buildGraphFromInputFile(inputFilePath);
 }
 
-vector<Node*> Graph::buildGraphFromInputFile(string nodesFilePath)
+void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 {
-    // IMPLEMENT READ FROM FILE. ADD NODES AND CONNECTIONS TO THE GRAPH.
+    char* inputFilePathChar = &inputFilePath[0];
+
+    ifstream inputFile;
+
+    inputFile.open(inputFilePathChar, ios::in);
+
+    bool inputVertices = false;
+    bool inputEdges = false;
+    bool inputArcs = false;
+
+    if (inputFile.is_open())
+    {
+        string line;
+        while (getline(inputFile, line))
+        {
+            stringstream ss(line);
+            string token;
+            vector<string> tokens;
+            while (ss >> token)
+            {
+                tokens.push_back(token);
+            }
+
+            if (tokens[0] == "*vertices")
+            {
+                inputVertices = true;
+                continue;
+            }
+
+            if (tokens[0] == "*edges")
+            {
+                inputVertices = false;
+                inputEdges = true;
+                continue;
+            }
+
+            if (tokens[0] == "*arcs")
+            {
+                inputVertices = false;
+                inputArcs = true;
+                continue;
+            }
+
+            if (inputVertices)
+            {
+                Node* node = new Node(stoi(tokens[0]), tokens[1]);
+                this->addNode(node);
+            }
+
+            if (inputEdges)
+            {
+                Node* startNode = this->nodes[stoi(tokens[0]) - 1];
+                Node* endNode = this->nodes[stoi(tokens[1]) - 1];
+                int weight = stoi(tokens[2]);
+
+                this->addEdge(startNode, endNode, weight);
+            }
+
+            if (inputArcs)
+            {
+                Node* startNode = this->nodes[stoi(tokens[0]) - 1];
+                Node* endNode = this->nodes[stoi(tokens[1]) - 1];
+                int weight = stoi(tokens[2]);
+
+                this->addArc(startNode, endNode, weight);
+            }
+        }
+    }
 }
 
 void Graph::BFS(int startNodeIndex)
@@ -58,21 +127,12 @@ void Graph::addEdge(Node* startNode, Node* endNode, int weight)
     this->numberOfEdges++;
 }
 
-void Graph::addArc(Node* startNode, Node* endNode, int weight, bool goesBothWays)
+void Graph::addArc(Node* startNode, Node* endNode, int weight)
 {
-    Connection* connection = new Connection(weight, startNode, endNode, goesBothWays);
+    Connection* connection = new Connection(weight, startNode, endNode, false);
 
-    if (goesBothWays)
-    {
-        startNode->addConnection(connection);
-        endNode->addConnection(connection);
-        this->numberOfArcs++;
-    }
-    else
-    {
-        startNode->addConnection(connection);
-        this->numberOfArcs++;
-    }
+    startNode->addConnection(connection);
+    this->numberOfArcs++;
 }
 
 Graph::~Graph()
