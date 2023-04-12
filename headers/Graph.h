@@ -26,11 +26,18 @@ namespace GraphModule
 
             void flowdWarshall();
 
+            void addNode(Node* node);
+
+            void addEdge(Node* node1, Node* node2, int weight);
+
+            void addArc(Node* startNode, Node* endNode, int weight, bool goesBothWays);
+
             ~Graph();
 
         private:
             int numberOfVertices;
             int numberOfEdges;
+            int numberOfArcs;
             vector<Node*> nodes;
     };
 }
