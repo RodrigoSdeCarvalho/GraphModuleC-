@@ -120,9 +120,9 @@ void Graph::BFS(int startNodeIndex)
         int u = Q.front(); // Get the first element in the queue.
         Q.pop(); // Remove the first element in the queue.
 
-        for (vector<int>::iterator i = nodes[u]->getConnections().begin(); i != nodes[u]->getConnections().end(); ++i)
+        for (vector<Connection*>::iterator it = nodes[u]->getConnections().begin(); it != nodes[u]->getConnections().end(); ++it)
         {
-            int v = *i; // Get the end node of the connection.
+            int v = (*it)->getEndNode()->getNumber(); // Get the end node of the connection.
             if (!V[v]) { // If the end node of the connection is not visited.
                 V[v] = true; // Mark the end node as visited.
                 D[v] = D[u] + 1; // Set the distance from the start node to the end node to the distance from the start node to the start node of the connection plus 1.
