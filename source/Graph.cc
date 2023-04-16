@@ -16,8 +16,8 @@ using namespace GraphModule;
 Graph::Graph(string inputFilePath)
 {
     this->numberOfVertices = 0;
-    this->numberOfVertices = 0;
     this->numberOfEdges = 0;
+    this->numberOfArcs = 0;
 
     this->buildGraphFromInputFile(inputFilePath);
 }
