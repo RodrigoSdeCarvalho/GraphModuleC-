@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <queue>
+#include <limits>
 
 #include "Graph.h"
 #include "Node.h"
@@ -94,6 +96,42 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 
 void Graph::BFS(int startNodeIndex)
 {
+    int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
+    vector<Node*> nodes = this->nodes; // Vector of nodes in the graph.
+    bool *V = new bool[numberOfVertices]; // Array of visited nodes.
+    int D[numberOfVertices]; // Array of distances from the start node.
+    int *A = new int[numberOfVertices]; // Array of parent nodes.
+
+    for (int i = 1; i <= numberOfVertices; i++) {
+        V[i] = false; // Initialize with false.
+        D[i] = numeric_limits<int>::max(); // Initialize with infinity.
+        A[i] = -1; // Initialize with -1.
+    }
+
+    V[startNodeIndex] = true; // Mark the start node as visited.
+    D[startNodeIndex] = 0; // Set the distance from the start node to itself to 0.
+    A[startNodeIndex] = -1; // Set the parent of the start node to -1.
+
+    queue<int> Q; // Create a queue.
+    Q.push(startNodeIndex); // Push the start node to the queue.
+
+    while (!Q.empty())
+    {
+        int u = Q.front(); // Get the first element in the queue.
+        Q.pop(); // Remove the first element in the queue.
+
+        for (vector<int>::iterator i = nodes[u]->getConnections().begin(); i != nodes[u]->getConnections().end(); ++i)
+        {
+            int v = *i; // Get the end node of the connection.
+            if (!V[v]) { // If the end node of the connection is not visited.
+                V[v] = true; // Mark the end node as visited.
+                D[v] = D[u] + 1; // Set the distance from the start node to the end node to the distance from the start node to the start node of the connection plus 1.
+                A[v] = u; // Set the parent of the end node to the start node of the connection.
+                Q.push(v); // Push the end node to the queue.
+            }
+        }
+    }
+
     // IMPLEMENT BFS ALGORITHM.
 }
 
