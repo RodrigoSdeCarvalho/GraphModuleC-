@@ -5,10 +5,12 @@
 #include <sstream>
 #include <queue>
 #include <limits>
+#include <algorithm>
 
 #include "Graph.h"
 #include "Node.h"
 #include "Connection.h"
+#include "MinHeap.h"
 
 using namespace std;
 using namespace GraphModule;
@@ -102,7 +104,7 @@ void Graph::BFS(int startNodeIndex)
     int D[numberOfVertices]; // Array of distances from the start node.
     int *A = new int[numberOfVertices]; // Array of parent nodes.
 
-    for (int i = 1; i <= numberOfVertices; i++) {
+    for (int i = 0; i <= numberOfVertices; i++) {
         V[i] = false; // Initialize with false.
         D[i] = numeric_limits<int>::max(); // Initialize with infinity.
         A[i] = -1; // Initialize with -1.
@@ -142,8 +144,40 @@ void Graph::eulerianCycle(int startNodeIndex)
 
 void Graph::dijkstra(int startNodeIndex)
 {
-    // IMPLEMENT DIJKSTRA ALGORITHM.
-    // ALLOCATE MINHEAP FROM MINHEAP.H, AND DELETE IT WHEN DONE, TO AVOID MEMORY LEAKS.
+  int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
+    vector<Node*> nodes = this->nodes; // Vector of nodes in the graph.
+    int D[numberOfVertices]; // Array of distanceD[i] = numeric_limitD[i] = numeric_limits<int>::max(); // Initialize with infinity.s<int>::max(); // Initialize with infinity.s from the start node.
+    int* A = new int[numberOfVertices]; // Array of parent nodes.
+    vector<bool> C(numberOfVertices, false); // Vector of visited nodes.
+
+    for (int i = 0; i <= numberOfVertices; i++) {
+        D[i] = numeric_limits<int>::max(); // Initialize with infinity.
+        A[i] = -1; // Initialize with -1.
+    }
+
+    D[startNodeIndex] = 0; // Set the distance from the start node to itself to 0.
+    A[startNodeIndex] = -1; // Set the parent of the start node to -1.
+    
+    vector<HeapNode*> heapNodes = vector<HeapNode*>(); // Vector of heap nodes.
+    MinHeap minHeap = MinHeap(heapNodes); // Create a min heap.
+    for (int n = 0; n < numberOfVertices; n++) {
+        minHeap.insert(nodes[n], D[n]); // Insert the nodes to the min heap.
+    }
+
+    while (find(C.begin(), C.end(), false) != C.end()) {
+        Node* u = minHeap.popMin();
+        C[u->getNumber()] = true;
+
+        for (vector<Connection*>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it) { // Iterate through the connections (neighbors) of the node.
+            Node* v = (*it)->getEndNode(); // Get the end node of the connection.
+            int w = (*it)->getWeight(); // Get the weight of the connection.
+
+            if (D[v->getNumber()] > D[u->getNumber()] + w) { // If the distance from the start node to the end node is greater than the distance from the start node to the start node of the connection plus the weight of the connection.
+                D[v->getNumber()] = D[u->getNumber()] + w; // Set the distance from the start node to the end node to the distance from the start node to the start node of the connection plus the weight of the connection.
+                A[v->getNumber()] = u->getNumber(); // Set the parent of the end node to the start node of the connection.
+            }
+        }
+    }
 }
 
 void Graph::flowdWarshall()
