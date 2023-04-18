@@ -17,8 +17,12 @@ MinHeap::MinHeap(vector<HeapNode*> heapNodes)
 void MinHeap::insert(Node* node, int priority)
 {
     int insertedNodeIndex = heapNodes.size();
+
     HeapNode* heapNodeToInsert = new HeapNode(insertedNodeIndex, node, priority);
+
     this->heapNodes.push_back(heapNodeToInsert);
+
+    this->heapifyUp(heapNodeToInsert);
 }
 
 int MinHeap::minPriority()
