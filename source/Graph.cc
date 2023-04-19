@@ -121,43 +121,59 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 
 void Graph::BFS(int startNodeIndex)
 {
+    cout << "BFS START 0" << endl;
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<Node*> nodes = this->nodes; // Vector of nodes in the graph.
     bool *V = new bool[numberOfVertices]; // Array of visited nodes.
     int D[numberOfVertices]; // Array of distances from the start node.
     int *A = new int[numberOfVertices]; // Array of parent nodes.
-
+    cout << "BFS START 1" << endl;
     for (int i = 0; i <= numberOfVertices; i++) {
         V[i] = false; // Initialize with false.
         D[i] = numeric_limits<int>::max(); // Initialize with infinity.
         A[i] = -1; // Initialize with -1.
     }
-
+    cout << "BFS START 2" << endl;
     V[startNodeIndex] = true; // Mark the start node as visited.
     D[startNodeIndex] = 0; // Set the distance from the start node to itself to 0.
     A[startNodeIndex] = -1; // Set the parent of the start node to -1.
 
     queue<int> Q; // Create a queue.
     Q.push(startNodeIndex); // Push the start node to the queue.
-
+    cout << "BFS START 3" << endl;
     while (!Q.empty())
     {
+        cout << "BFS START 3.1" << endl;
         int u = Q.front(); // Get the first element in the queue.
         Q.pop(); // Remove the first element in the queue.
-
-        for (vector<Connection*>::iterator it = nodes[u]->getConnections().begin(); it != nodes[u]->getConnections().end(); ++it)
+        cout << "BFS START 3.2" << endl;
+        vector<Connection*> connections = nodes[u]->getConnections(); // Get the connections of the start node.
+        for (int i = 0; i != connections.size(); ++i)
         {
-            int v = (*it)->getEndNode()->getNumber(); // Get the end node of the connection.
+            Connection* conn = connections[i];
+            cout << "BFS START 3.3" << endl;
+            Node* vNode = (conn)->getEndNode(); // Get the end node of the connection.
+            cout << "BFS START 3.3.1" << endl;
+            int v = vNode->getNumber() - 1; // Get the index of the end node of the connection.
             if (!V[v]) { // If the end node of the connection is not visited.
+                cout << "BFS START 3.3.1.1" << endl;
                 V[v] = true; // Mark the end node as visited.
+                cout << "BFS START 3.3.1.2" << endl;
                 D[v] = D[u] + 1; // Set the distance from the start node to the end node to the distance from the start node to the start node of the connection plus 1.
+                cout << "BFS START 3.3.1.3" << endl;
                 A[v] = u; // Set the parent of the end node to the start node of the connection.
+                cout << "BFS START 3.3.1.4" << endl;
                 Q.push(v); // Push the end node to the queue.
+                cout << "BFS START 3.3.1.5" << endl;
             }
         }
     }
-
-    // IMPLEMENT BFS ALGORITHM.
+    cout << "BFS START 4" << endl;
+    for (int n= 0; n < numberOfVertices; n++)
+    {
+        cout << "BFS Called to \n" << startNodeIndex << endl;
+        cout << D[n] << ": " << n << endl;
+    }
 }
 
 void Graph::eulerianCycle(int startNodeIndex)

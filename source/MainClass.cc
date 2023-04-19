@@ -26,11 +26,12 @@ void MainClass::A1Main()
     //     }
     // }
 
-    for (int i = 0; i < graph.getNumberOfVertices(); i++)
-    {  
-        cout << "CALLING DIJKSTRA FOR NODE " << i << endl;
-         graph.dijkstra(i);
-    }
+    // for (int i = 0; i < graph.getNumberOfVertices(); i++)
+    // {  
+    //     cout << "CALLING DIJKSTRA FOR NODE " << i << endl;
+    //      graph.dijkstra(i);
+    // }
+    graph.BFS(0);
 }
 
 void MainClass::A2Main()
