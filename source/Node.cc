@@ -173,7 +173,12 @@ Node::~Node() //Look out for memory leaks. This deletes all connections since wh
     {
         for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
         {
-            delete this->connections[connIndex];
+            if (this->connections[connIndex] != nullptr)
+            {
+                // cout << connIndex << this->connections[connIndex] << endl;
+                // delete this->connections[connIndex];
+                // this->connections[connIndex] = nullptr; //This is done to avoid double free or corruption error.
+            }
         }
     }
 
@@ -181,7 +186,12 @@ Node::~Node() //Look out for memory leaks. This deletes all connections since wh
     {
         for (int connIndex = 0; connIndex < this->incomingConnections.size(); connIndex++)
         {
-            delete this->incomingConnections[connIndex];
+            Connection* incomingConnectionsPointer = this->incomingConnections[connIndex];
+            if (incomingConnectionsPointer != NULL)
+            {
+                // this->incomingConnections[connIndex] = NULL; //This is done to avoid double free or corruption error.
+                // delete incomingConnectionsPointer;
+            }
         }
     }
 
@@ -189,7 +199,12 @@ Node::~Node() //Look out for memory leaks. This deletes all connections since wh
     {
         for (int connIndex = 0; connIndex < this->outgoingConnections.size(); connIndex++)
         {
-            delete this->outgoingConnections[connIndex];
+            Connection* outgoingConnectionsPointer = this->outgoingConnections[connIndex];
+            if (outgoingConnectionsPointer != NULL)
+            {
+                // this->outgoingConnections[connIndex] = NULL; //This is done to avoid double free or corruption error.
+                // delete outgoingConnectionsPointer;
+            }
         }
     }
 }

@@ -176,9 +176,15 @@ void MinHeap::swap(HeapNode* heapNode1, HeapNode* heapNode2)
 
 MinHeap::~MinHeap() //CHECK FOR MEMORY LEAK, JUST IN CASE.
 {
-    for (int i = 0; i < this->heapNodes.size(); i++)
-    {
-        HeapNode* heapNode = this->heapNodes[i];
-        delete heapNode;
+    if (this->heapNodes.size() > 0)
+    {        
+        for (int i = 0; i < this->heapNodes.size(); i++)
+        {
+            HeapNode* heapNode = this->heapNodes[i];
+            if (heapNode)
+            {
+                delete heapNode;
+            }
+        }
     }
 }
