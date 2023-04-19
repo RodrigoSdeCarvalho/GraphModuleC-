@@ -254,9 +254,12 @@ void Graph::addNode(Node* node)
 
 void Graph::addEdge(Node* startNode, Node* endNode, int weight)
 {
-    Connection* connection = new Connection(weight, startNode, endNode, true);
-    startNode->addConnection(connection);
-    endNode->addConnection(connection);
+    Connection* startConnection = new Connection(weight, startNode, endNode, true);
+    startNode->addConnection(startConnection);
+
+    Connection* endConnection = new Connection(weight, endNode, startNode, true);
+    endNode->addConnection(endConnection);
+
     this->numberOfEdges++;
 }
 
