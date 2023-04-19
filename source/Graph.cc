@@ -94,7 +94,16 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 
             if (inputVertices)
             {
-                Node* node = new Node(stoi(tokens[0]), tokens[1]);
+                int index = stoi(tokens[0]);
+                string name;
+
+                for (int i = 1; i < tokens.size() - 1; i++)
+                {
+                    name += tokens[i] + " ";
+                }
+                name += tokens[tokens.size() - 1];
+
+                Node* node = new Node(index, name);
                 this->addNode(node);
             }
 
