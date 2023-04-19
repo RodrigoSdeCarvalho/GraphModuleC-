@@ -110,14 +110,11 @@ void MinHeap::updatePriority(Node* node, int priority)
 
 void MinHeap::heapifyUp(HeapNode* heapNode)
 {
-    while (heapNode->key > 0)
+    while (heapNode->key > 0 && heapNode->priority < this->heapNodes[heapNode->getParent()]->priority)
     {
+        cout << "heapNode->key: " << heapNode->key << " heapNode->priority: " << heapNode->priority << endl;
         HeapNode* parentHeapNode = this->heapNodes[heapNode->getParent()];
-
-        if (heapNode->priority < parentHeapNode->priority)
-        {
-            this->swap(heapNode, parentHeapNode);
-        }
+        this->swap(heapNode, parentHeapNode);
     }
 }
 
