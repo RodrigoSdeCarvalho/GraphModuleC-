@@ -126,6 +126,7 @@ void Graph::BFS(int startNodeIndex)
     bool *V = new bool[numberOfVertices]; // Array of visited nodes.
     int D[numberOfVertices]; // Array of distances from the start node.
     int *A = new int[numberOfVertices]; // Array of parent nodes.
+    vector<vector<int>> levels; // Vector of vectors to store vertices found at each level
     for (int i = 0; i <= numberOfVertices; i++)
     {
         V[i] = false; // Initialize with false.
@@ -138,6 +139,7 @@ void Graph::BFS(int startNodeIndex)
 
     queue<int> Q; // Create a queue.
     Q.push(startNodeIndex); // Push the start node to the queue.
+    levels.push_back(vector<int>({startNodeIndex})); // Add the start node to level 0
     while (!Q.empty())
     {
         int u = Q.front(); // Get the first element in the queue.
@@ -158,10 +160,20 @@ void Graph::BFS(int startNodeIndex)
         }
     }
 
-    for (int n= 0; n < numberOfVertices; n++)
-    {
-        cout << "BFS Called to \n" << startNodeIndex << endl;
-        cout << "INDEX: " << n << ": " << "DISTANCIA: " << D[n] << endl;
+    // Print the levels and vertices found in each level.
+    for (int level = 0; level <= numberOfVertices; level++) {
+        bool foundVertices = false;
+        cout << level << ":";
+        for (int i = 0; i < numberOfVertices; i++) {
+            if (D[i] == level) {
+                cout << " " << nodes[i]->getName();
+                foundVertices = true;
+            }
+        }
+        if (!foundVertices) {
+            break; // No more vertices to print.
+        }
+        cout << endl;
     }
 }
 
