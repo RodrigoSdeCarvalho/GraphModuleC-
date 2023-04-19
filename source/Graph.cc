@@ -11,6 +11,7 @@
 #include "Node.h"
 #include "Connection.h"
 #include "MinHeap.h"
+#include "HeapNode.h"
 
 using namespace std;
 using namespace GraphModule;
@@ -24,10 +25,31 @@ Graph::Graph(string inputFilePath)
     this->buildGraphFromInputFile(inputFilePath);
 }
 
+int Graph::getNumberOfVertices()
+{
+    return this->numberOfVertices;
+}
+
+vector<int> Graph::getNodeKeys()
+{
+    vector<int> nodeKeys;
+    for (int i = 0; i < this->nodes.size(); i++)
+    {
+        nodeKeys.push_back(this->nodes[i]->getNumber());
+    }
+    return nodeKeys;
+}
+
+vector<Node*> Graph::getNodes()
+{
+    return this->nodes;
+}
+
 void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 {
+    cout << "BUILDING GRAPH FROM INPUT FILE" << inputFilePath << endl;
     char* inputFilePathChar = &inputFilePath[0];
-
+    cout << "INPUT FILE PATH CHAR: " << inputFilePathChar << endl;
     ifstream inputFile;
 
     inputFile.open(inputFilePathChar, ios::in);
@@ -37,7 +59,8 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
     bool inputArcs = false;
 
     if (inputFile.is_open())
-    {
+    {   
+        cout << "FILE OPENED" << endl;
         string line;
         while (getline(inputFile, line))
         {
@@ -144,40 +167,52 @@ void Graph::eulerianCycle(int startNodeIndex)
 
 void Graph::dijkstra(int startNodeIndex)
 {
-  int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
+    cout << "Dijkstra Called to \n" << startNodeIndex << endl;
+    int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<Node*> nodes = this->nodes; // Vector of nodes in the graph.
-    int D[numberOfVertices]; // Array of distanceD[i] = numeric_limitD[i] = numeric_limits<int>::max(); // Initialize with infinity.s<int>::max(); // Initialize with infinity.s from the start node.
-    int* A = new int[numberOfVertices]; // Array of parent nodes.
+    int D[numberOfVertices]; // Array of distance
+    int A[numberOfVertices]; // Array of parent nodes.
     vector<bool> C(numberOfVertices, false); // Vector of visited nodes.
+    int visitedNodes = 0; // Counter for the number of visited nodes.
 
-    for (int i = 0; i <= numberOfVertices; i++) {
+    for (int i = 0; i < numberOfVertices; i++)
+    {
         D[i] = numeric_limits<int>::max(); // Initialize with infinity.
         A[i] = -1; // Initialize with -1.
     }
 
     D[startNodeIndex] = 0; // Set the distance from the start node to itself to 0.
     A[startNodeIndex] = -1; // Set the parent of the start node to -1.
-    
-    vector<HeapNode*> heapNodes = vector<HeapNode*>(); // Vector of heap nodes.
-    MinHeap minHeap = MinHeap(heapNodes); // Create a min heap.
-    for (int n = 0; n < numberOfVertices; n++) {
-        minHeap.insert(nodes[n], D[n]); // Insert the nodes to the min heap.
+
+    vector<HeapNode*> heapNodes = vector<HeapNode*>(numberOfVertices);    
+    for (int n = 0; n < numberOfVertices; n++)
+    {
+        heapNodes[n] = new HeapNode(n, nodes[n], D[n]);
     }
+    MinHeap minHeap = MinHeap(heapNodes); // Create a min heap.
 
-    while (find(C.begin(), C.end(), false) != C.end()) {
+    while (visitedNodes < numberOfVertices)
+    {
+        cout << "Visited nodes: " << visitedNodes << endl;
         Node* u = minHeap.popMin();
+        cout << "Popped node: " << u->getNumber() << endl;
         C[u->getNumber()] = true;
+        visitedNodes++;
 
-        for (vector<Connection*>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it) { // Iterate through the connections (neighbors) of the node.
-            Node* v = (*it)->getEndNode(); // Get the end node of the connection.
-            int w = (*it)->getWeight(); // Get the weight of the connection.
+        for (vector<Connection*>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it)
+        {
+            cout << "Connection: " << (*it)->getStartNode()->getNumber() << " -> " << (*it)->getEndNode()->getNumber() << " (" << (*it)->getWeight() << ")" << endl;
+            Node* v = (*it)->getEndNode();
+            int w = (*it)->getWeight();
 
-            if (D[v->getNumber()] > D[u->getNumber()] + w) { // If the distance from the start node to the end node is greater than the distance from the start node to the start node of the connection plus the weight of the connection.
-                D[v->getNumber()] = D[u->getNumber()] + w; // Set the distance from the start node to the end node to the distance from the start node to the start node of the connection plus the weight of the connection.
-                A[v->getNumber()] = u->getNumber(); // Set the parent of the end node to the start node of the connection.
+            if (D[v->getNumber()] > D[u->getNumber()] + w) {
+                D[v->getNumber()] = D[u->getNumber()] + w;
+                A[v->getNumber()] = u->getNumber();
             }
         }
     }
+
+    cout << "Dijkstra finished" << endl;
 }
 
 void Graph::flowdWarshall()
