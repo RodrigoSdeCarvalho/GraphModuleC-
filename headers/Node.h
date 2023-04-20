@@ -4,11 +4,13 @@
 #include <iostream>
 #include <vector> // Will perhaps be replaced by list if adds and removes are more common than reads. Vector is cache friendly.
 #include <tuple>
+#include <memory>
 
 using namespace std;
 
 namespace GraphModule
 {
+
     class Connection;
 
     class Node
@@ -20,40 +22,40 @@ namespace GraphModule
 
             string getName();
 
-            vector<Connection*> getConnections();
+            vector<shared_ptr<Connection>> getConnections();
 
-            void addConnections(vector<Connection*> connectionsToAdd);
+            void addConnections(vector<weak_ptr<Connection>> connectionsToAdd);
 
-            Connection* getConnectionWith(Node* NodeConnectedOnTheOtherEnd);
+            shared_ptr<Connection> getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
 
-            Connection* getOutgoingConnectionTo(Node* NodeConnectedOnTheOtherEnd);
+            shared_ptr<Connection> getOutgoingConnectionTo(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
 
-            vector<Node*> getNeighbours();
+            vector<shared_ptr<Node>> getNeighbours();
 
-            vector<Connection*> getIncomingConnections();
+            vector<shared_ptr<Connection>> getIncomingConnections();
 
-            vector<Connection*> getOutgoingConnections();
+            vector<shared_ptr<Connection>> getOutgoingConnections();
 
-            void addConnection(Connection* connectionToAdd);
+            void addConnection(weak_ptr<Connection> connectionToAdd);
 
-            void addIncomingConnection(Connection* connectionToAdd);
+            void addIncomingConnection(weak_ptr<Connection> connectionToAdd);
 
-            void addOutgoingConnection(Connection* connectionToAdd);
+            void addOutgoingConnection(weak_ptr<Connection> connectionToAdd);
 
-            vector<Node*> getOutgoingNeighbours();
+            vector<shared_ptr<Node>> getOutgoingNeighbours();
 
-            vector<tuple<Node*, Connection*>> getOutgoingNeighboursWithConnection();
+            vector<tuple<shared_ptr<Node>, shared_ptr<Connection>>> getOutgoingNeighboursWithConnection();
 
-            vector<Node*> getIncomingNeighbours();
+            vector<shared_ptr<Node>> getIncomingNeighbours();
 
             ~Node();    
 
         private:
             int number;
             string name;
-            vector<Connection*> connections;
-            vector<Connection*> incomingConnections;
-            vector<Connection*> outgoingConnections;
+            vector<weak_ptr<Connection>> connections;
+            vector<weak_ptr<Connection>> incomingConnections;
+            vector<weak_ptr<Connection>> outgoingConnections;
     };
 }
 

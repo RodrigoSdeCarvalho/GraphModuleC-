@@ -3,12 +3,14 @@
 #include <tuple>
 #include "Connection.h"
 #include <tuple>
+#include <memory>
+
 #include "Node.h"
 
 using namespace std;
 using namespace GraphModule;
 
-Connection::Connection(float weight, Node* startNode, Node* endNode, bool goesBothWays)
+Connection::Connection(float weight, shared_ptr<Node> startNode, shared_ptr<Node> endNode, bool goesBothWays)
 {
     this->weight = weight;
     this->startNode = startNode;
@@ -21,12 +23,12 @@ float Connection::getWeight()
     return this->weight;
 }
 
-Node* Connection::getStartNode()
+shared_ptr<Node> Connection::getStartNode()
 {
     return this->startNode;
 }
 
-Node* Connection::getEndNode()
+shared_ptr<Node> Connection::getEndNode()
 {
     return this->endNode;
 }
@@ -47,13 +49,12 @@ void Connection::setGoesBothWays(bool goesBothWays)
 }
 
 //Be careful for bugs. This function is not tested.
-tuple<Node*, Node*> Connection::getNodes()
+tuple<shared_ptr<Node>, shared_ptr<Node>> Connection::getNodes()
 {
     return make_tuple(this->startNode, this->endNode);
 }
 
 Connection::~Connection()
 {
-    // Deletes all attributes.
-    // A node deletes all its connections, but connections don't delete their nodes.
+    
 }

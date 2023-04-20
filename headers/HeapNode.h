@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <memory>
 
 using namespace std;
 
@@ -15,10 +16,10 @@ namespace GraphModule
     {
         public:
             int key; // All attributes are public because they can be both read and written.
-            Node* node;
+            shared_ptr<Node> node;
             int priority;
 
-            HeapNode(int key, Node* node, int priority);
+            HeapNode(int key, shared_ptr<Node> node, int priority);
             
             int getParent();
             int getLeft();

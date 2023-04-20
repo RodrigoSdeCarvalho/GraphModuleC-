@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
-// Adds are only done when the graph is created and file is read. Reads are done a lot of times during program execution.
-// Vector is cache friendly. Hence, reading is better through vector.
 #include <tuple>
+#include <memory>
+
 #include "Node.h"
 #include "Connection.h"
 
@@ -25,12 +25,16 @@ string Node::getName()
     return name;
 }
 
-vector<Connection*> Node::getConnections()
+vector<shared_ptr<Connection>> Node::getConnections()
 {
-    return connections;
+    vector<shared_ptr<Connection>> connectionsToReturn = vector<shared_ptr<Connection>>();
+    for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
+    {
+        connectionsToReturn.push_back(this->connections[connIndex].lock());
+    }
 }
 
-void Node::addConnections(vector<Connection*> connectionsToAdd)
+void Node::addConnections(vector<weak_ptr<Connection>> connectionsToAdd)
 {
     for (int connIndex = 0; connIndex < connectionsToAdd.size(); connIndex++)
     {
@@ -38,58 +42,58 @@ void Node::addConnections(vector<Connection*> connectionsToAdd)
     }
 }
 
-void Node::addConnection(Connection* connectionToAdd)
+void Node::addConnection(weak_ptr<Connection> connectionToAdd)
 {
     this->connections.push_back(connectionToAdd);
 }
 
-Connection* Node::getConnectionWith(Node* NodeConnectedOnTheOtherEnd)
+shared_ptr<Connection> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
 {
     for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
-        Connection* conn = this->connections[connIndex];
+        weak_ptr<Connection> conn = this->connections[connIndex];
 
-        Node* startNode = conn->getStartNode();
-        Node* endNode = conn->getEndNode();
+        shared_ptr<Node> startNode = (conn.lock())->getStartNode();
+        shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
         if ((startNode == NodeConnectedOnTheOtherEnd) or (endNode == NodeConnectedOnTheOtherEnd))
         {
-            return conn;
+            return conn.lock();
         }
     }
 }
 
-Connection* Node::getOutgoingConnectionTo(Node* NodeConnectedOnTheOtherEnd)
+shared_ptr<Connection> Node::getOutgoingConnectionTo(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
 {
     for (int connIndex = 0; connIndex < this->outgoingConnections.size(); connIndex++)
     {
-        Connection* conn = this->outgoingConnections[connIndex];
+        weak_ptr<Connection> conn = this->outgoingConnections[connIndex];
 
-        Node* endNode = conn->getEndNode();
+        shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
         if (endNode == NodeConnectedOnTheOtherEnd)
         {
-            return conn;
+            return conn.lock();
         }
     }
 }
 
-vector<Node*> Node::getNeighbours()
+vector<shared_ptr<Node>> Node::getNeighbours()
 {
-    vector<Node*> neighbours;
+    vector<shared_ptr<Node>> neighbours;
 
     for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
-        Connection* conn = this->connections[connIndex];
+        weak_ptr<Connection> conn = this->connections[connIndex];
 
-        Node* startNode = conn->getStartNode();
-        Node* endNode = conn->getEndNode();
+        shared_ptr<Node> startNode = (conn.lock())->getStartNode();
+        shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        if (startNode == this)
+        if (startNode.get() == this)
         {
             neighbours.push_back(endNode);
         }
-        else if (endNode == this)
+        else if (endNode.get() == this)
         {
             neighbours.push_back(startNode);
         }
@@ -98,35 +102,43 @@ vector<Node*> Node::getNeighbours()
     return neighbours;
 }
 
-vector<Connection*> Node::getIncomingConnections()
+vector<shared_ptr<Connection>> Node::getIncomingConnections()
 {
-    return this->incomingConnections;
+    vector<shared_ptr<Connection>> incomingConnectionsToReturn = vector<shared_ptr<Connection>>();
+    for (int connIndex = 0; connIndex < this->incomingConnections.size(); connIndex++)
+    {
+        incomingConnectionsToReturn.push_back(this->incomingConnections[connIndex].lock());
+    }
 }
 
-vector<Connection*> Node::getOutgoingConnections()
+vector<shared_ptr<Connection>> Node::getOutgoingConnections()
 {
-    return this->outgoingConnections;
+    vector <shared_ptr<Connection>> outgoingConnectionsToReturn = vector<shared_ptr<Connection>>();
+    for (int connIndex = 0; connIndex < this->outgoingConnections.size(); connIndex++)
+    {
+        outgoingConnectionsToReturn.push_back(this->outgoingConnections[connIndex].lock());
+    }
 }
 
-void Node::addIncomingConnection(Connection* connectionToAdd)
+void Node::addIncomingConnection(weak_ptr<Connection> connectionToAdd)
 {
     this->incomingConnections.push_back(connectionToAdd);
 }
 
-void Node::addOutgoingConnection(Connection* connectionToAdd)
+void Node::addOutgoingConnection(weak_ptr<Connection> connectionToAdd)
 {
     this->outgoingConnections.push_back(connectionToAdd);
 }
 
-vector<Node*> Node::getOutgoingNeighbours()
+vector<shared_ptr<Node>> Node::getOutgoingNeighbours()
 {
-    vector<Node*> neighbours;
+    vector<shared_ptr<Node>> neighbours;
 
     for (int connIndex = 0; connIndex < this->outgoingConnections.size(); connIndex++)
     {
-        Connection* conn = this->outgoingConnections[connIndex];
+        weak_ptr<Connection> conn = this->outgoingConnections[connIndex];
 
-        Node* endNode = conn->getEndNode();
+        shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
         neighbours.push_back(endNode);
     }
@@ -134,32 +146,31 @@ vector<Node*> Node::getOutgoingNeighbours()
     return neighbours;
 }
 
-//Be careful for bugs. This function is not tested.
-vector<tuple<Node*, Connection*>> Node::getOutgoingNeighboursWithConnection()
+vector<tuple<shared_ptr<Node>, shared_ptr<Connection>>> Node::getOutgoingNeighboursWithConnection()
 {
-    vector<tuple<Node*, Connection*>> neighbours;
+    vector<tuple<shared_ptr<Node>, shared_ptr<Connection>>> neighbours;
 
     for (int connIndex = 0; connIndex < this->outgoingConnections.size(); connIndex++)
     {
-        Connection* conn = this->outgoingConnections[connIndex];
+        weak_ptr<Connection> conn = this->outgoingConnections[connIndex];
 
-        Node* endNode = conn->getEndNode();
+        shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        neighbours.push_back(make_tuple(endNode, conn));
+        neighbours.push_back(make_tuple(endNode, conn.lock()));
     }
 
     return neighbours;
 }
 
-vector<Node*> Node::getIncomingNeighbours()
+vector<shared_ptr<Node>> Node::getIncomingNeighbours()
 {
-    vector<Node*> neighbours;
+    vector<shared_ptr<Node>> neighbours;
 
     for (int connIndex = 0; connIndex < this->incomingConnections.size(); connIndex++)
     {
-        Connection* conn = this->incomingConnections[connIndex];
+        weak_ptr<Connection> conn = this->incomingConnections[connIndex];
 
-        Node* startNode = conn->getStartNode();
+        shared_ptr<Node> startNode = (conn.lock())->getStartNode();
 
         neighbours.push_back(startNode);
     }
@@ -167,40 +178,7 @@ vector<Node*> Node::getIncomingNeighbours()
     return neighbours;
 }
 
-Node::~Node() //Look out for memory leaks. This deletes all connections since when an node is deleted, all connections shall be deleted.
+Node::~Node() 
 {
-    if (this->connections.size() > 0)
-    {
-        for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
-        {
-            if (this->connections[connIndex])
-            {
-                delete this->connections[connIndex];
-            }
-        }
-    }
 
-    if (this->incomingConnections.size() > 0)
-    {
-        for (int connIndex = 0; connIndex < this->incomingConnections.size(); connIndex++)
-        {
-            Connection* incomingConnectionsPointer = this->incomingConnections[connIndex];
-            if (incomingConnectionsPointer)
-            {
-                delete incomingConnectionsPointer;
-            }
-        }
-    }
-
-    if (this->outgoingConnections.size() > 0)
-    {
-        for (int connIndex = 0; connIndex < this->outgoingConnections.size(); connIndex++)
-        {
-            Connection* outgoingConnectionsPointer = this->outgoingConnections[connIndex];
-            if (outgoingConnectionsPointer)
-            {
-                delete outgoingConnectionsPointer;
-            }
-        }
-    }
 }

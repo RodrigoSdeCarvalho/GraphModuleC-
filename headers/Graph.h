@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <memory>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ namespace GraphModule
             
             vector<int> getNodeKeys();
 
-            vector<Node*> getNodes();
+            vector<shared_ptr<Node>> getNodes();
 
             void buildGraphFromInputFile(string inputFilePath);
 
@@ -32,11 +33,11 @@ namespace GraphModule
 
             void flowdWarshall();
 
-            void addNode(Node* node);
+            void addNode(shared_ptr<Node> node);
 
-            void addEdge(Node* node1, Node* node2, int weight);
+            void addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, int weight);
 
-            void addArc(Node* startNode, Node* endNode, int weight);
+            void addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight);
 
             ~Graph();
 
@@ -44,7 +45,7 @@ namespace GraphModule
             int numberOfVertices;
             int numberOfEdges;
             int numberOfArcs;
-            vector<Node*> nodes;
+            vector<shared_ptr<Node>> nodes;
     };
 }
 

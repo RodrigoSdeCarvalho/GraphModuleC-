@@ -9,5 +9,6 @@ using namespace GraphModule;
 int main()
 {
     MainClass::A1Main();
+    cout << "A1 DONE" << endl;
     return 0;
 }

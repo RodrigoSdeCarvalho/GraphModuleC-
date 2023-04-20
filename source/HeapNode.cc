@@ -1,12 +1,14 @@
 #include <iostream>
 #include "HeapNode.h"
 #include <cmath>
+#include <memory>
+
 #include "Node.h"
 
 using namespace std;
 using namespace GraphModule;
 
-HeapNode::HeapNode(int key, Node* node, int priority) 
+HeapNode::HeapNode(int key, shared_ptr<Node> node, int priority) 
 {
     this->key = key;
     this->node = node;
@@ -80,5 +82,5 @@ bool HeapNode::operator !=(const HeapNode& other)
 
 HeapNode::~HeapNode() 
 {
-    //DESTRUCTOR
+    
 }

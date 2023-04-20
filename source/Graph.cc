@@ -6,6 +6,7 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
+#include <memory>
 
 #include "Graph.h"
 #include "Node.h"
@@ -40,7 +41,7 @@ vector<int> Graph::getNodeKeys()
     return nodeKeys;
 }
 
-vector<Node*> Graph::getNodes()
+vector<shared_ptr<Node>> Graph::getNodes()
 {
     return this->nodes;
 }
@@ -103,14 +104,14 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
                 }
                 name += tokens[tokens.size() - 1];
 
-                Node* node = new Node(index, name);
-                this->addNode(node);
+                shared_ptr<Node> nodeSharedPtr = make_shared<Node>(index, name);
+                this->addNode(nodeSharedPtr);
             }
 
             if (inputEdges)
             {
-                Node* startNode = this->nodes[stoi(tokens[0]) - 1];
-                Node* endNode = this->nodes[stoi(tokens[1]) - 1];
+                shared_ptr<Node> startNode = this->nodes[stoi(tokens[0]) - 1];
+                shared_ptr<Node> endNode = this->nodes[stoi(tokens[1]) - 1];
                 int weight = stoi(tokens[2]);
 
                 this->addEdge(startNode, endNode, weight);
@@ -118,8 +119,8 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 
             if (inputArcs)
             {
-                Node* startNode = this->nodes[stoi(tokens[0]) - 1];
-                Node* endNode = this->nodes[stoi(tokens[1]) - 1];
+                shared_ptr<Node> startNode = this->nodes[stoi(tokens[0]) - 1];
+                shared_ptr<Node> endNode = this->nodes[stoi(tokens[1]) - 1];
                 int weight = stoi(tokens[2]);
 
                 this->addArc(startNode, endNode, weight);
@@ -131,10 +132,10 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 void Graph::BFS(int startNodeIndex)
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
-    vector<Node*> nodes = this->nodes; // Vector of nodes in the graph.
-    bool *V = new bool[numberOfVertices]; // Array of visited nodes.
+    vector<shared_ptr<Node>>& nodes = this->nodes;
+    bool V[numberOfVertices]; // Array of visited nodes.
     int D[numberOfVertices]; // Array of distances from the start node.
-    int *A = new int[numberOfVertices]; // Array of parent nodes.
+    int A[numberOfVertices]; // Array of parent nodes.
     vector<vector<int>> levels; // Vector of vectors to store vertices found at each level
     for (int i = 0; i <= numberOfVertices; i++)
     {
@@ -153,11 +154,11 @@ void Graph::BFS(int startNodeIndex)
     {
         int u = Q.front(); // Get the first element in the queue.
         Q.pop(); // Remove the first element in the queue.
-        vector<Connection*> connections = nodes[u]->getConnections(); // Get the connections of the start node.
+        vector<shared_ptr<Connection>> connections = nodes[u]->getConnections(); // Get the connections of the start node.
         for (int i = 0; i != connections.size(); ++i)
         {
-            Connection* conn = connections[i];
-            Node* vNode = (conn)->getEndNode(); // Get the end node of the connection.
+            shared_ptr<Connection> conn = connections[i];
+            shared_ptr<Node> vNode = (conn)->getEndNode(); // Get the end node of the connection.
             int v = vNode->getNumber() - 1; // Get the index of the end node of the connection.
             if (!V[v])
             { // If the end node of the connection is not visited.
@@ -195,7 +196,7 @@ void Graph::dijkstra(int startNodeIndex)
 {
     cout << "Dijkstra Called to \n" << startNodeIndex << endl;
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
-    vector<Node*> nodes = this->nodes; // Vector of nodes in the graph.
+    vector<shared_ptr<Node>> nodes = this->nodes; // Vector of nodes in the graph.
     int D[numberOfVertices]; // Array of distance
     int A[numberOfVertices]; // Array of parent nodes.
     vector<bool> C(numberOfVertices, false); // Vector of visited nodes.
@@ -210,25 +211,25 @@ void Graph::dijkstra(int startNodeIndex)
     D[startNodeIndex] = 0; // Set the distance from the start node to itself to 0.
     A[startNodeIndex] = -1; // Set the parent of the start node to -1.
 
-    vector<HeapNode*> heapNodes = vector<HeapNode*>(numberOfVertices);    
+    vector<shared_ptr<HeapNode>> heapNodes = vector<shared_ptr<HeapNode>>(numberOfVertices);    
     for (int n = 0; n < numberOfVertices; n++)
     {
-        heapNodes[n] = new HeapNode(n, nodes[n], D[n]);
+        heapNodes[n] = make_shared<HeapNode>(n, nodes[n], D[n]);
     }
     MinHeap minHeap = MinHeap(heapNodes); // Create a min heap.
 
     while (visitedNodes < numberOfVertices)
     {
         cout << "Visited nodes: " << visitedNodes << endl;
-        Node* u = minHeap.popMin();
+        shared_ptr<Node> u = minHeap.popMin();
         cout << "Popped node: " << u->getNumber() << endl;
         C[u->getNumber()] = true;
         visitedNodes++;
 
-        for (vector<Connection*>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it)
+        for (vector<shared_ptr<Connection>>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it)
         {
             cout << "Connection: " << (*it)->getStartNode()->getNumber() << " -> " << (*it)->getEndNode()->getNumber() << " (" << (*it)->getWeight() << ")" << endl;
-            Node* v = (*it)->getEndNode();
+            shared_ptr<Node> v = (*it)->getEndNode();
             int w = (*it)->getWeight();
 
             if (D[v->getNumber()] > D[u->getNumber()] + w) {
@@ -246,41 +247,32 @@ void Graph::flowdWarshall()
     // IMPLEMENT FLOYD WARSHALL ALGORITHM.
 }
 
-void Graph::addNode(Node* node)
+void Graph::addNode(shared_ptr<Node> node)
 {
     this->nodes.push_back(node);
     this->numberOfVertices++;
 }
 
-void Graph::addEdge(Node* startNode, Node* endNode, int weight)
+void Graph::addEdge(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight)
 {
-    Connection* startConnection = new Connection(weight, startNode, endNode, true);
-    startNode->addConnection(startConnection);
-
-    Connection* endConnection = new Connection(weight, endNode, startNode, true);
-    endNode->addConnection(endConnection);
-
+    shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNode, endNode, true);
+    weak_ptr<Connection> connectionWeakPtr = connectionSharedPtr;
+    
+    startNode->addConnection(connectionWeakPtr);
+    endNode->addConnection(connectionWeakPtr);
     this->numberOfEdges++;
 }
 
-void Graph::addArc(Node* startNode, Node* endNode, int weight)
+void Graph::addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight)
 {
-    Connection* connection = new Connection(weight, startNode, endNode, false);
+    shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNode, endNode, false);
+    weak_ptr<Connection> connectionWeakPtr = connectionSharedPtr;
 
-    startNode->addConnection(connection);
+    startNode->addConnection(connectionWeakPtr);
     this->numberOfArcs++;
 }
 
 Graph::~Graph()
 {
-    if (this->nodes.size() > 0)
-    {    
-        for (int nodeIndex = 0; nodeIndex < this->nodes.size(); nodeIndex++)
-        {
-            if (this->nodes[nodeIndex])
-            {
-                delete this->nodes[nodeIndex];
-            }
-        }
-    }
+
 }

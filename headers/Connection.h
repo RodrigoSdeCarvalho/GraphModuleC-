@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <tuple>
+#include <memory>
 
 using namespace std;
 
@@ -14,24 +15,24 @@ namespace GraphModule
     class Connection
     {
         public:
-            Connection(float weight, Node* startNode, Node* endNode, bool goesBothWays);
+            Connection(float weight, shared_ptr<Node> startNode, shared_ptr<Node> endNode, bool goesBothWays);
 
             float getWeight();
-            Node* getStartNode();
-            Node* getEndNode();
+            shared_ptr<Node> getStartNode();
+            shared_ptr<Node> getEndNode();
             bool getGoesBothWays();
 
             void setWeight(float weight);
             void setGoesBothWays(bool goesBothWays);
 
-            tuple<Node*, Node*> getNodes();
+            tuple<shared_ptr<Node>, shared_ptr<Node>> getNodes();
 
             ~Connection();
 
         private:
             float weight;
-            Node* startNode;
-            Node* endNode;
+            shared_ptr<Node> startNode;
+            shared_ptr<Node> endNode;
             bool goesBothWays;
     };
 }

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -14,28 +15,28 @@ namespace GraphModule
     class MinHeap
     {
         public:
-            MinHeap(vector<HeapNode*> heapNodes);
+            MinHeap(vector<shared_ptr<HeapNode>> heapNodes);
 
-            void insert(Node* node, int priority);
+            void insert(shared_ptr<Node> node, int priority);
 
             int minPriority();
 
-            Node* popMin();
+            shared_ptr<Node> popMin();
 
             int size();
 
-            bool contains(Node* node);
+            bool contains(shared_ptr<Node> node);
 
-            void updatePriority(Node* node, int priority);
+            void updatePriority(shared_ptr<Node> node, int priority);
 
             ~MinHeap();
 
         private:
-            vector<HeapNode*> heapNodes;
+            vector<shared_ptr<HeapNode>> heapNodes;
 
-            void heapifyUp(HeapNode* heapNode);
-            void heapifyDown(HeapNode* heapNode);
-            void swap(HeapNode* heapNode1, HeapNode* heapNode2);
+            void heapifyUp(shared_ptr<HeapNode> heapNode);
+            void heapifyDown(shared_ptr<HeapNode> heapNode);
+            void swap(shared_ptr<HeapNode> heapNode1, shared_ptr<HeapNode> heapNode2);
     };
 }
 
