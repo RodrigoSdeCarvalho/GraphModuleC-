@@ -10,7 +10,7 @@
 using namespace std;
 using namespace GraphModule;
 
-Connection::Connection(float weight, shared_ptr<Node> startNode, shared_ptr<Node> endNode, bool goesBothWays)
+Connection::Connection(float weight, weak_ptr<Node> startNode, weak_ptr<Node> endNode, bool goesBothWays)
 {
     this->weight = weight;
     this->startNode = startNode;
@@ -25,12 +25,12 @@ float Connection::getWeight()
 
 shared_ptr<Node> Connection::getStartNode()
 {
-    return this->startNode;
+    return (this->startNode).lock();
 }
 
 shared_ptr<Node> Connection::getEndNode()
 {
-    return this->endNode;
+    return (this->endNode).lock();
 }
 
 bool Connection::getGoesBothWays()
@@ -51,10 +51,10 @@ void Connection::setGoesBothWays(bool goesBothWays)
 //Be careful for bugs. This function is not tested.
 tuple<shared_ptr<Node>, shared_ptr<Node>> Connection::getNodes()
 {
-    return make_tuple(this->startNode, this->endNode);
+    return make_tuple((this->startNode).lock(), (this->endNode).lock());
 }
 
 Connection::~Connection()
 {
-    
+
 }

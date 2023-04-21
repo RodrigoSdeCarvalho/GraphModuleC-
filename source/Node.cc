@@ -30,8 +30,10 @@ vector<shared_ptr<Connection>> Node::getConnections()
     vector<shared_ptr<Connection>> connectionsToReturn = vector<shared_ptr<Connection>>();
     for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
-        connectionsToReturn.push_back(this->connections[connIndex].lock());
+        connectionsToReturn.push_back((this->connections[connIndex]).lock());
     }
+
+    return connectionsToReturn;
 }
 
 void Node::addConnections(vector<weak_ptr<Connection>> connectionsToAdd)
@@ -109,6 +111,8 @@ vector<shared_ptr<Connection>> Node::getIncomingConnections()
     {
         incomingConnectionsToReturn.push_back(this->incomingConnections[connIndex].lock());
     }
+
+    return incomingConnectionsToReturn;
 }
 
 vector<shared_ptr<Connection>> Node::getOutgoingConnections()
@@ -118,6 +122,8 @@ vector<shared_ptr<Connection>> Node::getOutgoingConnections()
     {
         outgoingConnectionsToReturn.push_back(this->outgoingConnections[connIndex].lock());
     }
+
+    return outgoingConnectionsToReturn;
 }
 
 void Node::addIncomingConnection(weak_ptr<Connection> connectionToAdd)

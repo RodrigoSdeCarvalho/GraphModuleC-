@@ -15,7 +15,7 @@ namespace GraphModule
     class Connection
     {
         public:
-            Connection(float weight, shared_ptr<Node> startNode, shared_ptr<Node> endNode, bool goesBothWays);
+            Connection(float weight, weak_ptr<Node> startNode, weak_ptr<Node> endNode, bool goesBothWays);
 
             float getWeight();
             shared_ptr<Node> getStartNode();
@@ -31,8 +31,8 @@ namespace GraphModule
 
         private:
             float weight;
-            shared_ptr<Node> startNode;
-            shared_ptr<Node> endNode;
+            weak_ptr<Node> startNode;
+            weak_ptr<Node> endNode;
             bool goesBothWays;
     };
 }

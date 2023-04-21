@@ -17,7 +17,6 @@ void MainClass::A1Main()
     string file_name = string(current_path.c_str()) + "/inputs/fln_pequena.txt";
     Graph graph = Graph(file_name);
     graph.BFS(0);
-    cout << "A1 DONE" << endl;
 }
 
 void MainClass::A2Main()

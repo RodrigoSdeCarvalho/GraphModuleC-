@@ -48,11 +48,9 @@ vector<shared_ptr<Node>> Graph::getNodes()
 
 void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 {
-    cout << "BUILDING GRAPH FROM INPUT FILE" << inputFilePath << endl;
     char* inputFilePathChar = &inputFilePath[0];
-    cout << "INPUT FILE PATH CHAR: " << inputFilePathChar << endl;
-    ifstream inputFile;
 
+    ifstream inputFile;
     inputFile.open(inputFilePathChar, ios::in);
 
     bool inputVertices = false;
@@ -61,7 +59,6 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 
     if (inputFile.is_open())
     {   
-        cout << "FILE OPENED" << endl;
         string line;
         while (getline(inputFile, line))
         {
@@ -132,7 +129,7 @@ void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
 void Graph::BFS(int startNodeIndex)
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
-    vector<shared_ptr<Node>>& nodes = this->nodes;
+    vector<shared_ptr<Node>> nodes = this->nodes;
     bool V[numberOfVertices]; // Array of visited nodes.
     int D[numberOfVertices]; // Array of distances from the start node.
     int A[numberOfVertices]; // Array of parent nodes.
@@ -155,6 +152,7 @@ void Graph::BFS(int startNodeIndex)
         int u = Q.front(); // Get the first element in the queue.
         Q.pop(); // Remove the first element in the queue.
         vector<shared_ptr<Connection>> connections = nodes[u]->getConnections(); // Get the connections of the start node.
+
         for (int i = 0; i != connections.size(); ++i)
         {
             shared_ptr<Connection> conn = connections[i];
@@ -181,6 +179,7 @@ void Graph::BFS(int startNodeIndex)
             }
         }
         if (!foundVertices) {
+            cout << endl;
             break; // No more vertices to print.
         }
         cout << endl;
@@ -238,8 +237,6 @@ void Graph::dijkstra(int startNodeIndex)
             }
         }
     }
-
-    cout << "Dijkstra finished" << endl;
 }
 
 void Graph::flowdWarshall()
@@ -255,24 +252,34 @@ void Graph::addNode(shared_ptr<Node> node)
 
 void Graph::addEdge(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight)
 {
-    shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNode, endNode, true);
-    weak_ptr<Connection> connectionWeakPtr = connectionSharedPtr;
-    
+    weak_ptr<Node> startNodeWeakPtr(startNode);
+    weak_ptr<Node> endNodeWeakPtr(endNode);
+
+    shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNodeWeakPtr, endNodeWeakPtr, true);
+    this->connections.push_back(connectionSharedPtr);
+    weak_ptr<Connection> connectionWeakPtr(connectionSharedPtr);
+
     startNode->addConnection(connectionWeakPtr);
     endNode->addConnection(connectionWeakPtr);
+
     this->numberOfEdges++;
 }
 
 void Graph::addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight)
 {
-    shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNode, endNode, false);
-    weak_ptr<Connection> connectionWeakPtr = connectionSharedPtr;
+    weak_ptr<Node> startNodeWeakPtr(startNode);
+    weak_ptr<Node> endNodeWeakPtr(endNode);
+
+    shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNodeWeakPtr, endNodeWeakPtr, false);
+    this->connections.push_back(connectionSharedPtr);
+    weak_ptr<Connection> connectionWeakPtr(connectionSharedPtr);
 
     startNode->addConnection(connectionWeakPtr);
+
     this->numberOfArcs++;
 }
 
 Graph::~Graph()
 {
-
+    
 }

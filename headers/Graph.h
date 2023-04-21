@@ -10,7 +10,8 @@ using namespace std;
 
 namespace GraphModule
 {
-    class Node;    
+    class Node;
+    class Connection;
 
     class Graph
     {
@@ -46,6 +47,7 @@ namespace GraphModule
             int numberOfEdges;
             int numberOfArcs;
             vector<shared_ptr<Node>> nodes;
+            vector<shared_ptr<Connection>> connections;
     };
 }
 
