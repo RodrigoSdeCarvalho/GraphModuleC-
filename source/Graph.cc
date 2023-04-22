@@ -17,13 +17,11 @@
 using namespace std;
 using namespace GraphModule;
 
-Graph::Graph(string inputFilePath)
+Graph::Graph()
 {
     this->numberOfVertices = 0;
     this->numberOfEdges = 0;
     this->numberOfArcs = 0;
-
-    this->buildGraphFromInputFile(inputFilePath);
 }
 
 int Graph::getNumberOfVertices()
@@ -44,86 +42,6 @@ vector<int> Graph::getNodeKeys()
 vector<shared_ptr<Node>> Graph::getNodes()
 {
     return this->nodes;
-}
-
-void Graph::buildGraphFromInputFile(string inputFilePath) //TEST THIS PROPERLY.
-{
-    char* inputFilePathChar = &inputFilePath[0];
-
-    ifstream inputFile;
-    inputFile.open(inputFilePathChar, ios::in);
-
-    bool inputVertices = false;
-    bool inputEdges = false;
-    bool inputArcs = false;
-
-    if (inputFile.is_open())
-    {   
-        string line;
-        while (getline(inputFile, line))
-        {
-            stringstream ss(line);
-            string token;
-            vector<string> tokens;
-            while (ss >> token)
-            {
-                tokens.push_back(token);
-            }
-
-            if (tokens[0] == "*vertices")
-            {
-                inputVertices = true;
-                continue;
-            }
-
-            if (tokens[0] == "*edges")
-            {
-                inputVertices = false;
-                inputEdges = true;
-                continue;
-            }
-
-            if (tokens[0] == "*arcs")
-            {
-                inputVertices = false;
-                inputArcs = true;
-                continue;
-            }
-
-            if (inputVertices)
-            {
-                int index = stoi(tokens[0]);
-                string name;
-
-                for (int i = 1; i < tokens.size() - 1; i++)
-                {
-                    name += tokens[i] + " ";
-                }
-                name += tokens[tokens.size() - 1];
-
-                shared_ptr<Node> nodeSharedPtr = make_shared<Node>(index, name);
-                this->addNode(nodeSharedPtr);
-            }
-
-            if (inputEdges)
-            {
-                shared_ptr<Node> startNode = this->nodes[stoi(tokens[0]) - 1];
-                shared_ptr<Node> endNode = this->nodes[stoi(tokens[1]) - 1];
-                int weight = stoi(tokens[2]);
-
-                this->addEdge(startNode, endNode, weight);
-            }
-
-            if (inputArcs)
-            {
-                shared_ptr<Node> startNode = this->nodes[stoi(tokens[0]) - 1];
-                shared_ptr<Node> endNode = this->nodes[stoi(tokens[1]) - 1];
-                int weight = stoi(tokens[2]);
-
-                this->addArc(startNode, endNode, weight);
-            }
-        }
-    }
 }
 
 void Graph::BFS(int startNodeIndex)
@@ -193,7 +111,6 @@ void Graph::eulerianCycle(int startNodeIndex)
 
 void Graph::dijkstra(int startNodeIndex)
 {
-    cout << "Dijkstra Called to \n" << startNodeIndex << endl;
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<shared_ptr<Node>> nodes = this->nodes; // Vector of nodes in the graph.
     int D[numberOfVertices]; // Array of distance
@@ -219,15 +136,12 @@ void Graph::dijkstra(int startNodeIndex)
 
     while (visitedNodes < numberOfVertices)
     {
-        cout << "Visited nodes: " << visitedNodes << endl;
         shared_ptr<Node> u = minHeap.popMin();
-        cout << "Popped node: " << u->getNumber() << endl;
         C[u->getNumber()] = true;
         visitedNodes++;
 
         for (vector<shared_ptr<Connection>>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it)
         {
-            cout << "Connection: " << (*it)->getStartNode()->getNumber() << " -> " << (*it)->getEndNode()->getNumber() << " (" << (*it)->getWeight() << ")" << endl;
             shared_ptr<Node> v = (*it)->getEndNode();
             int w = (*it)->getWeight();
 

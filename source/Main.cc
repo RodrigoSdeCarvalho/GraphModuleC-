@@ -4,10 +4,9 @@
 #include "MainClass.h"
 
 using namespace std;
-using namespace GraphModule;
 
-int main()
+int main(int argc, char *argv[])
 {
-    MainClass::A1Main();
+    GraphActivity::MainClass::Main(argc, argv);
     return 0;
 }

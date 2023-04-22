@@ -16,15 +16,13 @@ namespace GraphModule
     class Graph
     {
         public:
-            Graph(string inputFilePath);
+            Graph();
 
             int getNumberOfVertices();
-            
+
             vector<int> getNodeKeys();
 
             vector<shared_ptr<Node>> getNodes();
-
-            void buildGraphFromInputFile(string inputFilePath);
 
             void BFS(int startNodeIndex);
 

@@ -114,7 +114,6 @@ void MinHeap::heapifyUp(shared_ptr<HeapNode> heapNode)
 {
     while (heapNode->key > 0 && heapNode->priority < this->heapNodes[heapNode->getParent()]->priority)
     {
-        cout << "heapNode->key: " << heapNode->key << " heapNode->priority: " << heapNode->priority << endl;
         shared_ptr<HeapNode> parentHeapNode = this->heapNodes[heapNode->getParent()];
         this->swap(heapNode, parentHeapNode);
     }
