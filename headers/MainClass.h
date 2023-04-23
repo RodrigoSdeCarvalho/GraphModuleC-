@@ -26,7 +26,7 @@ namespace GraphActivity
             static void A1Main(string graphFile);
             static void A2Main(string graphFile);
             static void A3Main(string graphFile);
-            static GraphModule::Graph* getGraph(string graphFile);
+            static unique_ptr<GraphModule::Graph> getGraph(string graphFile);
             static void buildGraphFromInputFile(GraphModule::Graph* graph, string graphFile);
     };
 }

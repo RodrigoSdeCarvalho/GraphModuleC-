@@ -134,12 +134,11 @@ void MainClass::runActivity(string Activity, string graphFile)
 
 void MainClass::A1Main(string graphFile)
 {
-    Graph* graph = getGraph(graphFile);
+    unique_ptr<Graph> graph = getGraph(graphFile);
     graph->BFS(0);
     // graph->eulerianCycle(0);
     // graph->dijkstra(0);
     // graph->flowdWarshall(0);
-    delete graph;
 }
 
 void MainClass::A2Main(string graphFile)
@@ -152,14 +151,16 @@ void MainClass::A3Main(string graphFile)
     //IMPLEMENT CODE TO ANSWER ALL A3 QUESTIONS.
 }
 
-Graph* MainClass::getGraph(string graphFile)
+unique_ptr<Graph> MainClass::getGraph(string graphFile)
 {
     path current_path = filesystem::current_path();
     string file_name = string(current_path.c_str()) + "/inputs/" + graphFile;
     Graph* graph = new Graph();
     buildGraphFromInputFile(graph, file_name);
 
-    return graph;
+    unique_ptr<Graph> graphUniquePtr(graph);
+
+    return graphUniquePtr;
 }
 
 void MainClass::buildGraphFromInputFile(Graph* graph, string inputFilePath)

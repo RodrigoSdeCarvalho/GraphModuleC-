@@ -171,8 +171,8 @@ void Graph::addEdge(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int we
 
     shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNodeWeakPtr, endNodeWeakPtr, true);
     this->connections.push_back(connectionSharedPtr);
-    weak_ptr<Connection> connectionWeakPtr(connectionSharedPtr);
 
+    weak_ptr<Connection> connectionWeakPtr(connectionSharedPtr);
     startNode->addConnection(connectionWeakPtr);
     endNode->addConnection(connectionWeakPtr);
 
@@ -186,8 +186,8 @@ void Graph::addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int wei
 
     shared_ptr<Connection> connectionSharedPtr = make_shared<Connection>(weight, startNodeWeakPtr, endNodeWeakPtr, false);
     this->connections.push_back(connectionSharedPtr);
+    
     weak_ptr<Connection> connectionWeakPtr(connectionSharedPtr);
-
     startNode->addConnection(connectionWeakPtr);
 
     this->numberOfArcs++;
