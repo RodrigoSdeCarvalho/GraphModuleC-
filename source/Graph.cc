@@ -89,15 +89,16 @@ void Graph::BFS(int startNodeIndex)
     // Print the levels and vertices found in each level.
     for (int level = 0; level <= numberOfVertices; level++) {
         bool foundVertices = false;
-        cout << level << ":";
         for (int i = 0; i < numberOfVertices; i++) {
             if (D[i] == level) {
+                if (!foundVertices) {
+                    cout << level << ":";
+                    foundVertices = true;
+                }
                 cout << " " << nodes[i]->getName();
-                foundVertices = true;
             }
         }
         if (!foundVertices) {
-            cout << endl;
             break; // No more vertices to print.
         }
         cout << endl;
