@@ -8,15 +8,20 @@
 #include <algorithm>
 #include <dirent.h>
 #include <unistd.h>
+#include <map>
 
 #include "MainClass.h"
-#include "Graph.h"
+#include "UndirectedGraph.h"
+#include "DirectedGraph.h"
 #include "Node.h"
+#include "Activities.h"
 
 using namespace std;
 using namespace filesystem;
 using namespace GraphActivity;
 using namespace GraphModule;
+
+// ./Main <Activity> <Question> <<GraphFile> or <-d>> d = default
 
 void MainClass::Main(int argc, char *argv[])
 {
@@ -25,48 +30,33 @@ void MainClass::Main(int argc, char *argv[])
     if (argsAreOk)
     {
         string Activity = argv[1];
-        string graphFileOrFlag = argv[2];
+        int Question = stoi(argv[2]);
+        string graphFileOrFlag = argv[3];
 
-        bool readAllFiles;
-        if (graphFileOrFlag == "-ra")
+        bool defaultFlag = false;
+        if (graphFileOrFlag == "-d")
         {
-            readAllFiles = true;
+            defaultFlag = true;
         }
         else
         {
-            readAllFiles = false;
+            defaultFlag = false;
         }
 
-        if (readAllFiles)
-        {
-            vector<string> files = getInputFiles(Activity);
-            for (vector<string>::iterator it = files.begin(); it != files.end(); ++it)
-            {
-                cout << "Running " << Activity << " on " << *it << endl;
-                runActivity(Activity, *it);
-
-                if (it != files.end() - 1)
-                {
-                    cout << endl;
-                }
-            }
-        }
-        else
-        {
-            runActivity(Activity, graphFileOrFlag);
-        }
+        runActivity(Activity, Question, graphFileOrFlag, defaultFlag);
     }
 }
 
 bool MainClass::checkArguments(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc != 4)
     {
         string errorMessage = "Error: Missing arguments \n"
-                              "Usage: ./main <Activity> <<graphFile> or [-ra]> \n"
+                              "Usage: ./Main <Activity> <Question> <<GraphFile> or <-d>> \n"
                               "Activity: A1, A2 or A3 \n"
+                              "Question: number of the question as in pdf activity file \n"
                               "graphFile: name of the file \n"
-                              "-ra: A flag that indicates if all files in inputs folder will be read";
+                              "-d: A flag that indicates if the default graph will be used";
         cout << errorMessage << endl;
 
         return false;
@@ -74,26 +64,36 @@ bool MainClass::checkArguments(int argc, char *argv[])
     else
     {
         vector<string> validActivities = {"A1", "A2", "A3"};
+        map<string, vector<int>> validQuestionsPerActivity = {
+            {"A1", {2, 3, 4, 5}},
+            {"A2", {1, 2, 3}},
+            {"A3", {1, 2, 3}}
+        };
         vector<string> validGraphFiles = getInputFiles(argv[1]);
 
         string activity = argv[1];
-        string graphFileOrFlag = argv[2];
+        int question = stoi(argv[2]);
+        string graphFileOrFlag = argv[3];
+
+        vector<int> validQuestions = validQuestionsPerActivity[activity];
 
         bool activityIsValid = find_if(validActivities.begin(), validActivities.end(),[&](const std::string& file) { return file == activity; }) != validActivities.end();
         bool graphFileIsValid = find_if(validGraphFiles.begin(), validGraphFiles.end(),[&](const std::string& file) { return file == graphFileOrFlag; }) != validGraphFiles.end();
-        bool flagIsValid = graphFileOrFlag == "-ra" ? true : false;
+        bool questionIsValid = find_if(validQuestions.begin(), validQuestions.end(),[&](const int& file) { return file == question; }) != validQuestions.end();
+        bool flagIsValid = graphFileOrFlag == "-d" ? true : false;
 
-        if (activityIsValid && (graphFileIsValid || flagIsValid))
+        if (activityIsValid && questionIsValid && (graphFileIsValid || flagIsValid))
         {   
             return true;
         }
         else
         {
             string errorMessage = "Error: Invalid arguments \n"
-                                  "Usage: ./main <Activity> <<graphFile> or [-ra]> \n"
-                                  "Activity: A1, A2 or A3 \n"
-                                  "graphFile: name of the file \n"
-                                  "-ra: A flag that indicates if all files in inputs folder will be read";
+                              "Usage: ./Main <Activity> <Question> <<GraphFile> or <-d>> \n"
+                              "Activity: A1, A2 or A3 \n"
+                              "Question: number of the question as in pdf activity file \n"
+                              "graphFile: name of the file \n"
+                              "-d: A flag that indicates if the default graph will be used";
             cout << errorMessage << endl;
 
             return false;
@@ -121,187 +121,18 @@ vector<string> MainClass::getInputFiles(string activity) {
     return inputs;
 }
 
-void MainClass::runActivity(string Activity, string graphFile)
+void MainClass::runActivity(string Activity, int question, string graphFile, bool defaultFlag)
 {
     if (Activity == "A1")
     {
-        A1Main(graphFile);
+        Activities::A1Main(question, graphFile, defaultFlag);
     }
     else if (Activity == "A2")
     {
-        A2Main(graphFile);
+        Activities::A2Main(question, graphFile, defaultFlag);
     }
     else if (Activity == "A3")
     {
-        A3Main(graphFile);
-    }
-}
-
-void MainClass::A1Main(string graphFile)
-{
-    string graphFilePath = "A1/" + graphFile;
-    string graphKind = checkGraphKind(graphFilePath);
-
-    if(graphKind == "undirected")
-    {
-        cout << endl;
-        unique_ptr<Graph> graph = getGraph(graphFilePath);
-
-        cout << "BFS on " << graphFile << endl;  
-        graph->BFS(0);
-        cout << endl;
-
-        // cout << "Eulerian Cycle on " << graphFile << endl;
-        // graph->eulerianCycle(0);
-        // cout << endl;
-
-        // cout << "Dijkstra on " << graphFile << endl;
-        // graph->dijkstra(0);
-        // cout << endl;
-
-        // cout << "Floyd Warshall on " << graphFile << endl;
-        // graph->flowdWarshall(0);
-        // cout << endl;
-    }
-    else
-    {
-        cout << "Error: Graph is not undirected. A1 only has questions that can involve undirected graphs." << endl;
-    }
-}
-
-void MainClass::A2Main(string graphFile)
-{
-
-}
-
-void MainClass::A3Main(string graphFile)
-{
-
-}
-
-unique_ptr<Graph> MainClass::getGraph(string graphFilePath)
-{
-    path current_path = filesystem::current_path();
-    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
-    Graph* graph = new Graph();
-    buildGraphFromInputFile(graph, file_path);
-
-    unique_ptr<Graph> graphUniquePtr(graph);
-
-    return graphUniquePtr;
-}
-
-void MainClass::buildGraphFromInputFile(Graph* graph, string inputFilePath)
-{
-    char* inputFilePathChar = &inputFilePath[0];
-
-    ifstream inputFile;
-    inputFile.open(inputFilePathChar, ios::in);
-
-    bool inputVertices = false;
-    bool inputEdges = false;
-    bool inputArcs = false;
-
-    if (inputFile.is_open())
-    {   
-        string line;
-        while (getline(inputFile, line))
-        {
-            stringstream ss(line);
-            string token;
-            vector<string> tokens;
-            while (ss >> token)
-            {
-                tokens.push_back(token);
-            }
-
-            if (tokens[0] == "*vertices")
-            {
-                inputVertices = true;
-                continue;
-            }
-
-            if (tokens[0] == "*edges")
-            {
-                inputVertices = false;
-                inputEdges = true;
-                continue;
-            }
-
-            if (tokens[0] == "*arcs")
-            {
-                inputVertices = false;
-                inputArcs = true;
-                continue;
-            }
-
-            if (inputVertices)
-            {
-                int index = stoi(tokens[0]);
-                string name;
-
-                for (int i = 1; i < tokens.size() - 1; i++)
-                {
-                    name += tokens[i] + " ";
-                }
-                name += tokens[tokens.size() - 1];
-
-                shared_ptr<Node> nodeSharedPtr = make_shared<Node>(index, name);
-                graph->addNode(nodeSharedPtr);
-            }
-
-            if (inputEdges)
-            {
-                shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
-                shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
-                int weight = stoi(tokens[2]);
-
-                graph->addEdge(startNode, endNode, weight);
-            }
-
-            if (inputArcs)
-            {
-                shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
-                shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
-                int weight = stoi(tokens[2]);
-
-                graph->addArc(startNode, endNode, weight);
-            }
-        }
-    }
-}
-
-string MainClass::checkGraphKind(string graphFilePath)
-{
-    path current_path = filesystem::current_path();
-    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
-
-    ifstream inputFile;
-    inputFile.open(file_path, ios::in);
-
-    if (inputFile.is_open())
-    {
-        
-        string line;
-        while (getline(inputFile, line))
-        {
-            stringstream ss(line);
-            string token;
-            vector<string> tokens;
-            while (ss >> token)
-            {
-                tokens.push_back(token);
-            }
-
-            if (tokens[0] == "*edges")
-            {
-                return "undirected";
-            }
-
-            if (tokens[0] == "*arcs")
-            {
-                return "directed";
-            }
-        }
+        Activities::A3Main(question, graphFile, defaultFlag);
     }
 }
