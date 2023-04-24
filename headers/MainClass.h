@@ -21,13 +21,14 @@ namespace GraphActivity
         public:
             static void Main(int argc, char *argv[]);
             static bool checkArguments(int argc, char *argv[]);
-            static vector<string> getInputFiles();
+            static vector<string> getInputFiles(string activity);
             static void runActivity(string Activity, string graphFile);
             static void A1Main(string graphFile);
             static void A2Main(string graphFile);
             static void A3Main(string graphFile);
-            static unique_ptr<GraphModule::Graph> getGraph(string graphFile);
+            static unique_ptr<GraphModule::Graph> getGraph(string graphFilePath);
             static void buildGraphFromInputFile(GraphModule::Graph* graph, string graphFile);
+            static string checkGraphKind(string graphFilePath);
     };
 }
 

@@ -39,11 +39,16 @@ void MainClass::Main(int argc, char *argv[])
 
         if (readAllFiles)
         {
-            vector<string> files = getInputFiles();
+            vector<string> files = getInputFiles(Activity);
             for (vector<string>::iterator it = files.begin(); it != files.end(); ++it)
             {
                 cout << "Running " << Activity << " on " << *it << endl;
                 runActivity(Activity, *it);
+
+                if (it != files.end() - 1)
+                {
+                    cout << endl;
+                }
             }
         }
         else
@@ -69,7 +74,7 @@ bool MainClass::checkArguments(int argc, char *argv[])
     else
     {
         vector<string> validActivities = {"A1", "A2", "A3"};
-        vector<string> validGraphFiles = getInputFiles();
+        vector<string> validGraphFiles = getInputFiles(argv[1]);
 
         string activity = argv[1];
         string graphFileOrFlag = argv[2];
@@ -96,12 +101,12 @@ bool MainClass::checkArguments(int argc, char *argv[])
     }
 }
 
-vector<string> MainClass::getInputFiles() {
+vector<string> MainClass::getInputFiles(string activity) {
     DIR* inputFolder;
     struct dirent* folderEntry;
 
     path current_path = filesystem::current_path();
-    string folderPath = string(current_path.c_str()) + "/inputs";
+    string folderPath = string(current_path.c_str()) + "/inputs/" + activity;
 
     vector<string> inputs;
     if ((inputFolder = opendir(folderPath.c_str())) != nullptr) {
@@ -134,29 +139,52 @@ void MainClass::runActivity(string Activity, string graphFile)
 
 void MainClass::A1Main(string graphFile)
 {
-    unique_ptr<Graph> graph = getGraph(graphFile);
-    graph->BFS(0);
-    // graph->eulerianCycle(0);
-    // graph->dijkstra(0);
-    // graph->flowdWarshall(0);
+    string graphFilePath = "A1/" + graphFile;
+    string graphKind = checkGraphKind(graphFilePath);
+
+    if(graphKind == "undirected")
+    {
+        cout << endl;
+        unique_ptr<Graph> graph = getGraph(graphFilePath);
+
+        cout << "BFS on " << graphFile << endl;  
+        graph->BFS(0);
+        cout << endl;
+
+        // cout << "Eulerian Cycle on " << graphFile << endl;
+        // graph->eulerianCycle(0);
+        // cout << endl;
+
+        // cout << "Dijkstra on " << graphFile << endl;
+        // graph->dijkstra(0);
+        // cout << endl;
+
+        // cout << "Floyd Warshall on " << graphFile << endl;
+        // graph->flowdWarshall(0);
+        // cout << endl;
+    }
+    else
+    {
+        cout << "Error: Graph is not undirected. A1 only has questions that can involve undirected graphs." << endl;
+    }
 }
 
 void MainClass::A2Main(string graphFile)
 {
-    //IMPLEMENT CODE TO ANSWER ALL A2 QUESTIONS.
+
 }
 
 void MainClass::A3Main(string graphFile)
 {
-    //IMPLEMENT CODE TO ANSWER ALL A3 QUESTIONS.
+
 }
 
-unique_ptr<Graph> MainClass::getGraph(string graphFile)
+unique_ptr<Graph> MainClass::getGraph(string graphFilePath)
 {
     path current_path = filesystem::current_path();
-    string file_name = string(current_path.c_str()) + "/inputs/" + graphFile;
+    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
     Graph* graph = new Graph();
-    buildGraphFromInputFile(graph, file_name);
+    buildGraphFromInputFile(graph, file_path);
 
     unique_ptr<Graph> graphUniquePtr(graph);
 
@@ -238,6 +266,41 @@ void MainClass::buildGraphFromInputFile(Graph* graph, string inputFilePath)
                 int weight = stoi(tokens[2]);
 
                 graph->addArc(startNode, endNode, weight);
+            }
+        }
+    }
+}
+
+string MainClass::checkGraphKind(string graphFilePath)
+{
+    path current_path = filesystem::current_path();
+    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
+
+    ifstream inputFile;
+    inputFile.open(file_path, ios::in);
+
+    if (inputFile.is_open())
+    {
+        
+        string line;
+        while (getline(inputFile, line))
+        {
+            stringstream ss(line);
+            string token;
+            vector<string> tokens;
+            while (ss >> token)
+            {
+                tokens.push_back(token);
+            }
+
+            if (tokens[0] == "*edges")
+            {
+                return "undirected";
+            }
+
+            if (tokens[0] == "*arcs")
+            {
+                return "directed";
             }
         }
     }
