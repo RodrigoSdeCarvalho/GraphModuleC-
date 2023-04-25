@@ -52,7 +52,10 @@ void Activities::runA1(int question, string graphFile)
         for (int i = 0; i < graph->getNumberOfVertices(); i++)
         {
             cout << "BFS on for vertex " << i + 1 << " in file " << graphFile << endl;
-            graph->BFS(i);
+            tuple<vector<int>, vector<int>> BFSTuple = graph->BFS(i);
+            vector<int> D = get<0>(BFSTuple);
+            vector<int> A = get<1>(BFSTuple);
+            graph->printBFS(i, D, A);
             cout << endl;
         }
     }
@@ -66,7 +69,10 @@ void Activities::runA1(int question, string graphFile)
         for (int i = 0; i < graph->getNumberOfVertices(); i++)
         {
             cout << "Dijkstra on for vertex " << i + 1 << " in file " << graphFile << endl;
-            graph->dijkstra(i);
+            tuple<vector<int>, vector<int>> dijkstraTuple = graph->dijkstra(i);
+            vector<int> D = get<0>(dijkstraTuple);
+            vector<int> A = get<1>(dijkstraTuple);
+            graph->printDijkstra(i, D, A);
             cout << endl;
         }
     }
@@ -81,22 +87,22 @@ void Activities::runA1(int question, string graphFile)
 
 void Activities::A2Main(int question, string graphFile, bool defaultFlag)
 {
-
+    //Implement A2.
 }
 
 void Activities::runA2(int question, string graphFile)
 {
-
+    //Implement A2.
 }
 
 void Activities::A3Main(int question, string graphFile, bool defaultFlag)
 {
-
+    //Implement A3.
 }
 
 void Activities::runA3(int question, string graphFile)
 {
-
+    //Implement A3.
 }
 
 unique_ptr<UndirectedGraph> Activities::getUndirectedGraph(string graphFilePath)

@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <tuple>
+
 #include "AbstractGraph.h"
 
 using namespace std;
@@ -23,11 +25,15 @@ namespace GraphModule
 
             void addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, int weight);
 
-            void BFS(int startNodeIndex);
+            tuple<vector<int>, vector<int>> BFS(int startNodeIndex);
+
+            void printBFS(int startNodeIndex, vector<int> D, vector<int> A);
 
             void eulerianCycle(int startNodeIndex);
 
-            void dijkstra(int startNodeIndex);
+            tuple<vector<int>, vector<int>> dijkstra(int startNodeIndex);
+
+            void printDijkstra(int startNodeIndex, vector<int> D, vector<int> A);
 
             void floydWarshall(int startNodeIndex);
 

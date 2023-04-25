@@ -49,19 +49,19 @@ void UndirectedGraph::addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, in
     this->numberOfEdges++;
 }
 
-void UndirectedGraph::BFS(int startNodeIndex)
+tuple<vector<int>, vector<int>> UndirectedGraph::BFS(int startNodeIndex)
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<shared_ptr<Node>> nodes = this->nodes;
-    bool V[numberOfVertices]; // Array of visited nodes.
-    int D[numberOfVertices]; // Array of distances from the start node.
-    int A[numberOfVertices]; // Array of parent nodes.
+    vector<bool> V; // Vector of visited nodes.
+    vector<int> D; // Vector of distances from the start node.
+    vector<int> A; // Vector of parent nodes.
     vector<vector<int>> levels; // Vector of vectors to store vertices found at each level
     for (int i = 0; i <= numberOfVertices; i++)
     {
-        V[i] = false; // Initialize with false.
-        D[i] = numeric_limits<int>::max(); // Initialize with infinity.
-        A[i] = -1; // Initialize with -1.
+        V.push_back(false); // Initialize with false.
+        D.push_back(1000000); // Initialize with infinity.
+        A.push_back(-1); // Initialize with -1.
     }
     V[startNodeIndex] = true; // Mark the start node as visited.
     D[startNodeIndex] = 0; // Set the distance from the start node to itself to 0.
@@ -91,6 +91,11 @@ void UndirectedGraph::BFS(int startNodeIndex)
         }
     }
 
+    return make_tuple(D, A);
+}
+
+void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
+{
     // Print the levels and vertices found in each level.
     for (int level = 0; level <= numberOfVertices; level++) {
         bool foundVertices = false;
@@ -115,12 +120,12 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
     // IMPLEMENT EULERIAN CYCLE ALGORITHM.
 }
 
-void UndirectedGraph::dijkstra(int startNodeIndex)
+tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<shared_ptr<Node>> nodes = this->nodes; // Vector of nodes in the graph.
-    int D[numberOfVertices]; // Array of distance
-    int A[numberOfVertices]; // Array of parent nodes.
+    vector<int> D = vector<int>(numberOfVertices); // Vector of distances from the start node.
+    vector<int> A = vector<int>(numberOfVertices); // Vector of parent nodes.
     vector<bool> C(numberOfVertices, false); // Vector of visited nodes.
     int visitedNodes = 0; // Counter for the number of visited nodes.
 
@@ -164,6 +169,11 @@ void UndirectedGraph::dijkstra(int startNodeIndex)
 
     }
 
+    return make_tuple(D, A);
+}
+
+void UndirectedGraph::printDijkstra(int startNodeIndex, vector<int> D, vector<int> A)
+{
     for (int i = 0; i < numberOfVertices; i++)
     {
         vector<int> path;
