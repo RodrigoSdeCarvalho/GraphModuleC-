@@ -49,8 +49,12 @@ void Activities::runA1(int question, string graphFile)
 
     if (question == 2)
     {
-        cout << "BFS on " << graphFile << "\n" << endl;
-        graph->BFS(0);
+        for (int i = 0; i < graph->getNumberOfVertices(); i++)
+        {
+            cout << "BFS on for vertex " << i + 1 << " in file " << graphFile << endl;
+            graph->BFS(i);
+            cout << endl;
+        }
     }
     else if (question == 3)
     {
@@ -59,8 +63,12 @@ void Activities::runA1(int question, string graphFile)
     }
     else if (question == 4)
     {
-        cout << "Dijkstra on " << graphFile << endl;
-        graph->dijkstra(0); // Check if input is 0
+        for (int i = 0; i < graph->getNumberOfVertices(); i++)
+        {
+            cout << "Dijkstra on for vertex " << i + 1 << " in file " << graphFile << endl;
+            graph->dijkstra(i);
+            cout << endl;
+        }
     }
     else if (question == 5)
     {

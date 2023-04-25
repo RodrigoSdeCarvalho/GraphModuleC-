@@ -166,24 +166,29 @@ void UndirectedGraph::dijkstra(int startNodeIndex)
 
     for (int i = 0; i < numberOfVertices; i++)
     {
-        if (i != startNodeIndex)
+        vector<int> path;
+        int currentNodeIndex = i;
+        while (currentNodeIndex != startNodeIndex)
         {
-            vector<int> path;
-            int currentNodeIndex = i;
-            while (currentNodeIndex != startNodeIndex)
-            {
-                path.insert(path.begin(), currentNodeIndex + 1);
-                currentNodeIndex = A[currentNodeIndex];
-            }
-            path.insert(path.begin(), startNodeIndex + 1);
-
-            cout << path[0] << ": ";
-            for (int j = 1; j < path.size() - 1; j++)
-            {
-                cout << path[j] << ",";
-            }
-            cout << path[path.size() - 1] << "; d = " << D[i] << endl;
+            path.insert(path.begin(), currentNodeIndex + 1);
+            currentNodeIndex = A[currentNodeIndex];
         }
+        path.insert(path.begin(), startNodeIndex + 1);
+
+        if (i == startNodeIndex)
+        {
+            cout << path.back() << ": ";
+        }
+        else
+        {
+            cout << path.back() << ": " << startNodeIndex + 1 << ",";
+        }
+
+        for (int j = 1; j < path.size() - 1; j++)
+        {
+            cout << path[j] << ",";
+        }
+        cout << path[path.size() - 1] << "; d = " << D[i] << endl;
     }
 }
 
