@@ -15,7 +15,7 @@ namespace GraphModule
     class MinHeap
     {
         public:
-            MinHeap(vector<shared_ptr<HeapNode>> heapNodes);
+            MinHeap();
 
             void insert(shared_ptr<Node> node, int priority);
 
@@ -33,8 +33,8 @@ namespace GraphModule
 
             ~MinHeap();
 
-        private:
             vector<shared_ptr<HeapNode>> heapNodes;
+        private:
 
             void heapifyUp(shared_ptr<HeapNode> heapNode);
             void heapifyDown(shared_ptr<HeapNode> heapNode);

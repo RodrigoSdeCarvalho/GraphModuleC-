@@ -12,9 +12,9 @@
 using namespace std;
 using namespace GraphModule;
 
-MinHeap::MinHeap(vector<shared_ptr<HeapNode>> heapNodes)
+MinHeap::MinHeap()
 {
-    this->heapNodes = heapNodes;
+
 }
 
 void MinHeap::insert(shared_ptr<Node> node, int priority)
@@ -42,27 +42,27 @@ int MinHeap::minPriority()
 
 shared_ptr<Node> MinHeap::popMin()
 {
-    cout << "Pop min" << endl;
     if (heapNodes.size() == 0)
     {
         return NULL;
     }
-    else
+
+    shared_ptr<HeapNode> minHeapNode = this->heapNodes[0];
+    this->heapNodes.erase(this->heapNodes.begin());
+
+    if (this->heapNodes.size() > 0)
     {
-        shared_ptr<HeapNode> minHeapNode = this->heapNodes[0];
+        shared_ptr<HeapNode> lastHeapNode = this->heapNodes.back();
+        this->heapNodes.pop_back();
 
-        if (this->heapNodes.size() > 0)
-        {
-            shared_ptr<HeapNode> lastHeapNode = this->heapNodes.back();
-            this->heapNodes.pop_back();
-            lastHeapNode->key = 0;
-            this->heapNodes.insert(this->heapNodes.begin(), lastHeapNode);
+        lastHeapNode->key = 0;
 
-            this->heapifyDown(lastHeapNode);
-        }
+        this->heapNodes.insert(this->heapNodes.begin(), lastHeapNode);
 
-        return minHeapNode->node;
+        this->heapifyDown(lastHeapNode);
     }
+
+    return minHeapNode->node;
 }
 
 int MinHeap::size()
@@ -125,20 +125,16 @@ void MinHeap::heapifyDown(shared_ptr<HeapNode> heapNode)
 {
     while (true)
     {
-        cout << "Heapify down" << endl;
         if (heapNode->getLeft() >= this->heapNodes.size())
         {
             break;
         }
-        cout << "if '" << endl;
 
         if (heapNode->getRight() >= this->heapNodes.size())
         {
             shared_ptr<HeapNode> leftHeapNode = this->heapNodes[heapNode->getLeft()];
-            cout << "if 2" << endl;
             if (heapNode->priority > leftHeapNode->priority)
             {
-                cout << "if 3" << endl;
                 this->swap(leftHeapNode, heapNode);
             }
             else
@@ -148,25 +144,19 @@ void MinHeap::heapifyDown(shared_ptr<HeapNode> heapNode)
         }
         else
         {
-            cout << "else" << endl;
             shared_ptr<HeapNode> leftHeapNode = this->heapNodes[heapNode->getLeft()];
             shared_ptr<HeapNode> rightHeapNode = this->heapNodes[heapNode->getRight()];
-            cout << "else 2" << endl;
             if (heapNode->priority < min(leftHeapNode->priority, rightHeapNode->priority))
             {
-                cout << "if 85" << endl;
                 break;
             }
-            cout << "else 3" << endl;
             if (leftHeapNode->priority < rightHeapNode->priority)
             {
-                cout << "else 4" << endl;
                 this->swap(leftHeapNode, heapNode);
             }
             else
             {
                 this->swap(rightHeapNode, heapNode);
-                cout << "else 5" << endl;
             }
         }
     }
@@ -174,21 +164,23 @@ void MinHeap::heapifyDown(shared_ptr<HeapNode> heapNode)
 
 void MinHeap::swap(shared_ptr<HeapNode> heapNode1, shared_ptr<HeapNode> heapNode2)
 {
-    cout << "Swap" << endl;
+    //cout << "Swap" << endl;
     int heapNode1Key = heapNode1->key;
-    cout << "Heap node 1 key: " << heapNode1Key << endl;
+    // cout << heapNode1 << endl;
+    // cout << "Heap node 1 key: " << heapNode1Key << endl;
     int heapNode2Key = heapNode2->key;
-    cout << "Heap node 2 key: " << heapNode2Key << endl;
+    // cout << heapNode2 << endl;
+    // cout << "Heap node 2 key: " << heapNode2Key << endl;
 
     int heapNode1Index = getIndexOfHeapNode(heapNode1);
-    cout << "Heap node 1 index: " << heapNode1Index << endl;
+    //cout << "Heap node 1 index: " << heapNode1Index << endl;
     int heapNode2Index = getIndexOfHeapNode(heapNode2);
-    cout << "Heap node 2 index: " << heapNode2Index << endl;
+    //cout << "Heap node 2 index: " << heapNode2Index << endl;
 
     this->heapNodes[heapNode1Index] = heapNode2;
-    cout << "Heap node 1 index: " << heapNode1->key << endl;
+    //cout << "Heap node 1 index: " << heapNode1->key << endl;
     this->heapNodes[heapNode2Index] = heapNode1;
-    cout << "Heap node 2 index: " << heapNode2->key << endl;
+    //cout << "Heap node 2 index: " << heapNode2->key << endl;
 
     heapNode1->key = heapNode2Key;
     heapNode2->key = heapNode1Key;
@@ -197,7 +189,7 @@ void MinHeap::swap(shared_ptr<HeapNode> heapNode1, shared_ptr<HeapNode> heapNode
 int MinHeap::getIndexOfHeapNode(shared_ptr<HeapNode> heapNode)
 {
     auto it = find_if(this->heapNodes.begin(), this->heapNodes.end(), [heapNode](const auto& p) {
-        return p == heapNode;
+        return p->key == heapNode->key;
     });
 
     if (it != this->heapNodes.end()) {
