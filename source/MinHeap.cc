@@ -200,6 +200,35 @@ int MinHeap::getIndexOfHeapNode(shared_ptr<HeapNode> heapNode)
     }
 }
 
+void MinHeap::updatePriority(int nodeKey, int priority)
+{
+    for (int i = 0; i < this->heapNodes.size(); i++)
+    {
+        if ((this->heapNodes[i]->node->getNumber()) -1  == nodeKey)
+        {
+            int previousPriority = this->heapNodes[i]->priority;
+
+            this->heapNodes[i]->priority = priority;
+
+            if (previousPriority == priority)
+            {
+                return;
+            }
+
+            if (previousPriority > priority)
+            {
+                this->heapifyUp(this->heapNodes[i]);
+            }
+            else
+            {
+                this->heapifyDown(this->heapNodes[i]);
+            }
+
+            return;
+        }
+    }
+}
+
 MinHeap::~MinHeap()
 {
 

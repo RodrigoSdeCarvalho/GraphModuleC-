@@ -140,64 +140,28 @@ void UndirectedGraph::dijkstra(int startNodeIndex)
         minHeap.insert(this->nodes[n], D[n]);
     }
 
-    for (int i = 0; i < minHeap.size(); i++)
-    {
-        cout << minHeap.heapNodes[i]->priority << endl;
-    }
-
-    for (int i =0; i < numberOfVertices; i++)
-    {
-        cout << "Node: " << nodes[i]->getName() << endl;
-    }
-
-    cout << visitedNodes << endl;
-    cout << numberOfVertices << endl;
     while (visitedNodes < numberOfVertices)
     {
-        cout << "Visited Nodes: " << visitedNodes << endl;
         shared_ptr<Node> u = minHeap.popMin();
-        if ( C[u->getNumber() - 1] == true)
-        {
-            continue;
-        }
-        cout << "U: " << u << endl;
         C[u->getNumber() - 1] = true;
-            cout << "IF" << endl;
-        cout << "U: " << u->getName() << endl;
         visitedNodes++;
-
         vector<shared_ptr<Connection>> uConnections = u->getConnections();
         for (int i =0; i < uConnections.size(); i++)
         {
             int otherNodeNumber = uConnections[i]->getEndNode()->getNumber();
-            cout << "Other Node Number: " << otherNodeNumber << endl;
             if (C[otherNodeNumber - 1] == false)
             {
-                //cout<< "u: " << u->getName() << endl;
                 shared_ptr<Node> v = uConnections[i]->getEndNode();
                 int w = uConnections[i]->getWeight();
-                cout << "W: " << w << endl;
-                cout << "DV: " << D[v->getNumber() - 1] << endl;
-                if (D[v->getNumber() - 1] > D[u->getNumber() - 1] + w) {
-                    cout << "DVGET: "<< D[u->getNumber() - 1] << endl;
+                if (D[v->getNumber() - 1] > D[u->getNumber() - 1] + w) 
+                {
                     D[v->getNumber() - 1] = D[u->getNumber() - 1] + w;
                     A[v->getNumber() - 1] = u->getNumber() - 1;
+                    minHeap.updatePriority(v, D[v->getNumber() - 1]);
                 }
             }
         }
 
-    }
-    // for (int i = 0; i < numberOfVertices; i++)
-    // {
-    //     cout << "Heap: " << minHeap.heapNodes[i]->node->getName() << endl;
-    // }
-
-    for (int i = 0; i< numberOfVertices; i++)
-    {
-        cout << "Node: " << i << endl;
-        cout << "Ai: " << A[i] << endl;
-        cout << "Di: " << D[i] << endl;
-        cout << endl;
     }
 
     // for (int i = 0; i < numberOfVertices; i++) 

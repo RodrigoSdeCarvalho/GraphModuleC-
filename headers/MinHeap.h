@@ -31,6 +31,8 @@ namespace GraphModule
 
             int getIndexOfHeapNode(shared_ptr<HeapNode> heapNode);
 
+            void updatePriority(int nodeKey, int priority);
+
             ~MinHeap();
 
             vector<shared_ptr<HeapNode>> heapNodes;
