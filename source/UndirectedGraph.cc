@@ -164,41 +164,27 @@ void UndirectedGraph::dijkstra(int startNodeIndex)
 
     }
 
-    // for (int i = 0; i < numberOfVertices; i++) 
-    // {
-    //     if (i == startNodeIndex) 
-    //     {
-    //         continue; // Skip the starting node.
-    //     }
-    //     else
-    //     {
-    //         cout << "IN ELSE" << endl;
-    //         // Print the node number and its path from the starting node.
-    //         cout << i << ": ";
-    //         shared_ptr<Node> node = nodes[i];
-    //         vector<int> path;
-    //         while (node->getNumber() != startNodeIndex) 
-    //         {
-    //             cout << "node: " << node->getNumber() << endl;
-    //             cout << "node name: " << node->getName() << endl;
-    //             path.push_back(node->getNumber());
-    //             int parentPos = A[node->getNumber()];
-    //             cout << "parentPos: " << parentPos << endl;
-    //             node = nodes[parentPos];
-    //             cout << "node: " << node->getName() << endl;
-    //         }
-    //         path.push_back(startNodeIndex);
-    //         reverse(path.begin(), path.end());
-    //         for (int j = 0; j < path.size(); j++) {
-    //             cout << path[j]+1; // Add 1 to node number to make it 1-indexed.
-    //             if (j < path.size()-1) {
-    //                 cout << ",";
-    //             }
-    //         }
-    //         // Print the distance from the starting node.
-    //         cout << "; d=" << D[i] << endl;
-    //     }
-    // }
+    for (int i = 0; i < numberOfVertices; i++)
+    {
+        if (i != startNodeIndex)
+        {
+            vector<int> path;
+            int currentNodeIndex = i;
+            while (currentNodeIndex != startNodeIndex)
+            {
+                path.insert(path.begin(), currentNodeIndex + 1);
+                currentNodeIndex = A[currentNodeIndex];
+            }
+            path.insert(path.begin(), startNodeIndex + 1);
+
+            cout << path[0] << ": ";
+            for (int j = 1; j < path.size() - 1; j++)
+            {
+                cout << path[j] << ",";
+            }
+            cout << path[path.size() - 1] << "; d = " << D[i] << endl;
+        }
+    }
 }
 
 void UndirectedGraph::floydWarshall(int startNodeIndex)
