@@ -131,20 +131,23 @@ void UndirectedGraph::dijkstra(int startNodeIndex)
     vector<shared_ptr<HeapNode>> heapNodes = vector<shared_ptr<HeapNode>>(numberOfVertices);    
     for (int n = 0; n < numberOfVertices; n++)
     {
-        heapNodes[n] = make_shared<HeapNode>(n, nodes[n], D[n]);
+        heapNodes.push_back(make_shared<HeapNode>(n, nodes[n], D[n]));
     }
     MinHeap minHeap = MinHeap(heapNodes); // Create a min heap.
 
     while (visitedNodes < numberOfVertices)
     {
+        cout << "STUCK HERE1" << endl;
         shared_ptr<Node> u = minHeap.popMin();
+        cout << "STUCK HERE2" << endl;
         C[u->getNumber()] = true;
         visitedNodes++;
 
-        for (vector<shared_ptr<Connection>>::iterator it = u->getConnections().begin(); it != u->getConnections().end(); ++it)
+        vector<shared_ptr<Connection>> uConnections = u->getConnections();
+        for (int i =0; i < uConnections.size(); i++)
         {
-            shared_ptr<Node> v = (*it)->getEndNode();
-            int w = (*it)->getWeight();
+            shared_ptr<Node> v = uConnections[i]->getEndNode();
+            int w = uConnections[i]->getWeight();
 
             if (D[v->getNumber()] > D[u->getNumber()] + w) {
                 D[v->getNumber()] = D[u->getNumber()] + w;
