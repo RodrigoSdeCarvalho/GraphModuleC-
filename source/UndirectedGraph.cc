@@ -17,6 +17,7 @@
 
 using namespace std;
 using namespace GraphModule;
+#define INF numeric_limits<int>::max()
 
 UndirectedGraph::UndirectedGraph()
 {
@@ -117,9 +118,120 @@ void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
 
 void UndirectedGraph::eulerianCycle(int startNodeIndex)
 {
-    // IMPLEMENT EULERIAN CYCLE ALGORITHM.
+    // primeira linha dever ́a conter o n ́umero 0 caso o grafo n ̃ao contenha o ciclo euleriano. Caso contenha, dever ́a ser impresso 1 na primeira linha e em seguida, a sequˆencia de v ́ertices que corresponde ao ciclo dever ́a ser impressa.
+    int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
+    vector<vector<int>> C;
+    int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex);
+    int beginNodeIndex = startNodeIndex;
+    if (numberOfConnectionsBeginNode == 0) // If the initial node is not connected we don't have a cycle, it needs to be on the same connected component
+    { 
+        cout << "0" << endl;
+        return;
+    }
+
+    for (int i = 0; i <= numberOfVertices; i++) // Initialize with false the connections, if there isn't, initialize with infinity.
+    {
+        vector<int> connections;
+        for (int j = 0; j <= numberOfVertices; j++)
+        {
+            if (this->nodes[i]->IsConnectedWith(this->nodes[j]))
+            {
+                connections.push_back(false); 
+            }
+            else 
+            {
+                connections.push_back(INF);
+            }
+        }
+        C.push_back(connections); 
+    }
+    
+    tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(beginNodeIndex, C); // Searches for subcycles
+    bool r = get<0>(returnedValues);
+    vector<int> cycle = get<1>(returnedValues);
+
+    if(!r) // There is no cycle
+    { 
+        cout << "0" << endl;
+        return;
+    }
+    else
+    {
+        if(count(C.begin(), C.end(), false))
+        { // There is a node that wasn't visited, so there is no cycle since there is one that is unconnected
+            cout << "0" << endl;
+            return;
+        }
+        else
+        {
+            cout << "1" << endl;
+            for(int i=0; i <= cycle.size(); i++)
+            {
+                cout << cycle[i] << " ";
+            }
+            cout << endl;
+        }
+    }
+    return;
 }
 
+tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C)
+{
+    vector<int> cycle;
+    int v = beginNodeIndex;
+    cycle.push_back(v);
+    int t = v;
+
+    do
+    {
+        int u = -1;
+        vector<int> neighbours = this->nodes[v]->getNeighbours()
+        for (auto neighbour : neighbours)
+        {
+            int neighbourIndex = neighbour->number;
+            if (!C[neighbourIndex][v]) { // Selects an edge that C=false
+                u = neighbourIndex;
+                break;
+            }
+        }
+        if (u == -1) { // If u = -1 it means that there are no C=false
+            return make_tuple(false, NULL);
+        } else {
+            C[u][v] = true;
+            C[v][u] = true;
+            v = u;
+            cycle->push_back(v); // Adds v to the end of the cycle.
+        }
+    }while (t != beginNodeIndex);
+
+    for(auto i = cycle->begin(); i != cycle->end(); i++) // Checks for subcycles
+    {
+        int node = *i;
+        vector<int> neighbours = this->nodes[node]->getNeighbours()
+        
+        for (auto neighbour : neighbours) 
+        {
+            int neighbourIndex = neighbour->number;
+            if (!C[neighbourIndex][node]) 
+            {
+                tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(node, C);
+                bool r = get<0>(returnedValues);
+                vector<int> subcycle = get<1>(returnedValues);
+
+                if (r) 
+                {
+                    for(auto j = (subcycle->begin())++; j != subcycle->end(); j++)
+                    {
+                        i = cycle->insert(i, *j);
+                    }
+                }
+            }
+        }
+    }
+
+    return make_tuple(true, cycle);
+}
+ 
 tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
@@ -204,7 +316,57 @@ void UndirectedGraph::printDijkstra(int startNodeIndex, vector<int> D, vector<in
 
 void UndirectedGraph::floydWarshall(int startNodeIndex)
 {
-    // IMPLEMENT FLOYD WARSHALL ALGORITHM.
+	vector<float> D;
+    int numberOfVertices = this->numberOfVertices;
+	for (int i = 0; i < numberOfVertices; i++) //Populating the Matrix D
+    {
+        vector<int> connections;
+		for (int j = 0; j < numberOfVertices; j++) //verify if it is not actually just <= for all the other cases
+        {
+            if (this->nodes[i+1]->IsConnectedWith(this->nodes[j+1]))
+            {
+                float weight = this->nodes[i+1]->getConnectionWith(this->nodes[j+1])->getWeight();
+                connections.push_back(weight); 
+            }
+            else 
+            {
+                if (i==j)
+                {
+                    connections.push_back(0);
+                }
+                else
+                {
+                    connections.push_back(INF);
+                }
+            }
+		}
+        D.push_back(connections); // should print this to verify correctness
+	}
+
+	for (int k = 0; k < numberOfVertices; k++) // finds minimum
+    {
+		for (int u = 0; u < numberOfVertices; u++) 
+        { 
+			for (int v = u; v < numberOfVertices; v++) 
+            {
+				float min_weight = min(D[u][v], (D[u][k] + D[k][v]));
+				D[u][v] = min_weight;
+				D[v][u] = min_weight;
+			}
+		}
+	}
+
+	for (int i = 0; i < numberOfVertices; i++) 
+    {
+		cout << (i+1) << ": ";
+		for (int j = 0; j < numberOfVertices-1; j++) 
+        {
+			cout << D[i][j] << ",";
+		}
+		cout << D[i][numberOfVertices-1] << endl;
+	}
+
+    return;
 }
 
 UndirectedGraph::~UndirectedGraph()
