@@ -185,33 +185,33 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
     do
     {
         int u = -1;
-        vector<int> neighbours = this->nodes[v]->getNeighbours()
+        auto neighbours = this->nodes[v]->getNeighbours();
         for (auto neighbour : neighbours)
         {
-            int neighbourIndex = neighbour->number;
+            int neighbourIndex = neighbour->getNumber();
             if (!C[neighbourIndex][v]) { // Selects an edge that C=false
                 u = neighbourIndex;
                 break;
             }
         }
         if (u == -1) { // If u = -1 it means that there are no C=false
-            return make_tuple(false, NULL);
+            return make_tuple(false, vector<int>({false}));
         } else {
             C[u][v] = true;
             C[v][u] = true;
             v = u;
-            cycle->push_back(v); // Adds v to the end of the cycle.
+            cycle.push_back(v); // Adds v to the end of the cycle.
         }
     }while (t != beginNodeIndex);
 
-    for(auto i = cycle->begin(); i != cycle->end(); i++) // Checks for subcycles
+    for(auto i = cycle.begin(); i != cycle.end(); i++) // Checks for subcycles
     {
         int node = *i;
-        vector<int> neighbours = this->nodes[node]->getNeighbours()
+        auto neighbours = this->nodes[node]->getNeighbours();
         
         for (auto neighbour : neighbours) 
         {
-            int neighbourIndex = neighbour->number;
+            int neighbourIndex = neighbour->getNumber();
             if (!C[neighbourIndex][node]) 
             {
                 tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(node, C);
@@ -220,9 +220,9 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
 
                 if (r) 
                 {
-                    for(auto j = (subcycle->begin())++; j != subcycle->end(); j++)
+                    for(auto j = (subcycle.begin())++; j != subcycle.end(); j++)
                     {
-                        i = cycle->insert(i, *j);
+                        i = cycle.insert(i, *j);
                     }
                 }
             }
@@ -316,11 +316,11 @@ void UndirectedGraph::printDijkstra(int startNodeIndex, vector<int> D, vector<in
 
 void UndirectedGraph::floydWarshall(int startNodeIndex)
 {
-	vector<float> D;
+	vector<vector<float>> D;
     int numberOfVertices = this->numberOfVertices;
 	for (int i = 0; i < numberOfVertices; i++) //Populating the Matrix D
     {
-        vector<int> connections;
+        vector<float> connections;
 		for (int j = 0; j < numberOfVertices; j++) //verify if it is not actually just <= for all the other cases
         {
             if (this->nodes[i+1]->IsConnectedWith(this->nodes[j+1]))

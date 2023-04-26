@@ -25,6 +25,10 @@ CC_FLAGS=-c         \
 # Command used at clean target
 RM = rm -rf
 
+# Add empty variable to add flags over command line. Mainly a hotfix to suppress warnings.
+CDBG +=
+CFLAGS += $(CDBG)
+
 #
 # Compilation and linking
 #

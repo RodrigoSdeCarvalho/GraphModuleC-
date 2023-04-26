@@ -50,7 +50,7 @@ void Node::addConnection(weak_ptr<Connection> connectionToAdd)
 }
 
 //We can probaly merge the two below into one, so it returns a tuple for sucess/failure
-bool IsConnectedWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
+bool Node::IsConnectedWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
 {
     for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
