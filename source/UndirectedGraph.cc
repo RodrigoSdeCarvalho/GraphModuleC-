@@ -5,6 +5,7 @@
 #include <sstream>
 #include <queue>
 #include <limits>
+#include <tuple>
 #include <algorithm>
 #include <memory>
 
@@ -157,7 +158,15 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
     }
     else
     {
-        if(count(C.begin(), C.end(), false))
+        bool allVisited = true; 
+        for (auto line : C) // Searches for a false value in C, if there is at least one, all visited is false. 
+        {
+  	        for (auto element : line)
+            {
+                allVisited &= element;
+            }
+        }
+        if(!allVisited)
         { // There is a node that wasn't visited, so there is no cycle since there is one that is unconnected
             cout << "0" << endl;
             return;
@@ -195,7 +204,7 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
             }
         }
         if (u == -1) { // If u = -1 it means that there are no C=false
-            return make_tuple(false, vector<int>({false}));
+            return make_tuple(false, vector<int>({0}));
         } else {
             C[u][v] = true;
             C[v][u] = true;
