@@ -59,7 +59,7 @@ bool Node::IsConnectedWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
         shared_ptr<Node> startNode = (conn.lock())->getStartNode();
         shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        if ((startNode == NodeConnectedOnTheOtherEnd) or (endNode == NodeConnectedOnTheOtherEnd))
+        if ((startNode == NodeConnectedOnTheOtherEnd) || (endNode == NodeConnectedOnTheOtherEnd))
         {
             return true;
         }
@@ -76,7 +76,7 @@ shared_ptr<Connection> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnT
         shared_ptr<Node> startNode = (conn.lock())->getStartNode();
         shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        if ((startNode == NodeConnectedOnTheOtherEnd) or (endNode == NodeConnectedOnTheOtherEnd))
+        if ((startNode == NodeConnectedOnTheOtherEnd) || (endNode == NodeConnectedOnTheOtherEnd))
         {
             return conn.lock();
         }

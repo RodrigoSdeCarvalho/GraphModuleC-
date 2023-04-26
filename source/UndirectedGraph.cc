@@ -163,7 +163,7 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         {
   	        for (auto element : line)
             {
-                allVisited &= element;
+                allVisited = allVisited && element;
             }
         }
         if(!allVisited)
