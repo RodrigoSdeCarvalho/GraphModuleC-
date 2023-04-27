@@ -33,7 +33,7 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
     int degree = connections.size();
 
     
-    for (int nodeIndex; nodeIndex < this->nodes.size(); nodeIndex++)
+    for (int nodeIndex = 0; nodeIndex < this->nodes.size(); nodeIndex++)
     {
         shared_ptr<Node> nodeToCheck = this->nodes[nodeIndex];
         vector<shared_ptr<Connection>> connectionsToCheck = nodeToCheck->getConnections();
