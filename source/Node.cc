@@ -58,7 +58,7 @@ tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(shared_ptr<Node> Nod
         shared_ptr<Node> startNode = (conn.lock())->getStartNode();
         shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        if ((startNode == NodeConnectedOnTheOtherEnd) || (endNode == NodeConnectedOnTheOtherEnd))
+        if ((startNode->getNumber() == NodeConnectedOnTheOtherEnd->getNumber()) || (endNode->getNumber() == NodeConnectedOnTheOtherEnd->getNumber()))
         {
             return make_tuple(true, conn.lock());
         }
