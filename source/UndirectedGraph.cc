@@ -28,7 +28,16 @@ UndirectedGraph::UndirectedGraph()
 int UndirectedGraph::getDegreeOfNode(int nodeKey)
 {
     shared_ptr<Node> node = this->nodes[nodeKey];
-    return (node->getConnections()).size();
+    vector<shared_ptr<Connection>> connections = node->getConnections();
+
+    int degree = 0;
+
+    for (int connIndex = 0; connIndex < connections.size(); connIndex++)
+    {
+        degree++;
+    }
+
+    return degree;
 }
 
 void UndirectedGraph::addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, int weight)
@@ -45,11 +54,9 @@ void UndirectedGraph::addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, in
 
     weak_ptr<Connection> connection1WeakPtr(connection1SharedPtr);
     node1->addConnection(connection1SharedPtr);
-    node1->addConnection(connection2SharedPtr);
 
     weak_ptr<Connection> connection2WeakPtr(connection2SharedPtr);
     node2->addConnection(connection2SharedPtr);
-    node2->addConnection(connection1SharedPtr);
 
     this->numberOfEdges++;
 }
@@ -126,6 +133,7 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<int>> C;
     int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex);
+    cout << numberOfConnectionsBeginNode << endl;
     int beginNodeIndex = startNodeIndex;
     if (numberOfConnectionsBeginNode == 0) // If the initial node is not connected we don't have a cycle, it needs to be on the same connected component
     { 
@@ -138,7 +146,8 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         vector<int> connections;
         for (int j = 0; j <= numberOfVertices; j++)
         {
-            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
+            tuple<bool, shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
+            cout << "HERE" << endl;
             if (get<0>(returnedValues))
             {
                 connections.push_back(false); 
@@ -150,7 +159,7 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         }
         C.push_back(connections); 
     }
-    
+
     tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(beginNodeIndex, C); // Searches for subcycles
     bool r = get<0>(returnedValues);
     vector<int> cycle = get<1>(returnedValues);
@@ -201,7 +210,7 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
         auto neighbours = this->nodes[v]->getNeighbours();
         for (auto neighbour : neighbours)
         {
-            int neighbourIndex = neighbour->getNumber();
+            int neighbourIndex = neighbour->getNumber() - 1;
             if (!C[neighbourIndex][v]) { // Selects an edge that C=false
                 u = neighbourIndex;
                 break;
@@ -224,7 +233,7 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
         
         for (auto neighbour : neighbours) 
         {
-            int neighbourIndex = neighbour->getNumber();
+            int neighbourIndex = neighbour->getNumber() - 1;
             if (!C[neighbourIndex][node]) 
             {
                 tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(node, C);
@@ -244,7 +253,7 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
 
     return make_tuple(true, cycle);
 }
- 
+
 tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
