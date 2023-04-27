@@ -30,4 +30,4 @@ namespace GraphActivity
     };
 }
 
-#endif,
+#endif

@@ -31,6 +31,8 @@ namespace GraphModule
 
             void eulerianCycle(int startNodeIndex);
 
+            tuple<bool, vector<int>> searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C);
+
             tuple<vector<int>, vector<int>> dijkstra(int startNodeIndex);
 
             void printDijkstra(int startNodeIndex, vector<int> D, vector<int> A);

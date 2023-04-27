@@ -26,7 +26,7 @@ namespace GraphModule
 
             void addConnections(vector<weak_ptr<Connection>> connectionsToAdd);
 
-            shared_ptr<Connection> getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
+            tuple<bool, shared_ptr<Connection>> getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
 
             shared_ptr<Connection> getOutgoingConnectionTo(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
 

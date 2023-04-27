@@ -49,7 +49,7 @@ void Node::addConnection(weak_ptr<Connection> connectionToAdd)
     this->connections.push_back(connectionToAdd);
 }
 
-shared_ptr<Connection> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
+tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
 {
     for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
@@ -58,9 +58,13 @@ shared_ptr<Connection> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnT
         shared_ptr<Node> startNode = (conn.lock())->getStartNode();
         shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        if ((startNode == NodeConnectedOnTheOtherEnd) or (endNode == NodeConnectedOnTheOtherEnd))
+        if ((startNode == NodeConnectedOnTheOtherEnd) || (endNode == NodeConnectedOnTheOtherEnd))
         {
-            return conn.lock();
+            return make_tuple(true, conn.lock());
+        }
+        else
+        {
+            return make_tuple(false, nullptr);
         }
     }
 }

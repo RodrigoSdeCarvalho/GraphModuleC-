@@ -61,8 +61,12 @@ void Activities::runA1(int question, string graphFile)
     }
     else if (question == 3)
     {
-        cout << "Eulerian Cycle on " << graphFile << endl;
-        graph->eulerianCycle(0); // Check if input is 0
+        for (int i = 0; i < graph->getNumberOfVertices(); i++)
+        {
+            cout << "Eulerian Cycle for vertex " << i + 1 << " in file " << graphFile << endl;
+            graph->eulerianCycle(i); // Might be better to have a print function here as well
+            cout << endl;
+        }
     }
     else if (question == 4)
     {
@@ -78,8 +82,12 @@ void Activities::runA1(int question, string graphFile)
     }
     else if (question == 5)
     {
-        cout << "Floyd Warshall on " << graphFile << endl;
-        graph->floydWarshall(0); // Check if input is 0
+        for (int i = 0; i < graph->getNumberOfVertices(); i++)
+        {
+            cout << "Floyd Warshall for vertex " << i + 1 << " in file " << graphFile << endl;
+            graph->floydWarshall(i); // Might be better to have a print function here as well
+            cout << endl;
+        }
     }
 
     return;
