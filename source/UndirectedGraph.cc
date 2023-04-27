@@ -30,11 +30,24 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
     shared_ptr<Node> node = this->nodes[nodeKey];
     vector<shared_ptr<Connection>> connections = node->getConnections();
 
-    int degree = 0;
+    int degree = connections.size();
 
-    for (int connIndex = 0; connIndex < connections.size(); connIndex++)
+    
+    for (int nodeIndex; nodeIndex < this->nodes.size(); nodeIndex++)
     {
-        degree++;
+        shared_ptr<Node> nodeToCheck = this->nodes[nodeIndex];
+        vector<shared_ptr<Connection>> connectionsToCheck = nodeToCheck->getConnections();
+
+        for (int connIndex = 0; connIndex < connectionsToCheck.size(); connIndex++)
+        {
+            shared_ptr<Connection> connectionToCheck = connectionsToCheck[connIndex];
+            shared_ptr<Node> nodeConnectedTo = connectionToCheck->getEndNode();
+
+            if (nodeConnectedTo->getNumber() == node->getNumber())
+            {
+                degree++;
+            }
+        }
     }
 
     return degree;
@@ -132,8 +145,9 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
     // primeira linha dever ́a conter o n ́umero 0 caso o grafo n ̃ao contenha o ciclo euleriano. Caso contenha, dever ́a ser impresso 1 na primeira linha e em seguida, a sequˆencia de v ́ertices que corresponde ao ciclo dever ́a ser impressa.
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<int>> C;
+    cout << this->nodes[startNodeIndex]->getName() << endl;
     int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex);
-    cout << numberOfConnectionsBeginNode << endl;
+    cout << numberOfConnectionsBeginNode << " HERERERERERE" << endl;
     int beginNodeIndex = startNodeIndex;
     if (numberOfConnectionsBeginNode == 0) // If the initial node is not connected we don't have a cycle, it needs to be on the same connected component
     { 
