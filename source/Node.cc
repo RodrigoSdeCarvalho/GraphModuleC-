@@ -50,30 +50,18 @@ void Node::addConnection(weak_ptr<Connection> connectionToAdd)
 }
 
 tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
-{
-    cout<<endl;
-    cout<<"Node::getConnectionWith"<<endl;
-    cout<<endl;
-    for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
+{    for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
-        cout << "connIndex: " << connIndex << endl;
         weak_ptr<Connection> conn = this->connections[connIndex];
 
         shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        cout << "This: " << this->getName() << endl; 
-        cout << "endNode: " << endNode->getName() << endl;
-        cout << "NodeConnectedOnTheOtherEnd: " << NodeConnectedOnTheOtherEnd->getName() << endl;
         if ((endNode->getNumber() == NodeConnectedOnTheOtherEnd->getNumber()))
         {
-            cout << "Found connection" << endl;
             return make_tuple(true, conn.lock());
         }
         else
         {
-            cout << conn.lock() << endl;
-            tuple<bool, shared_ptr<Connection>> result = make_tuple(false, nullptr);
-            cout << "Did not find connection" << endl;
             return make_tuple(false, nullptr);
         }
     }

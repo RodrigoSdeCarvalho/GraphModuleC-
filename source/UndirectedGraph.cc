@@ -142,10 +142,16 @@ void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
 
 void UndirectedGraph::eulerianCycle(int startNodeIndex)
 {
+    for (int i = 0; i < this->nodes.size(); i++)
+    {
+        shared_ptr<Node> node = this->nodes[i];
+        cout << node->getName() << endl;
+    }
+
     // primeira linha dever ́a conter o n ́umero 0 caso o grafo n ̃ao contenha o ciclo euleriano. Caso contenha, dever ́a ser impresso 1 na primeira linha e em seguida, a sequˆencia de v ́ertices que corresponde ao ciclo dever ́a ser impressa.
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<int>> C;
-    cout << this->nodes[startNodeIndex]->getName() << endl;
+    //cout << this->nodes[startNodeIndex]->getName() << endl;
     int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex);
     cout << numberOfConnectionsBeginNode << " HERERERERERE" << endl;
     int beginNodeIndex = startNodeIndex;
@@ -155,13 +161,12 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         return;
     }
 
-    for (int i = 0; i <= numberOfVertices; i++) // Initialize with false the connections, if there isn't, initialize with infinity.
+    for (int i = 0; i < numberOfVertices; i++) // Initialize with false the connections, if there isn't, initialize with infinity.
     {
         vector<int> connections;
-        for (int j = 0; j <= numberOfVertices; j++)
+        for (int j = 0; j < numberOfVertices; j++)
         {
             tuple<bool, shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
-            cout << "HERE" << endl;
             if (get<0>(returnedValues))
             {
                 connections.push_back(false); 
