@@ -33,6 +33,7 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
 
 void UndirectedGraph::addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, int weight)
 {
+    
     weak_ptr<Node> node1WeakPtr(node1);
     weak_ptr<Node> node2WeakPtr(node2);
 
@@ -44,9 +45,11 @@ void UndirectedGraph::addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, in
 
     weak_ptr<Connection> connection1WeakPtr(connection1SharedPtr);
     node1->addConnection(connection1SharedPtr);
+    node1->addConnection(connection2SharedPtr);
 
     weak_ptr<Connection> connection2WeakPtr(connection2SharedPtr);
     node2->addConnection(connection2SharedPtr);
+    node2->addConnection(connection1SharedPtr);
 
     this->numberOfEdges++;
 }
@@ -135,7 +138,8 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         vector<int> connections;
         for (int j = 0; j <= numberOfVertices; j++)
         {
-            if (this->nodes[i]->IsConnectedWith(this->nodes[j]))
+            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
+            if (get<0>(returnedValues))
             {
                 connections.push_back(false); 
             }
@@ -332,9 +336,10 @@ void UndirectedGraph::floydWarshall(int startNodeIndex)
         vector<float> connections;
 		for (int j = 0; j < numberOfVertices; j++) //verify if it is not actually just <= for all the other cases
         {
-            if (this->nodes[i+1]->IsConnectedWith(this->nodes[j+1]))
+            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i+1]->getConnectionWith(this->nodes[j+1]);
+            if (get<0>(returnedValues))
             {
-                float weight = this->nodes[i+1]->getConnectionWith(this->nodes[j+1])->getWeight();
+                float weight = get<1>(returnedValues)->getWeight();
                 connections.push_back(weight); 
             }
             else 
