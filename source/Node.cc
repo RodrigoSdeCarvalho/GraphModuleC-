@@ -50,7 +50,8 @@ void Node::addConnection(weak_ptr<Connection> connectionToAdd)
 }
 
 tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd)
-{    for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
+{    
+    for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
         weak_ptr<Connection> conn = this->connections[connIndex];
 
@@ -65,8 +66,13 @@ tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(shared_ptr<Node> Nod
         }
         else
         {
-            cout << "NO! node not connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
-            return make_tuple(false, nullptr);
+            if (connIndex == this->connections.size() - 1)
+            {
+                cout << "NO! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
+                return make_tuple(false, nullptr);
+            }
+            cout << "NO! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
+            continue;
         }
     }
 }

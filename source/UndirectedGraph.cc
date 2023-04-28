@@ -141,18 +141,10 @@ void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
 
 vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
 {
-    for (int i = 0; i < this->nodes.size(); i++)
-    {
-        shared_ptr<Node> node = this->nodes[i];
-        cout << node->getName() << endl;
-    }
-
     // primeira linha dever ́a conter o n ́umero 0 caso o grafo n ̃ao contenha o ciclo euleriano. Caso contenha, dever ́a ser impresso 1 na primeira linha e em seguida, a sequˆencia de v ́ertices que corresponde ao ciclo dever ́a ser impressa.
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<int>> C;
-    //cout << this->nodes[startNodeIndex]->getName() << endl;
     int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex)/2;
-    cout << numberOfConnectionsBeginNode << " HERERERERERE" << endl;
     int beginNodeIndex = startNodeIndex;
     if (numberOfConnectionsBeginNode == 0) // If the initial node is not connected we don't have a cycle, it needs to be on the same connected component
     { 
