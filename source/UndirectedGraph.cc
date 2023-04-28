@@ -272,7 +272,7 @@ void UndirectedGraph::printEulerianCycle(vector<int> cycle)
 
     for(int i=0; i < cycle.size(); i++)
     {
-        cout << cycle[i] << " ";
+        cout << cycle[i] + 1 << " "; //+1 to print accordingly to the input
     }
     cout << endl;
     return;
