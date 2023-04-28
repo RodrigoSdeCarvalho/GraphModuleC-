@@ -1,5 +1,5 @@
 Este projeto é um módulo em C++ para criar grafos e rodar os principais algoritmos de grafos.
-Além disso, este projeto resolve as questões da atividade A1 da disciplina de Grafos do curso de CCO da UFSC.
+Além disso, este projeto resolve as questões das atividades A1, A2 e A3 da disciplina de Grafos do curso de CCO da UFSC.
 
 Este projeto contém: a pasta inputs, com os txts a partir dos quais os grafos são construídos, separados por atividade;
 a pasta headers, que contém os .hs das classes em C++;
