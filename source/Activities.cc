@@ -70,6 +70,7 @@ void Activities::runA1(int question, string graphFile)
     }
     else if (question == 3)
     {
+        cout << "Eulerian Cycle" << endl;
         vector<int> cycle = graph->eulerianCycle(0); 
         graph->printEulerianCycle(cycle);
         cout << endl;
