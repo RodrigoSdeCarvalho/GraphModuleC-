@@ -154,7 +154,6 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
     for (int i = 0; i < numberOfVertices; i++) // Initialize with false the connections, if there isn't, initialize with infinity.
     {
         vector<int> connections;
-        cout << "Node " << this->nodes[i]->getNumber()<<endl;
         for (int j = 0; j < numberOfVertices; j++)
         {
             tuple<bool, shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
@@ -170,17 +169,19 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
         C.push_back(connections); 
     }
 
-    for (auto m : C){
+    /* for (auto m : C){
         for (auto n : m){
             cout << n << " ";
         }
         cout << endl;
-    }
+    } */
 
-    tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(beginNodeIndex, C); // Searches for subcycles
+    tuple<bool, vector<int>, vector<vector<int>>> returnedValues = searchEulerianSubcycle(beginNodeIndex, C); // Searches for subcycles
+
     bool r = get<0>(returnedValues);
     vector<int> cycle = get<1>(returnedValues);
-
+    vector<vector<int>> new_C = get<2>(returnedValues);
+    //cout << "here" << endl;
     if(!r) // There is no cycle
     { 
         return vector<int>({0});
@@ -188,7 +189,7 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
     else
     {
         bool allVisited = true; 
-        for (auto line : C) // Searches for a false value in C, if there is at least one, all visited is false. 
+        for (auto line : new_C) // Searches for a false value in C, if there is at least one, all visited is false. 
         {
   	        for (auto element : line)
             {
@@ -207,10 +208,11 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
     }
 }
 
-tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C)
+tuple<bool, vector<int>, vector<vector<int>>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C)
 {
     vector<int> cycle;
     int v = beginNodeIndex;
+    vector<vector<int>> adjMatrix = C;
     cycle.push_back(v);
     int t = v;
 
@@ -221,20 +223,20 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
         for (auto neighbour : neighbours)
         {
             int neighbourIndex = neighbour->getNumber() - 1;
-            if (!C[neighbourIndex][v]) { // Selects an edge that C=false
+            if (!adjMatrix[neighbourIndex][v]) { // Selects an edge that C=false
                 u = neighbourIndex;
                 break;
             }
         }
         if (u == -1) { // If u = -1 it means that there are no C=false
-            return make_tuple(false, vector<int>({0}));
+            return make_tuple(false, vector<int>({0}), adjMatrix);
         } else {
-            C[u][v] = true;
-            C[v][u] = true;
+            adjMatrix[u][v] = true;
+            adjMatrix[v][u] = true;
             v = u;
             cycle.push_back(v); // Adds v to the end of the cycle.
         }
-    }while (t != beginNodeIndex);
+    }while (t != v);
 
     for(auto i = cycle.begin(); i != cycle.end(); i++) // Checks for subcycles
     {
@@ -244,15 +246,16 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
         for (auto neighbour : neighbours) 
         {
             int neighbourIndex = neighbour->getNumber() - 1;
-            if (!C[neighbourIndex][node]) 
+            if (!adjMatrix[neighbourIndex][node]) 
             {
-                tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(node, C);
+                tuple<bool, vector<int>, vector<vector<int>>> returnedValues = searchEulerianSubcycle(node, adjMatrix);
+                adjMatrix = get<2>(returnedValues);
                 bool r = get<0>(returnedValues);
                 vector<int> subcycle = get<1>(returnedValues);
 
                 if (r) 
                 {
-                    for(auto j = (subcycle.begin())++; j != subcycle.end(); j++)
+                    for(auto j = ++(subcycle.begin()); j != subcycle.end(); j++)
                     {
                         i = cycle.insert(i, *j);
                     }
@@ -261,20 +264,19 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
         }
     }
 
-    return make_tuple(true, cycle);
+    return make_tuple(true, cycle, adjMatrix);
 }
 
 void UndirectedGraph::printEulerianCycle(vector<int> cycle)
 {
 
-    for(int i=0; i <= cycle.size(); i++)
+    for(int i=0; i < cycle.size(); i++)
     {
         cout << cycle[i] << " ";
     }
     cout << endl;
     return;
 }
-
 
 tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
 {

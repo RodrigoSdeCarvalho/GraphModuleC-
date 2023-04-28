@@ -57,21 +57,21 @@ tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(shared_ptr<Node> Nod
 
         shared_ptr<Node> endNode = (conn.lock())->getEndNode();
 
-        cout << "\tChecking if " << this->number << " has connection with " << endNode->getNumber() << ": ";
+        //cout << "\tChecking if " << this->number << " has connection with " << endNode->getNumber() << ": ";
 
         if ((endNode->getNumber() == NodeConnectedOnTheOtherEnd->getNumber()))
         {
-            cout << "YES! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
+            //cout << "YES! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
             return make_tuple(true, conn.lock());
         }
         else
         {
             if (connIndex == this->connections.size() - 1)
             {
-                cout << "NO! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
+                //cout << "NO! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
                 return make_tuple(false, nullptr);
             }
-            cout << "NO! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
+            //cout << "NO! node connected: "<< NodeConnectedOnTheOtherEnd->getNumber()<<endl;
             continue;
         }
     }

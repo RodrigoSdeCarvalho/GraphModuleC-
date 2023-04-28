@@ -31,7 +31,7 @@ namespace GraphModule
 
             vector<int> eulerianCycle(int startNodeIndex);
 
-            tuple<bool, vector<int>> searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C);
+            tuple<bool, vector<int>, vector<vector<int>>> searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C);
 
             void printEulerianCycle(vector<int> Cycle);
 
