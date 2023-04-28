@@ -139,7 +139,7 @@ void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
     }
 }
 
-void UndirectedGraph::eulerianCycle(int startNodeIndex)
+vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
 {
     for (int i = 0; i < this->nodes.size(); i++)
     {
@@ -151,18 +151,18 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<int>> C;
     //cout << this->nodes[startNodeIndex]->getName() << endl;
-    int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex);
+    int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex)/2;
     cout << numberOfConnectionsBeginNode << " HERERERERERE" << endl;
     int beginNodeIndex = startNodeIndex;
     if (numberOfConnectionsBeginNode == 0) // If the initial node is not connected we don't have a cycle, it needs to be on the same connected component
     { 
-        cout << "0" << endl;
-        return;
+        return vector<int>({0});
     }
 
     for (int i = 0; i < numberOfVertices; i++) // Initialize with false the connections, if there isn't, initialize with infinity.
     {
         vector<int> connections;
+        cout << "Node " << this->nodes[i]->getNumber()<<endl;
         for (int j = 0; j < numberOfVertices; j++)
         {
             tuple<bool, shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
@@ -178,14 +178,20 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         C.push_back(connections); 
     }
 
+    for (auto m : C){
+        for (auto n : m){
+            cout << n << " ";
+        }
+        cout << endl;
+    }
+
     tuple<bool, vector<int>> returnedValues = searchEulerianSubcycle(beginNodeIndex, C); // Searches for subcycles
     bool r = get<0>(returnedValues);
     vector<int> cycle = get<1>(returnedValues);
 
     if(!r) // There is no cycle
     { 
-        cout << "0" << endl;
-        return;
+        return vector<int>({0});
     }
     else
     {
@@ -199,20 +205,14 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
         }
         if(!allVisited)
         { // There is a node that wasn't visited, so there is no cycle since there is one that is unconnected
-            cout << "0" << endl;
-            return;
+            return vector<int>({0});
         }
         else
         {
             cout << "1" << endl;
-            for(int i=0; i <= cycle.size(); i++)
-            {
-                cout << cycle[i] << " ";
-            }
-            cout << endl;
+            return cycle;
         }
     }
-    return;
 }
 
 tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C)
@@ -271,6 +271,18 @@ tuple<bool, vector<int>> UndirectedGraph::searchEulerianSubcycle(int beginNodeIn
 
     return make_tuple(true, cycle);
 }
+
+void UndirectedGraph::printEulerianCycle(vector<int> cycle)
+{
+
+    for(int i=0; i <= cycle.size(); i++)
+    {
+        cout << cycle[i] << " ";
+    }
+    cout << endl;
+    return;
+}
+
 
 tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
 {

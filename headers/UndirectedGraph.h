@@ -29,9 +29,11 @@ namespace GraphModule
 
             void printBFS(int startNodeIndex, vector<int> D, vector<int> A);
 
-            void eulerianCycle(int startNodeIndex);
+            vector<int> eulerianCycle(int startNodeIndex);
 
             tuple<bool, vector<int>> searchEulerianSubcycle(int beginNodeIndex, vector<vector<int>> C);
+
+            void printEulerianCycle(vector<int> Cycle);
 
             tuple<vector<int>, vector<int>> dijkstra(int startNodeIndex);
 
