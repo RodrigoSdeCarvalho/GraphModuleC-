@@ -151,6 +151,13 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
         return vector<int>({0});
     }
 
+    for (int i = 0; i < numberOfVertices; i++){
+        if(this->nodes[i]->getConnections().size()%2 != 0) //If there is a node that has an odd degree we don't have a cycle
+        {
+            return vector<int>({0});
+        }
+    }
+
     for (int i = 0; i < numberOfVertices; i++) // Initialize with false the connections, if there isn't, initialize with infinity.
     {
         vector<int> connections;
@@ -272,7 +279,14 @@ void UndirectedGraph::printEulerianCycle(vector<int> cycle)
 
     for(int i=0; i < cycle.size(); i++)
     {
-        cout << cycle[i] + 1 << " "; //+1 to print accordingly to the input
+        if (cycle.size()==1)
+        {
+            cout << cycle[i] << " ";
+        }
+        else
+        {  
+            cout << cycle[i] + 1 << " "; //+1 to print accordingly to the input
+        }
     }
     cout << endl;
     return;
