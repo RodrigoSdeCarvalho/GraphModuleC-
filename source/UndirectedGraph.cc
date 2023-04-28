@@ -129,7 +129,7 @@ void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
                     cout << level << ":";
                     foundVertices = true;
                 }
-                cout << " " << nodes[i]->getName();
+                cout << " " << nodes[i]->getNumber();
             }
         }
         if (!foundVertices) {
@@ -350,7 +350,7 @@ void UndirectedGraph::printDijkstra(int startNodeIndex, vector<int> D, vector<in
         {
             cout << path[j] << ",";
         }
-        cout << path[path.size() - 1] << "; d = " << D[i] << endl;
+        cout << path[path.size() - 1] << "; d=" << D[i] << endl;
     }
 }
 
