@@ -48,6 +48,14 @@ void AbstractGraph::addNode(shared_ptr<Node> node)
     this->numberOfVertices++;
 }
 
+void AbstractGraph::showNodes()
+{
+    for (int i = 0; i < this->nodes.size(); i++)
+    {
+        cout << "Vertex name " << this->nodes[i]->getName() << " with number " << this->nodes[i]->getNumber() << endl;
+    }
+}
+
 AbstractGraph::~AbstractGraph()
 {
     

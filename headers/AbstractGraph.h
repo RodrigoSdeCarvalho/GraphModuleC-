@@ -28,6 +28,8 @@ namespace GraphModule
 
             void addNode(shared_ptr<Node> node);
 
+            void showNodes();
+
             ~AbstractGraph();
 
         protected:

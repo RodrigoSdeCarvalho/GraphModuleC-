@@ -49,15 +49,24 @@ void Activities::runA1(int question, string graphFile)
 
     if (question == 2)
     {
-        for (int i = 0; i < graph->getNumberOfVertices(); i++)
+        int i;
+        cout << "The graph has the vertices below:" << endl;
+        graph->showNodes();
+        cout << endl;
+        cout << "Enter the start vertex: ";
+        cin >> i;
+        if (i < 1 || i > graph->getNumberOfVertices())
         {
-            cout << "BFS on for vertex " << i + 1 << " in file " << graphFile << endl;
-            tuple<vector<int>, vector<int>> BFSTuple = graph->BFS(i);
-            vector<int> D = get<0>(BFSTuple);
-            vector<int> A = get<1>(BFSTuple);
-            graph->printBFS(i, D, A);
-            cout << endl;
+            cout << "Invalid vertex" << endl;
+            return;
         }
+        cout << endl;
+        cout << "Running BFS on vertex " << i << " in file " << graphFile << endl;
+        i--;
+        tuple<vector<int>, vector<int>> BFSTuple = graph->BFS(i);
+        vector<int> D = get<0>(BFSTuple);
+        vector<int> A = get<1>(BFSTuple);
+        graph->printBFS(i, D, A);
     }
     else if (question == 3)
     {
@@ -70,15 +79,24 @@ void Activities::runA1(int question, string graphFile)
     }
     else if (question == 4)
     {
-        for (int i = 0; i < graph->getNumberOfVertices(); i++)
+        int i;
+        cout << "The graph has the vertices below:" << endl;
+        graph->showNodes();
+        cout << endl;
+        cout << "Enter the start vertex: ";
+        cin >> i;
+        if (i < 1 || i > graph->getNumberOfVertices())
         {
-            cout << "Dijkstra on for vertex " << i + 1 << " in file " << graphFile << endl;
-            tuple<vector<int>, vector<int>> dijkstraTuple = graph->dijkstra(i);
-            vector<int> D = get<0>(dijkstraTuple);
-            vector<int> A = get<1>(dijkstraTuple);
-            graph->printDijkstra(i, D, A);
-            cout << endl;
+            cout << "Invalid vertex" << endl;
+            return;
         }
+        cout << endl;
+        cout << "Running Dijkstra on vertex " << i << " in file " << graphFile << endl;
+        i--;
+        tuple<vector<int>, vector<int>> dijkstraTuple = graph->dijkstra(i);
+        vector<int> D = get<0>(dijkstraTuple);
+        vector<int> A = get<1>(dijkstraTuple);
+        graph->printDijkstra(i, D, A);
     }
     else if (question == 5)
     {
