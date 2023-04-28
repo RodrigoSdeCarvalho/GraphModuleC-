@@ -1,0 +1,16 @@
+#!/bin/bash
+
+make clean
+make
+clear
+printf "Project built.
+Run: ./Main to run the project \n
+Usage: ./Main <Activity> <Question> <<GraphFile> or <-d>>
+Activity: A1, A2 or A3
+Question: number of the question as in pdf activity file
+graphFile: name of the file
+-d: A flag that indicates if the default graph will be used \n
+Examples:
+    ./Main A1 1 -d
+    ./Main A1 4 fln_pequena.txt
+"
