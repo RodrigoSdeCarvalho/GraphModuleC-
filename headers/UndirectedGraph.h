@@ -37,7 +37,9 @@ namespace GraphModule
 
             void printDijkstra(int startNodeIndex, vector<int> D, vector<int> A);
 
-            void floydWarshall(int startNodeIndex);
+            vector<vector<int>> floydWarshall();
+
+            void printFloydWarshall(vector<vector<int>> D);
 
             ~UndirectedGraph();
 

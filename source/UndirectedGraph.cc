@@ -18,7 +18,6 @@
 
 using namespace std;
 using namespace GraphModule;
-#define INF numeric_limits<int>::max()
 
 UndirectedGraph::UndirectedGraph()
 {
@@ -173,7 +172,7 @@ void UndirectedGraph::eulerianCycle(int startNodeIndex)
             }
             else 
             {
-                connections.push_back(INF);
+                connections.push_back(1000000);
             }
         }
         C.push_back(connections); 
@@ -355,19 +354,19 @@ void UndirectedGraph::printDijkstra(int startNodeIndex, vector<int> D, vector<in
     }
 }
 
-void UndirectedGraph::floydWarshall(int startNodeIndex)
+vector<vector<int>> UndirectedGraph::floydWarshall()
 {
-	vector<vector<float>> D;
+	vector<vector<int>> D;
     int numberOfVertices = this->numberOfVertices;
 	for (int i = 0; i < numberOfVertices; i++) //Populating the Matrix D
     {
-        vector<float> connections;
+        vector<int> connections;
 		for (int j = 0; j < numberOfVertices; j++) //verify if it is not actually just <= for all the other cases
         {
-            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i+1]->getConnectionWith(this->nodes[j+1]);
+            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(this->nodes[j]);
             if (get<0>(returnedValues))
             {
-                float weight = get<1>(returnedValues)->getWeight();
+                int weight = get<1>(returnedValues)->getWeight();
                 connections.push_back(weight); 
             }
             else 
@@ -378,37 +377,47 @@ void UndirectedGraph::floydWarshall(int startNodeIndex)
                 }
                 else
                 {
-                    connections.push_back(INF);
+                    connections.push_back(1000000);
                 }
             }
 		}
         D.push_back(connections); // should print this to verify correctness
 	}
 
-	for (int k = 0; k < numberOfVertices; k++) // finds minimum
+    for (int k = 0; k < numberOfVertices; k++) 
     {
-		for (int u = 0; u < numberOfVertices; u++) 
-        { 
-			for (int v = u; v < numberOfVertices; v++) 
-            {
-				float min_weight = min(D[u][v], (D[u][k] + D[k][v]));
-				D[u][v] = min_weight;
-				D[v][u] = min_weight;
-			}
-		}
-	}
-
-	for (int i = 0; i < numberOfVertices; i++) 
-    {
-		cout << (i+1) << ": ";
-		for (int j = 0; j < numberOfVertices-1; j++) 
+        for (int i = 0; i < numberOfVertices; i++) 
         {
-			cout << D[i][j] << ",";
-		}
-		cout << D[i][numberOfVertices-1] << endl;
-	}
+            for (int j = 0; j < numberOfVertices; j++) 
+            {
+                if (D[i][k] + D[k][j] < D[i][j]) {
+                    D[i][j] = D[i][k] + D[k][j];
+                }
+            }
+        }
+    }
 
-    return;
+    return D;
+}
+
+void UndirectedGraph::printFloydWarshall(vector<vector<int>> D)
+{
+    for (int i = 0; i < numberOfVertices; i++)
+    {
+        cout << i + 1 << ": ";
+        for (int j = 0; j < numberOfVertices; j++)
+        {
+            if (D[i][j] == 1000000)
+            {
+                cout << "inf" << " ";
+            }
+            else
+            {
+                cout << D[i][j] << " ";
+            }
+        }
+        cout << endl;
+    }
 }
 
 UndirectedGraph::~UndirectedGraph()
