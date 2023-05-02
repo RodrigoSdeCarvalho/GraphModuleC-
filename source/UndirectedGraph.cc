@@ -141,7 +141,6 @@ void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
 
 vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
 {
-    // primeira linha dever ́a conter o n ́umero 0 caso o grafo n ̃ao contenha o ciclo euleriano. Caso contenha, dever ́a ser impresso 1 na primeira linha e em seguida, a sequˆencia de v ́ertices que corresponde ao ciclo dever ́a ser impressa.
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<int>> C;
     int numberOfConnectionsBeginNode = this->getDegreeOfNode(startNodeIndex)/2;
@@ -176,19 +175,12 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
         C.push_back(connections); 
     }
 
-    /* for (auto m : C){
-        for (auto n : m){
-            cout << n << " ";
-        }
-        cout << endl;
-    } */
-
     tuple<bool, vector<int>, vector<vector<int>>> returnedValues = searchEulerianSubcycle(beginNodeIndex, C); // Searches for subcycles
 
     bool r = get<0>(returnedValues);
     vector<int> cycle = get<1>(returnedValues);
     vector<vector<int>> new_C = get<2>(returnedValues);
-    //cout << "here" << endl;
+    
     if(!r) // There is no cycle
     { 
         return vector<int>({0});
