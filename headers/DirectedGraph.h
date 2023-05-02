@@ -25,6 +25,21 @@ namespace GraphModule
 
             int getOutDegreeOfNode(int nodeKey);
 
+            vector<vector<int>> stronglyConnectedComponents();
+            
+            tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DFS();
+
+            tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisit(vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time);
+
+            void printStronglyConnectedComponents(vector<vector<int>> A);
+
+            vector<int> topologicalSorting();
+
+            tuple<int, vector<bool>, vector<int>, vector<int>, vector<int>, int> DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<int> O, int time);
+
+            void printTopologicalSorting(vector<int> O);
+
+
             void addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight);
 
             ~DirectedGraph();

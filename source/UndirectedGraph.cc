@@ -440,6 +440,26 @@ void UndirectedGraph::printFloydWarshall(vector<vector<int>> D)
     }
 }
 
+vector<vector<int>> UndirectedGraph::kruskal()
+{
+
+}
+
+void UndirectedGraph::printKruskal(vector<vector<int>> A)
+{
+
+}
+
+vector<vector<int>> UndirectedGraph::prim()
+{
+
+}
+
+void UndirectedGraph::printPrim(vector<vector<int>> A)
+{
+
+}
+
 UndirectedGraph::~UndirectedGraph()
 {
 
