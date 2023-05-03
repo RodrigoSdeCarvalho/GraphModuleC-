@@ -44,7 +44,7 @@ int DirectedGraph::getOutDegreeOfNode(int nodeKey)
     return (node->getOutgoingConnections()).size();
 }
 
-vector<vector<int>> DirectedGraph::stronglyConnectedComponents()
+vector<int> DirectedGraph::stronglyConnectedComponents()
 {
     tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DFSVectors = this->DFS();
 
@@ -57,12 +57,9 @@ vector<vector<int>> DirectedGraph::stronglyConnectedComponents()
     unique_ptr<DirectedGraph> transposedGraph = buildTransposedGraph();
     //print both graph's arcs for debug
 
-    tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitVectors = transposedGraph->DFSVisit(C,T,A,F,time);
+    vector<int> transposedA = transposedGraph->alteredDFS(C,T,A,F);
     
-    //verificar qual o data type dessa variável A, deveria ser um vector<vector<int>>, não apenas vector<int>. Talvez todos seja na verdade por serem matrizes 2D.
-    //A = get<2>(DFSVisitVectors)
-    
-    return 
+    return transposedA;
 
 
 }
@@ -92,19 +89,112 @@ unique_ptr<DirectedGraph> DirectedGraph::buildTransposedGraph()
 
 tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DirectedGraph::DFS()
 {
+    vector<bool> C;
+    vector<int> T;
+    vector<int> A;
+    vector<int> F;
+    int time = 0;
 
-    //return make_tuple(C, T, A, F);
+    for (int i = 0; i < this->numberOfVertices; ++i) 
+    { // initializes values
+		C[i] = false;
+		T[i] = 1000000;
+		A[i] = -1;
+		F[i] = 1000000;
+	}
+
+	for (int vertice = 1; vertice < this->numberOfVertices; ++vertice)
+    {
+		if (!C[vertice])
+        { // if there is a vertice not visited
+			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(vertice, C, A, T, F, time);
+            C = get<0>(DFSVisitValues);
+            T = get<1>(DFSVisitValues);
+            A = get<2>(DFSVisitValues);
+            F = get<3>(DFSVisitValues);
+            time = get<4>(DFSVisitValues);
+        }
+	}
+
+    return make_tuple(C, T, A, F);
 
 }
 
-tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DirectedGraph::DFSVisit(vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time)
+tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DirectedGraph::DFSVisit(int vertice, vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time)
 {
-    //return make_tuple(C, T, A, F);
+    C[vertice] = true;
+	time++;
+	T[vertice] = time;
+
+	vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[vertice]->getOutgoingNeighbours();
+	
+    
+    for (shared_ptr<Node> neighbor : outgoingNeighbours)
+    {
+        int neighborVertice = neighbor->getNumber();
+		if (!C[neighborVertice]) {
+            A[neighborVertice] = vertice;
+			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(neighborVertice, C, A, T, F, time);
+            C = get<0>(DFSVisitValues);
+            T = get<1>(DFSVisitValues);
+            A = get<2>(DFSVisitValues);
+            F = get<3>(DFSVisitValues);
+            time = get<4>(DFSVisitValues);
+        }
+	}
+
+	time++;
+	F[vertice] = time;
+    return make_tuple(C, T, A, F, time);
 }
 
-void DirectedGraph::printStronglyConnectedComponents(vector<vector<int>> A)
+vector<int> DirectedGraph::alteredDFS(vector<bool> C,vector<int> A,vector<int> T, vector<int> F)
+{
+    int time = 0;
+    for (int i = 0; i < this->numberOfVertices; ++i)
+    {
+		C[i] = false;
+		T[i] = 1000000;
+		F[i] = 1000000;
+		A[i] = -1;
+	}
+	
+	bool temp = true;
+	while (temp)
+    { //T in decrescent order
+		temp = false;
+		int max = -1;
+		int maxVertice = -1;
+		for (int i = 1; i < this->numberOfVertices; ++i)
+        {
+			if (F[i] > max && !C[i])
+            {
+				temp = true;
+				max = F[i];
+				maxVertice = i;
+			}
+		}
+		if (maxVertice != -1)
+        {
+			DFSVisit(maxVertice, C, A, T, F, time);
+		}
+	}
+    return A;
+}
+
+void DirectedGraph::printStronglyConnectedComponents(vector<int> A)
 {
     // "Ao final, imprima na tela as componentes fortemente conexas desse grafo."
+    for (int i = 1; i < this->numberOfVertices; i++) {
+		if (A[i] == -1)
+        {
+            cout << "\n" << i << ", ";
+        }
+		else
+        {
+            cout << i << ", ";
+        } 
+	}
 }
 
 vector<int> DirectedGraph::topologicalSorting()
