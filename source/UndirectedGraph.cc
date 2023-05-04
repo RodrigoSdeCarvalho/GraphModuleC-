@@ -5,6 +5,8 @@
 #include <sstream>
 #include <queue>
 #include <limits>
+#include <string>
+#include <unordered_map>
 #include <tuple>
 #include <algorithm>
 #include <memory>
@@ -442,14 +444,79 @@ void UndirectedGraph::printKruskal(vector<vector<int>> A)
 
 }
 
-vector<vector<int>> UndirectedGraph::prim()
+vector<int> UndirectedGraph::prim(int startNodeIndex)
 {
+    int r = startNodeIndex;
 
+    vector<float> K;
+    K[r] = 0;
+
+    vector<int> A;
+
+    for (int i = 0; i < this->numberOfVertices; ++i) 
+    {
+        K[i] = 1000000;
+        A[i] = -1;
+    }
+
+    unordered_map<int, float> Q;
+	for (int i = 1; i < this->numberOfVertices; ++i)
+    {
+		Q.emplace(i, K[i]);
+    }
+
+    while (!Q.empty())
+    {
+		auto min = Q.begin();
+		for (auto j = Q.begin(); j != Q.end(); ++j)
+        { //finds argmin
+			if ((*min).second > (*j).second)
+            {
+				min = j;
+            }
+		}
+
+		Q.erase(min);
+
+		int u = (*min).first;
+		vector<shared_ptr<Node>> neighbours = this->nodes[u]->getNeighbours();
+		for (shared_ptr<Node> neighbour : neighbours)
+        {
+            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[u]->getConnectionWith(neighbour);
+			int v = neighbour->getNumber(); // neighbour's Index
+            shared_ptr<Connection> connectionWithV = get<1>(returnedValues);
+            float weight = connectionWithV->getWeight();
+			if (Q.find(v) != Q.end() && weight < K[v])
+            {
+				A[v] = u;
+				K[v] = weight;
+				Q[v] = K[v];
+			}
+		}
+	}
+
+    return A;
 }
 
-void UndirectedGraph::printPrim(vector<vector<int>> A)
+void UndirectedGraph::printPrim(vector<int> A)
 {
+    float weightSum = 0;
+	string message = "";
+	for (int i = 2; i < this->numberOfVertices; ++i)
+    {
+		shared_ptr<Node> vertice = this->nodes[A[i]];
+        
+        tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(vertice);
+        shared_ptr<Connection> connectionWithV = get<1>(returnedValues);
+        weightSum += connectionWithV->getWeight();
+		if (i != 2)
+        {
+			message += ", ";
+        }
+		message += to_string(i) + "-" + to_string(A[i]);
+	}
 
+	cout << weightSum << "\n" << message << endl;
 }
 
 UndirectedGraph::~UndirectedGraph()

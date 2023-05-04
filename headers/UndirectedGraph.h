@@ -47,9 +47,9 @@ namespace GraphModule
 
             void printKruskal(vector<vector<int>> A);
 
-            vector<vector<int>> prim();
+            vector<int> prim(int startNodeIndex);
 
-            void printPrim(vector<vector<int>> A);
+            void printPrim(vector<int> A);
 
             ~UndirectedGraph();
 
