@@ -61,7 +61,6 @@ vector<int> DirectedGraph::stronglyConnectedComponents()
     
     return transposedA;
 
-
 }
 
 unique_ptr<DirectedGraph> DirectedGraph::buildTransposedGraph()

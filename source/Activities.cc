@@ -109,12 +109,63 @@ void Activities::runA1(int question, string graphFile)
 
 void Activities::A2Main(int question, string graphFile, bool defaultFlag)
 {
-    //Implement A2.
+    map<int, string> defaultGraphFileForQuestion = {
+        {1, "dirigido1.txt"},
+        {2, "dirigido2.txt"},
+        {3, "arvore_geradora_min.txt"},
+    };
+
+    if (defaultFlag)
+    {
+        graphFile = defaultGraphFileForQuestion[question];
+    }
+
+    runA2(question, graphFile);
 }
 
 void Activities::runA2(int question, string graphFile)
 {
-    //Implement A2.
+    cout << "A2 Question " << question << " on " << graphFile << endl;
+
+    cout << endl;
+
+    string graphFilePath = "A2/" + graphFile;
+    unique_ptr<UndirectedGraph> undirectedGraph = getUndirectedGraph(graphFilePath);
+    unique_ptr<DirectedGraph> directedGraph = getDirectedGraph(graphFilePath);
+
+    if (question == 1)
+    {
+        cout << "Strongly Connected Components"<< endl;
+        vector<int> transposedA = directedGraph->stronglyConnectedComponents();
+        directedGraph->printStronglyConnectedComponents(transposedA);
+        
+    }
+    else if (question == 2)
+    {
+        cout << "Topological Sorting" << endl;
+        // IMPLEMENTS TOPOLOGICAL SORTING
+    }
+    else if (question == 3)
+    {
+        int i;
+        cout << "The graph has the vertices below:" << endl;
+        undirectedGraph->showNodes();
+        cout << endl;
+        cout << "Enter the start vertex: ";
+        cin >> i;
+        if (i < 1 || i > undirectedGraph->getNumberOfVertices())
+        {
+            cout << "Invalid vertex" << endl;
+            return;
+        }
+        cout << endl;
+        cout << "Running Prim on vertex " << i << " in file " << graphFile << endl;
+        i--;
+        vector<int> A = undirectedGraph->prim(i);
+        undirectedGraph->printPrim(A);
+    }
+
+    return;
 }
 
 void Activities::A3Main(int question, string graphFile, bool defaultFlag)
