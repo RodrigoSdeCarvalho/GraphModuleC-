@@ -111,7 +111,7 @@ void Activities::A2Main(int question, string graphFile, bool defaultFlag)
 {
     map<int, string> defaultGraphFileForQuestion = {
         {1, "dirigido1.txt"},
-        {2, "dirigido2.txt"},
+        {2, "manha.txt"},
         {3, "arvore_geradora_min.txt"},
     };
 
@@ -140,11 +140,14 @@ void Activities::runA2(int question, string graphFile)
         directedGraph->printStronglyConnectedComponents(transposedA);
         
     }
+
     else if (question == 2)
     {
-        cout << "Topological Sorting" << endl;
-        // IMPLEMENTS TOPOLOGICAL SORTING
+        cout << "Topological Sorting:" << endl;
+        vector<shared_ptr<Node>> topologicalSorting = directedGraph->topologicalSorting();
+        directedGraph->printTopologicalSorting(topologicalSorting);
     }
+
     else if (question == 3)
     {
         int i;
@@ -241,6 +244,7 @@ void Activities::buildUndirectedGraphFromInputFile(UndirectedGraph* graph, strin
             if (inputVertices)
             {
                 int index = stoi(tokens[0]);
+                cout << "PASSOU DO 1 stoi: " << index << endl;
                 string name;
 
                 for (int i = 1; i < tokens.size() - 1; i++)
@@ -256,9 +260,11 @@ void Activities::buildUndirectedGraphFromInputFile(UndirectedGraph* graph, strin
             if (inputEdges)
             {
                 shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
+                cout << "PASSOU DO 2 stoi: " << startNode << endl;
                 shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
+                cout << "PASSOU DO 3 stoi: " << endNode << endl;
                 int weight = stoi(tokens[2]);
-
+                cout << "PASSOU DO 4 stoi: " << weight << endl;
                 graph->addEdge(startNode, endNode, weight);
             }
         }
@@ -304,6 +310,7 @@ void Activities::buildDirectedGraphFromInputFile(DirectedGraph* graph, string in
             if (inputVertices)
             {
                 int index = stoi(tokens[0]);
+                cout << "PASSOU DO 5 stoi: " << index << endl;
                 string name;
 
                 for (int i = 1; i < tokens.size() - 1; i++)
@@ -319,8 +326,11 @@ void Activities::buildDirectedGraphFromInputFile(DirectedGraph* graph, string in
             if (inputArcs)
             {
                 shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
+                cout << "PASSOU DO 6 stoi: " << startNode << endl;
                 shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
+                cout << "PASSOU DO 7 stoi: " << endNode << endl;
                 int weight = stoi(tokens[2]);
+                cout << "PASSOU DO 8 stoi: " << weight << endl;
 
                 graph->addArc(startNode, endNode, weight);
             }
