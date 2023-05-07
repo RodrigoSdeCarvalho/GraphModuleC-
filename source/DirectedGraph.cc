@@ -198,10 +198,39 @@ void DirectedGraph::printStronglyConnectedComponents(vector<int> A)
 
 vector<int> DirectedGraph::topologicalSorting()
 {
+    int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
+    vector<shared_ptr<Node>> nodes = this->nodes; // Vector of nodes in the graph.
+    vector<bool> C(numberOfVertices); // Vector of 
+    vector<int> T = vector<int>(numberOfVertices); // Vector of 
+    vector<int> F = vector<int>(numberOfVertices); // Vector of
+    vector<shared_ptr<Node>> O = vector<shared_ptr<Node>>(numberOfVertices); // Vector of nodes in topological order.
+    int time = 0; // Time variable.
+
+    // Initializes values.
+    for (int i = 0; i < numberOfVertices; ++i)
+    {
+        C[i] = false;
+        T[i] = 1000000;
+        F[i] = 1000000;
+    }
+
+    for (int u = 0; u < numberOfVertices; ++u)
+    {
+        if (!C[u])
+        {
+            tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitValues = this->DFSVisitTopologicalSorting(u, C, F, T, O, time);
+            u = get<0>(DFSVisitValues);
+            C = get<1>(DFSVisitValues);
+            F = get<2>(DFSVisitValues);
+            T = get<3>(DFSVisitValues);
+            O = get<4>(DFSVisitValues);
+            time = get<5>(DFSVisitValues);
+        }
+    }
 
 }
 
-tuple<int, vector<bool>, vector<int>, vector<int>, vector<int>, int> DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<int> O, int time)
+tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time)
 {
 
 }

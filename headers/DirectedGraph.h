@@ -39,7 +39,7 @@ namespace GraphModule
 
             vector<int> topologicalSorting();
 
-            tuple<int, vector<bool>, vector<int>, vector<int>, vector<int>, int> DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<int> O, int time);
+            tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time);
 
             void printTopologicalSorting(vector<int> O);
 
