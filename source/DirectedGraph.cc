@@ -232,7 +232,33 @@ vector<int> DirectedGraph::topologicalSorting()
 
 tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time)
 {
+    C[v] = true;
+    time++;
+    T[v] = time;
 
+    vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[v]->getOutgoingNeighbours();
+
+    for (shared_ptr<Node> neighbour : outgoingNeighbours)
+    {
+        int neighbourVertice = neighbour->getNumber();
+        if (!C[neighbourVertice])
+        {
+            tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitValues = this->DFSVisitTopologicalSorting(neighbourVertice, C, F, T, O, time);
+            v = get<0>(DFSVisitValues);
+            C = get<1>(DFSVisitValues);
+            F = get<2>(DFSVisitValues);
+            T = get<3>(DFSVisitValues);
+            O = get<4>(DFSVisitValues);
+            time = get<5>(DFSVisitValues);
+        }
+    }
+
+    time++;
+    F[v] = time;
+    O.push_back(this->nodes[v]);
+
+
+    return make_tuple(v, C, F, T, O, time);
 }
 
 void DirectedGraph::printTopologicalSorting(vector<int> O)
