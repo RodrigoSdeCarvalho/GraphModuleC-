@@ -37,11 +37,11 @@ namespace GraphModule
 
             void printStronglyConnectedComponents(vector<int> A);
 
-            vector<int> topologicalSorting();
+            vector<shared_ptr<Node>> topologicalSorting();
 
             tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time);
 
-            void printTopologicalSorting(vector<int> O);
+            void printTopologicalSorting(vector<shared_ptr<Node>> O);
 
             void addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight);
 

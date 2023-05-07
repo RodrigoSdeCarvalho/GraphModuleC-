@@ -196,7 +196,7 @@ void DirectedGraph::printStronglyConnectedComponents(vector<int> A)
 	}
 }
 
-vector<int> DirectedGraph::topologicalSorting()
+vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<shared_ptr<Node>> nodes = this->nodes; // Vector of nodes in the graph.
@@ -228,6 +228,8 @@ vector<int> DirectedGraph::topologicalSorting()
         }
     }
 
+
+    return O;
 }
 
 tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time)
@@ -261,9 +263,12 @@ tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int
     return make_tuple(v, C, F, T, O, time);
 }
 
-void DirectedGraph::printTopologicalSorting(vector<int> O)
+void DirectedGraph::printTopologicalSorting(vector<shared_ptr<Node>> O)
 {
-
+    for (int i = 0; i < O.size(); i++)
+    {
+        cout << O[i]->getName() << " -> ";
+    }
 }
 
 void DirectedGraph::addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight)
