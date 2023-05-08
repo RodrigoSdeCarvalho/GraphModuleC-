@@ -200,67 +200,77 @@ vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()
 {
     int numberOfVertices = this->numberOfVertices; // Number of vertices in the graph.
     vector<shared_ptr<Node>> nodes = this->nodes; // Vector of nodes in the graph.
-    vector<bool> C(numberOfVertices); // Vector of 
-    vector<int> T = vector<int>(numberOfVertices); // Vector of 
-    vector<int> F = vector<int>(numberOfVertices); // Vector of
-    vector<shared_ptr<Node>> O = vector<shared_ptr<Node>>(numberOfVertices); // Vector of nodes in topological order.
+    vector<bool> C; // Vector of 
+    vector<int> T; // Vector of 
+    vector<int> F; // Vector of
+    vector<shared_ptr<Node>> O; // Vector of nodes in topological order.
     int time = 0; // Time variable.
 
     // Initializes values.
     for (int i = 0; i < numberOfVertices; ++i)
     {
-        C[i] = false;
-        T[i] = 1000000;
-        F[i] = 1000000;
+        C.push_back(false);
+        T.push_back(100000);
+        F.push_back(100000);
     }
 
     for (int u = 0; u < numberOfVertices; ++u)
     {
+        cout << numberOfVertices << endl;
         if (!C[u])
-        {
-            tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitValues = this->DFSVisitTopologicalSorting(u, C, F, T, O, time);
-            u = get<0>(DFSVisitValues);
-            C = get<1>(DFSVisitValues);
-            F = get<2>(DFSVisitValues);
-            T = get<3>(DFSVisitValues);
-            O = get<4>(DFSVisitValues);
-            time = get<5>(DFSVisitValues);
+        {   
+            cout << "\nCHAMANDO POR FORA COM u = " << u << endl;
+            tuple<vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitValues = this->DFSVisitTopologicalSorting(u, C, F, T, O, time);
+            C = get<0>(DFSVisitValues);
+            F = get<1>(DFSVisitValues);
+            T = get<2>(DFSVisitValues);
+            O = get<3>(DFSVisitValues);
+            time = get<4>(DFSVisitValues);
+            cout << "\n\n!!!!!!!!!!!!!!!!!!!!!!!" << "u: " << u << endl;
         }
+        cout << "\n\nTERMINO DO FOR EXTERNO " << u << endl;
     }
 
 
     return O;
 }
 
-tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time)
+tuple< vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> C, vector<int> F, vector<int> T, vector<shared_ptr<Node>> O, int time)
 {
+    cout << "\nCHAMANDO COM v = " << nodes[v]->getName() << endl;
     C[v] = true;
     time++;
     T[v] = time;
 
     vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[v]->getOutgoingNeighbours();
 
-    for (shared_ptr<Node> neighbour : outgoingNeighbours)
+    for (int i = 0; i < outgoingNeighbours.size(); i++)
     {
+        shared_ptr<Node> neighbour = outgoingNeighbours[i];
         int neighbourVertice = neighbour->getNumber();
-        if (!C[neighbourVertice])
+        if (!C[neighbourVertice - 1])
         {
-            tuple<int, vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitValues = this->DFSVisitTopologicalSorting(neighbourVertice, C, F, T, O, time);
-            v = get<0>(DFSVisitValues);
-            C = get<1>(DFSVisitValues);
-            F = get<2>(DFSVisitValues);
-            T = get<3>(DFSVisitValues);
-            O = get<4>(DFSVisitValues);
-            time = get<5>(DFSVisitValues);
+            cout << "\nCHAMANDO INTERNAMENTE COM v = " << neighbourVertice << endl;
+            tuple<vector<bool>, vector<int>, vector<int>, vector<shared_ptr<Node>>, int> DFSVisitValues = this->DFSVisitTopologicalSorting(neighbourVertice - 1, C, F, T, O, time);
+            C = get<0>(DFSVisitValues);
+            cout << "C[v]: " << C[v] << endl;
+            F = get<1>(DFSVisitValues);
+            cout << "F[v]: " << F[v] << endl;
+            T = get<2>(DFSVisitValues);
+            cout << "T[v]: " << T[v] << endl;
+            O = get<3>(DFSVisitValues);
+            cout << "O[v]: " << O[v] << endl;
+            time = get<4>(DFSVisitValues);
         }
     }
 
     time++;
     F[v] = time;
-    O.push_back(this->nodes[v]);
+
+    O.insert(O.begin(), nodes[v]);
 
 
-    return make_tuple(v, C, F, T, O, time);
+    return make_tuple(C, F, T, O, time);
 }
 
 void DirectedGraph::printTopologicalSorting(vector<shared_ptr<Node>> O)
