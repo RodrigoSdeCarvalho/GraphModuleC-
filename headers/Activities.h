@@ -57,7 +57,7 @@ unique_ptr<Graph> GraphActivity::Activities::buildGraph(string graphFilePath)
     path current_path = filesystem::current_path();
     string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
 
-    Graph* graph = new Graph();
+    auto* graph = new Graph();
     buildGraphFromInputFile(graph, file_path);
 
     unique_ptr<Graph> graphUniquePtr(graph);

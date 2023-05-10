@@ -30,7 +30,7 @@ namespace GraphModule
 
             void showNodes();
 
-            ~AbstractGraph();
+            virtual ~AbstractGraph();
 
         protected:
             int numberOfVertices;
