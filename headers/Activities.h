@@ -13,9 +13,8 @@
 #include <unistd.h>
 #include <map>
 
-#include "Activities.h"
-
 using namespace std;
+using namespace filesystem;
 
 namespace GraphModule
 {
@@ -40,16 +39,30 @@ namespace GraphActivity
 
             static void runA3(int question, string graphFile);
 
-            static unique_ptr<GraphModule::UndirectedGraph> getUndirectedGraph(string graphFilePath);
+            static void buildGraphFromInputFile(GraphModule::UndirectedGraph* graph, string inputFilePath);
 
-            static unique_ptr<GraphModule::DirectedGraph> getDirectedGraph(string graphFilePath);
+            static void buildGraphFromInputFile(GraphModule::DirectedGraph* graph, string inputFilePath);
 
-            static void buildUndirectedGraphFromInputFile(GraphModule::UndirectedGraph* graph, string inputFilePath);
+            static void checkGraphKindFromInputFile(string graphFilePath, string expectedKind);
 
-            static void buildDirectedGraphFromInputFile(GraphModule::DirectedGraph* graph, string inputFilePath);
-            
-            static string checkGraphKindFromInputFile(string graphFilePath);
+            template <typename Graph>
+            static unique_ptr<Graph> buildGraph(string graphFilePath);
     };
+}
+
+// Inline in header because of templates.
+template <typename Graph>
+unique_ptr<Graph> GraphActivity::Activities::buildGraph(string graphFilePath)
+{
+    path current_path = filesystem::current_path();
+    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
+
+    Graph* graph = new Graph();
+    buildGraphFromInputFile(graph, file_path);
+
+    unique_ptr<Graph> graphUniquePtr(graph);
+
+    return graphUniquePtr;
 }
 
 #endif

@@ -216,13 +216,10 @@ vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()
 
     for (int u = 0; u < numberOfVertices; ++u)
     {
-        cout << numberOfVertices << endl;
         if (!C[u])
         {   
-            cout << "\nCHAMANDO POR FORA COM u = " << u << endl;
             this->DFSVisitTopologicalSorting(u, C, F, T, O, time);
         }
-        cout << "\n\nTERMINO DO FOR EXTERNO " << u << endl;
     }
 
 
@@ -231,18 +228,11 @@ vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()
 
 void DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> &C, vector<int> &F, vector<int> &T, vector<shared_ptr<Node>> &O, int &time)
 {
-    cout << "\n\nCHAMANDO COM v = " << nodes[v]->getName() << endl;
     C[v] = true;
     time++;
     T[v] = time;
 
-    for (int i = 0; i < C.size(); i++)
-    {
-        cout << "C[" << i << "] = " << C[i] << " and T [" << i << "] = " << T[i] << endl;
-    }
-
     vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[v]->getOutgoingNeighbours();
-    cout << "OUTGOINGNEIGHBOURS SIZE FOR v = " << v << " = " << outgoingNeighbours.size() << endl;
     for (int i = 0; i < outgoingNeighbours.size(); i++)
     {
         shared_ptr<Node> neighbour = outgoingNeighbours[i];
@@ -255,19 +245,8 @@ void DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> &C, vector<in
 
     time++;
     F[v] = time;
-    cout << "\n-------------------------------------------------------------" << endl;
-    cout << "\nBEFORE: \n" << endl;
-    for (int i = 0; i < O.size(); i++)
-    {
-        cout << O[i]->getName() << " -> ";
-    }
+
     O.insert(O.begin(), nodes[v]);
-    cout << "\n-------------------------------------------------------------" << endl;
-    cout << "\nAFTER: \n" << endl;
-    for (int i = 0; i < O.size(); i++)
-    {
-        cout << O[i]->getName() << " -> ";
-    }
 }
 
 void DirectedGraph::printTopologicalSorting(vector<shared_ptr<Node>> O)

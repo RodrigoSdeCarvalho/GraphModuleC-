@@ -45,7 +45,10 @@ void Activities::runA1(int question, string graphFile)
     cout << endl;
 
     string graphFilePath = "A1/" + graphFile;
-    unique_ptr<UndirectedGraph> graph = getUndirectedGraph(graphFilePath);
+
+    checkGraphKindFromInputFile(graphFilePath, "undirected");
+    
+    auto graph = buildGraph<UndirectedGraph>(graphFilePath);
 
     if (question == 2)
     {
@@ -133,7 +136,8 @@ void Activities::runA2(int question, string graphFile)
 
     if (question == 1)
     {
-        unique_ptr<DirectedGraph> directedGraph = getDirectedGraph(graphFilePath);
+        checkGraphKindFromInputFile(graphFilePath, "directed");
+        auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
         cout << "Strongly Connected Components"<< endl;
         vector<int> transposedA = directedGraph->stronglyConnectedComponents();
         directedGraph->printStronglyConnectedComponents(transposedA);
@@ -142,7 +146,8 @@ void Activities::runA2(int question, string graphFile)
 
     else if (question == 2)
     {
-        unique_ptr<DirectedGraph> directedGraph = getDirectedGraph(graphFilePath);
+        checkGraphKindFromInputFile(graphFilePath, "directed");
+        auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
         cout << "Topological Sorting:" << endl;
         vector<shared_ptr<Node>> topologicalSorting = directedGraph->topologicalSorting();
         directedGraph->printTopologicalSorting(topologicalSorting);
@@ -150,7 +155,8 @@ void Activities::runA2(int question, string graphFile)
 
     else if (question == 3)
     {
-        unique_ptr<UndirectedGraph> undirectedGraph = getUndirectedGraph(graphFilePath);
+        checkGraphKindFromInputFile(graphFilePath, "undirected");
+        auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
         int i;
         cout << "The graph has the vertices below:" << endl;
         undirectedGraph->showNodes();
@@ -182,31 +188,7 @@ void Activities::runA3(int question, string graphFile)
     //Implement A3.
 }
 
-unique_ptr<UndirectedGraph> Activities::getUndirectedGraph(string graphFilePath)
-{
-    path current_path = filesystem::current_path();
-    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
-    UndirectedGraph* graph = new UndirectedGraph();
-    buildUndirectedGraphFromInputFile(graph, file_path);
-
-    unique_ptr<UndirectedGraph> graphUniquePtr(graph);
-
-    return graphUniquePtr;
-}
-
-unique_ptr<DirectedGraph> Activities::getDirectedGraph(string graphFilePath)
-{
-    path current_path = filesystem::current_path();
-    string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
-    DirectedGraph* graph = new DirectedGraph();
-    buildDirectedGraphFromInputFile(graph, file_path);
-
-    unique_ptr<DirectedGraph> graphUniquePtr(graph);
-
-    return graphUniquePtr;
-}
-
-void Activities::buildUndirectedGraphFromInputFile(UndirectedGraph* graph, string inputFilePath)
+void Activities::buildGraphFromInputFile(UndirectedGraph* graph, string inputFilePath)
 {
     char* inputFilePathChar = &inputFilePath[0];
 
@@ -268,7 +250,7 @@ void Activities::buildUndirectedGraphFromInputFile(UndirectedGraph* graph, strin
     }
 }
 
-void Activities::buildDirectedGraphFromInputFile(DirectedGraph* graph, string inputFilePath)
+void Activities::buildGraphFromInputFile(DirectedGraph* graph, string inputFilePath)
 {
     char* inputFilePathChar = &inputFilePath[0];
 
@@ -331,7 +313,7 @@ void Activities::buildDirectedGraphFromInputFile(DirectedGraph* graph, string in
     }
 }
 
-string Activities::checkGraphKindFromInputFile(string graphFilePath)
+void Activities::checkGraphKindFromInputFile(string graphFilePath, string expectedKind)
 {
     path current_path = filesystem::current_path();
     string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;
@@ -339,9 +321,10 @@ string Activities::checkGraphKindFromInputFile(string graphFilePath)
     ifstream inputFile;
     inputFile.open(file_path, ios::in);
 
+    string foundKind;
+
     if (inputFile.is_open())
     {
-        
         string line;
         while (getline(inputFile, line))
         {
@@ -355,13 +338,19 @@ string Activities::checkGraphKindFromInputFile(string graphFilePath)
 
             if (tokens[0] == "*edges")
             {
-                return "undirected";
+                foundKind = "undirected";
             }
 
             if (tokens[0] == "*arcs")
             {
-                return "directed";
+                foundKind = "directed";
             }
         }
     }
+
+    if (foundKind != expectedKind)
+    {
+        throw invalid_argument("Graph needs to be " + expectedKind);
+    }
+
 }
