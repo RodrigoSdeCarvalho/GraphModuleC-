@@ -4,16 +4,12 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
-#include <limits>
 #include <algorithm>
 #include <memory>
 
 #include "DirectedGraph.h"
-#include "AbstractGraph.h"
 #include "Node.h"
 #include "Connection.h"
-#include "MinHeap.h"
-#include "HeapNode.h"
 
 using namespace std;
 using namespace GraphModule;
@@ -52,21 +48,18 @@ vector<int> DirectedGraph::stronglyConnectedComponents()
     vector<int> T = get<1>(DFSVectors);
     vector<int> A = get<2>(DFSVectors);
     vector<int> F = get<3>(DFSVectors);
-    int time = 0;
 
     unique_ptr<DirectedGraph> transposedGraph = buildTransposedGraph();
-    //print both graph's arcs for debug
 
-    vector<int> transposedA = transposedGraph->alteredDFS(C,T,A,F);
-    
+    vector<int> transposedA = transposedGraph->alteredDFS(C, A, T, F);
+
     return transposedA;
-
 }
 
 unique_ptr<DirectedGraph> DirectedGraph::buildTransposedGraph()
 {
-    DirectedGraph* graph = new DirectedGraph();
-    
+    auto graph = new DirectedGraph();
+
     //builds graph with transposed A
     for (int index = 0; index < this->numberOfVertices; index++)
     {   //adds nodes
@@ -77,7 +70,7 @@ unique_ptr<DirectedGraph> DirectedGraph::buildTransposedGraph()
     {   //adds arcs
         shared_ptr<Node> startNode = this->arcs[index]->getEndNode();
         shared_ptr<Node> endNode = this->arcs[index]->getStartNode();
-        int weight = this->arcs[index]->getWeight();
+        float weight = this->arcs[index]->getWeight();
         graph->addArc(startNode, endNode, weight);
     }
 
@@ -96,17 +89,17 @@ tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DirectedGraph::DFS()
 
     for (int i = 0; i < this->numberOfVertices; ++i) 
     { // initializes values
-		C[i] = false;
-		T[i] = 1000000;
-		A[i] = -1;
-		F[i] = 1000000;
+        C.push_back(false);
+        T.push_back(1000000);
+        A.push_back(-1);
+        F.push_back(1000000);
 	}
 
-	for (int vertice = 1; vertice < this->numberOfVertices; ++vertice)
+	for (int vertex = 0; vertex < this->numberOfVertices; ++vertex)
     {
-		if (!C[vertice])
-        { // if there is a vertice not visited
-			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(vertice, C, A, T, F, time);
+		if (!C[vertex])
+        { // if there is a vertex not visited
+			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(vertex, C, A, T, F, time);
             C = get<0>(DFSVisitValues);
             T = get<1>(DFSVisitValues);
             A = get<2>(DFSVisitValues);
@@ -116,23 +109,21 @@ tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DirectedGraph::DFS()
 	}
 
     return make_tuple(C, T, A, F);
-
 }
 
-tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DirectedGraph::DFSVisit(int vertice, vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time)
+tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DirectedGraph::DFSVisit(int vertex, vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time)
 {
-    C[vertice] = true;
+    C[vertex] = true;
 	time++;
-	T[vertice] = time;
+	T[vertex] = time;
 
-	vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[vertice]->getOutgoingNeighbours();
-	
-    
-    for (shared_ptr<Node> neighbor : outgoingNeighbours)
+	vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[vertex]->getOutgoingNeighbours();
+
+    for (const shared_ptr<Node>& neighbor : outgoingNeighbours)
     {
-        int neighborVertice = neighbor->getNumber();
+        int neighborVertice = neighbor->getNumber() - 1;
 		if (!C[neighborVertice]) {
-            A[neighborVertice] = vertice;
+            A[neighborVertice] = vertex;
 			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(neighborVertice, C, A, T, F, time);
             C = get<0>(DFSVisitValues);
             T = get<1>(DFSVisitValues);
@@ -143,7 +134,7 @@ tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DirectedGraph::DFSV
 	}
 
 	time++;
-	F[vertice] = time;
+	F[vertex] = time;
     return make_tuple(C, T, A, F, time);
 }
 
@@ -152,10 +143,10 @@ vector<int> DirectedGraph::alteredDFS(vector<bool> C,vector<int> A,vector<int> T
     int time = 0;
     for (int i = 0; i < this->numberOfVertices; ++i)
     {
-		C[i] = false;
-		T[i] = 1000000;
-		F[i] = 1000000;
-		A[i] = -1;
+        C.push_back(false);
+        T.push_back(1000000);
+        A.push_back(-1);
+        F.push_back(1000000);
 	}
 	
 	bool temp = true;
@@ -164,7 +155,7 @@ vector<int> DirectedGraph::alteredDFS(vector<bool> C,vector<int> A,vector<int> T
 		temp = false;
 		int max = -1;
 		int maxVertice = -1;
-		for (int i = 1; i < this->numberOfVertices; ++i)
+		for (int i = 0; i < this->numberOfVertices; ++i)
         {
 			if (F[i] > max && !C[i])
             {
@@ -183,17 +174,19 @@ vector<int> DirectedGraph::alteredDFS(vector<bool> C,vector<int> A,vector<int> T
 
 void DirectedGraph::printStronglyConnectedComponents(vector<int> A)
 {
-    // "Ao final, imprima na tela as componentes fortemente conexas desse grafo."
-    for (int i = 1; i < this->numberOfVertices; i++) {
-		if (A[i] == -1)
-        {
-            cout << "\n" << i << ", ";
+    bool firstComponent = true;
+    for (int i = 0; i < this->numberOfVertices; i++) {
+        if (A[i] == -1) {
+            if (!firstComponent) {
+                cout << "\n";
+            }
+            cout << i + 1;
+            firstComponent = false;
+        } else {
+            cout << ", " << i + 1;
         }
-		else
-        {
-            cout << i << ", ";
-        } 
-	}
+    }
+    cout << "\n";
 }
 
 vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()
@@ -222,7 +215,6 @@ vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()
         }
     }
 
-
     return O;
 }
 
@@ -233,9 +225,8 @@ void DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> &C, vector<in
     T[v] = time;
 
     vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[v]->getOutgoingNeighbours();
-    for (int i = 0; i < outgoingNeighbours.size(); i++)
+    for (const auto& neighbour : outgoingNeighbours)
     {
-        shared_ptr<Node> neighbour = outgoingNeighbours[i];
         int neighbourVertice = neighbour->getNumber();
         if (!C[neighbourVertice - 1])
         {
@@ -249,15 +240,15 @@ void DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> &C, vector<in
     O.insert(O.begin(), nodes[v]);
 }
 
-void DirectedGraph::printTopologicalSorting(vector<shared_ptr<Node>> O)
+void DirectedGraph::printTopologicalSorting(const vector<shared_ptr<Node>> &O)
 {
-    for (int i = 0; i < O.size(); i++)
+    for (auto & i : O)
     {
-        cout << O[i]->getName() << " -> ";
+        cout << i->getName() << " -> ";
     }
 }
 
-void DirectedGraph::addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight)
+void DirectedGraph::addArc(const shared_ptr<Node> &startNode, const shared_ptr<Node> &endNode, float weight)
 {
     weak_ptr<Node> startNodeWeakPtr(startNode);
     weak_ptr<Node> endNodeWeakPtr(endNode);
@@ -273,6 +264,4 @@ void DirectedGraph::addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode,
 }
 
 DirectedGraph::~DirectedGraph()
-{
-
-}
+= default;

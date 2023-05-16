@@ -1,16 +1,11 @@
 #include <iostream>
 #include <filesystem>
 #include <string>
-#include <cstdio>
 #include <vector>
 #include <memory>
 #include <fstream>
-#include <algorithm>
-#include <dirent.h>
-#include <unistd.h>
 #include <map>
 
-#include "MainClass.h"
 #include "UndirectedGraph.h"
 #include "DirectedGraph.h"
 #include "Node.h"
@@ -38,7 +33,7 @@ void Activities::A1Main(int question, string graphFile, bool defaultFlag)
     runA1(question, graphFile);
 }
 
-void Activities::runA1(int question, string graphFile)
+void Activities::runA1(int question, const string& graphFile)
 {
     cout << "A1 Question " << question << " on " << graphFile << endl;
 
@@ -69,7 +64,7 @@ void Activities::runA1(int question, string graphFile)
         tuple<vector<int>, vector<int>> BFSTuple = graph->BFS(i);
         vector<int> D = get<0>(BFSTuple);
         vector<int> A = get<1>(BFSTuple);
-        graph->printBFS(i, D, A);
+        graph->printBFS(D);
     }
     else if (question == 3)
     {
@@ -106,8 +101,6 @@ void Activities::runA1(int question, string graphFile)
         graph->printFloydWarshall(D);
         cout << endl;
     }
-
-    return;
 }
 
 void Activities::A2Main(int question, string graphFile, bool defaultFlag)
@@ -126,7 +119,7 @@ void Activities::A2Main(int question, string graphFile, bool defaultFlag)
     runA2(question, graphFile);
 }
 
-void Activities::runA2(int question, string graphFile)
+void Activities::runA2(int question, const string& graphFile)
 {
     cout << "A2 Question " << question << " on " << graphFile << endl;
 
@@ -174,16 +167,14 @@ void Activities::runA2(int question, string graphFile)
         vector<int> A = undirectedGraph->prim(i);
         undirectedGraph->printPrim(A);
     }
-
-    return;
 }
 
-void Activities::A3Main(int question, string graphFile, bool defaultFlag)
+void Activities::A3Main(int question, const string& graphFile, bool defaultFlag)
 {
     //Implement A3.
 }
 
-void Activities::runA3(int question, string graphFile)
+void Activities::runA3(int question, const string& graphFile)
 {
     //Implement A3.
 }
@@ -305,7 +296,7 @@ void Activities::buildGraphFromInputFile(DirectedGraph* graph, string inputFileP
             {
                 shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
                 shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
-                int weight = stoi(tokens[2]);
+                float weight = stof(tokens[2]);
 
                 graph->addArc(startNode, endNode, weight);
             }
@@ -313,7 +304,7 @@ void Activities::buildGraphFromInputFile(DirectedGraph* graph, string inputFileP
     }
 }
 
-void Activities::checkGraphKindFromInputFile(string graphFilePath, string expectedKind)
+void Activities::checkGraphKindFromInputFile(const string& graphFilePath, const string& expectedKind)
 {
     path current_path = filesystem::current_path();
     string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;

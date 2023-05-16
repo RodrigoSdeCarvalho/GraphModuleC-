@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 #include <algorithm>
 
@@ -7,17 +6,14 @@
 #include "Node.h"
 
 #include <memory>
-#include <cmath>
 
 using namespace std;
 using namespace GraphModule;
 
 MinHeap::MinHeap()
-{
+= default;
 
-}
-
-void MinHeap::insert(shared_ptr<Node> node, int priority)
+void MinHeap::insert(const shared_ptr<Node>& node, int priority)
 {
     int insertedNodeIndex = heapNodes.size();
 
@@ -30,7 +26,7 @@ void MinHeap::insert(shared_ptr<Node> node, int priority)
 
 int MinHeap::minPriority()
 {
-    if (heapNodes.size() == 0)
+    if (heapNodes.empty())
     {
         return -1;
     }
@@ -42,15 +38,15 @@ int MinHeap::minPriority()
 
 shared_ptr<Node> MinHeap::popMin()
 {
-    if (heapNodes.size() == 0)
+    if (heapNodes.empty())
     {
-        return NULL;
+        return nullptr;
     }
 
     shared_ptr<HeapNode> minHeapNode = this->heapNodes[0];
     this->heapNodes.erase(this->heapNodes.begin());
 
-    if (this->heapNodes.size() > 0)
+    if (!this->heapNodes.empty())
     {
         shared_ptr<HeapNode> lastHeapNode = this->heapNodes.back();
         this->heapNodes.pop_back();
@@ -65,33 +61,33 @@ shared_ptr<Node> MinHeap::popMin()
     return minHeapNode->node;
 }
 
-int MinHeap::size()
+int MinHeap::size() const
 {
     return this->heapNodes.size();
 }
 
-bool MinHeap::contains(shared_ptr<Node> node)
+bool MinHeap::contains(const shared_ptr<Node>& node)
 {
-    for (int i = 0; i < this->heapNodes.size(); i++)
+    for (auto &heapNode: this->heapNodes)
     {
-        if (this->heapNodes[i]->node == node)
-        {
+        if (heapNode->node == node) {
             return true;
         }
     }
 
+
     return false;
 }
 
-void MinHeap::updatePriority(shared_ptr<Node> node, int priority)
+void MinHeap::updatePriority(const shared_ptr<Node>& node, int priority)
 {
-    for (int i = 0; i < this->heapNodes.size(); i++)
+    for (auto & heapNode : this->heapNodes)
     {
-        if (this->heapNodes[i]->node == node)
+        if (heapNode->node == node)
         {
-            int previousPriority = this->heapNodes[i]->priority;
+            int previousPriority = heapNode->priority;
 
-            this->heapNodes[i]->priority = priority;
+            heapNode->priority = priority;
 
             if (previousPriority == priority)
             {
@@ -100,11 +96,11 @@ void MinHeap::updatePriority(shared_ptr<Node> node, int priority)
 
             if (previousPriority > priority)
             {
-                this->heapifyUp(this->heapNodes[i]);
+                this->heapifyUp(heapNode);
             }
             else
             {
-                this->heapifyDown(this->heapNodes[i]);
+                this->heapifyDown(heapNode);
             }
 
             return;
@@ -112,7 +108,7 @@ void MinHeap::updatePriority(shared_ptr<Node> node, int priority)
     }
 }
 
-void MinHeap::heapifyUp(shared_ptr<HeapNode> heapNode)
+void MinHeap::heapifyUp(const shared_ptr<HeapNode>& heapNode)
 {
     while (heapNode->key > 0 && heapNode->priority < this->heapNodes[heapNode->getParent()]->priority)
     {
@@ -121,7 +117,7 @@ void MinHeap::heapifyUp(shared_ptr<HeapNode> heapNode)
     }
 }
 
-void MinHeap::heapifyDown(shared_ptr<HeapNode> heapNode)
+void MinHeap::heapifyDown(const shared_ptr<HeapNode>& heapNode)
 {
     while (true)
     {
@@ -162,31 +158,22 @@ void MinHeap::heapifyDown(shared_ptr<HeapNode> heapNode)
     }
 }
 
-void MinHeap::swap(shared_ptr<HeapNode> heapNode1, shared_ptr<HeapNode> heapNode2)
+void MinHeap::swap(const shared_ptr<HeapNode>& heapNode1, const shared_ptr<HeapNode>& heapNode2)
 {
-    //cout << "Swap" << endl;
     int heapNode1Key = heapNode1->key;
-    // cout << heapNode1 << endl;
-    // cout << "Heap node 1 key: " << heapNode1Key << endl;
     int heapNode2Key = heapNode2->key;
-    // cout << heapNode2 << endl;
-    // cout << "Heap node 2 key: " << heapNode2Key << endl;
 
     int heapNode1Index = getIndexOfHeapNode(heapNode1);
-    //cout << "Heap node 1 index: " << heapNode1Index << endl;
     int heapNode2Index = getIndexOfHeapNode(heapNode2);
-    //cout << "Heap node 2 index: " << heapNode2Index << endl;
 
     this->heapNodes[heapNode1Index] = heapNode2;
-    //cout << "Heap node 1 index: " << heapNode1->key << endl;
     this->heapNodes[heapNode2Index] = heapNode1;
-    //cout << "Heap node 2 index: " << heapNode2->key << endl;
 
     heapNode1->key = heapNode2Key;
     heapNode2->key = heapNode1Key;
 }
 
-int MinHeap::getIndexOfHeapNode(shared_ptr<HeapNode> heapNode)
+int MinHeap::getIndexOfHeapNode(const shared_ptr<HeapNode>& heapNode)
 {
     auto it = find_if(this->heapNodes.begin(), this->heapNodes.end(), [heapNode](const auto& p) {
         return p->key == heapNode->key;
@@ -202,13 +189,13 @@ int MinHeap::getIndexOfHeapNode(shared_ptr<HeapNode> heapNode)
 
 void MinHeap::updatePriority(int nodeKey, int priority)
 {
-    for (int i = 0; i < this->heapNodes.size(); i++)
+    for (auto & heapNode : this->heapNodes)
     {
-        if ((this->heapNodes[i]->node->getNumber()) -1  == nodeKey)
+        if ((heapNode->node->getNumber()) -1  == nodeKey)
         {
-            int previousPriority = this->heapNodes[i]->priority;
+            int previousPriority = heapNode->priority;
 
-            this->heapNodes[i]->priority = priority;
+            heapNode->priority = priority;
 
             if (previousPriority == priority)
             {
@@ -217,11 +204,11 @@ void MinHeap::updatePriority(int nodeKey, int priority)
 
             if (previousPriority > priority)
             {
-                this->heapifyUp(this->heapNodes[i]);
+                this->heapifyUp(heapNode);
             }
             else
             {
-                this->heapifyDown(this->heapNodes[i]);
+                this->heapifyDown(heapNode);
             }
 
             return;
@@ -230,6 +217,4 @@ void MinHeap::updatePriority(int nodeKey, int priority)
 }
 
 MinHeap::~MinHeap()
-{
-
-}
+= default;

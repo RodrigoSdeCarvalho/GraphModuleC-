@@ -19,7 +19,7 @@ namespace GraphModule
         public:
             DirectedGraph();
         
-            int getDegreeOfNode(int nodeKey);
+            int getDegreeOfNode(int nodeKey) override;
 
             int getInDegreeOfNode(int nodeKey);
 
@@ -41,11 +41,11 @@ namespace GraphModule
 
             void DFSVisitTopologicalSorting(int v, vector<bool> &C, vector<int> &F, vector<int> &T, vector<shared_ptr<Node>> &O, int &time);
 
-            void printTopologicalSorting(vector<shared_ptr<Node>> O);
+            void printTopologicalSorting(const vector<shared_ptr<Node>> &O);
 
-            void addArc(shared_ptr<Node> startNode, shared_ptr<Node> endNode, int weight);
+            void addArc(const shared_ptr<Node> &startNode, const shared_ptr<Node> &endNode, float weight);
 
-            ~DirectedGraph();
+            ~DirectedGraph() override;
 
             //ADD METHODS FOR A2 AND A3 HERE.
 

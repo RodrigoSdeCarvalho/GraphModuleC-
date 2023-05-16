@@ -26,7 +26,7 @@ namespace GraphModule
 
             virtual int getDegreeOfNode(int nodeKey) = 0;
 
-            void addNode(shared_ptr<Node> node);
+            void addNode(const shared_ptr<Node>& node);
 
             void showNodes();
 

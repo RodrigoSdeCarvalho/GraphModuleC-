@@ -29,30 +29,30 @@ namespace GraphActivity
         public:
             static void A1Main(int question, string graphFile, bool defaultFlag);
 
-            static void runA1(int question, string graphFile);
+            static void runA1(int question, const string& graphFile);
 
             static void A2Main(int question, string graphFile, bool defaultFlag);
 
-            static void runA2(int question, string graphFile);
+            static void runA2(int question, const string& graphFile);
 
-            static void A3Main(int question, string graphFile, bool defaultFlag);
+            static void A3Main(int question, const string& graphFile, bool defaultFlag);
 
-            static void runA3(int question, string graphFile);
+            static void runA3(int question, const string& graphFile);
 
             static void buildGraphFromInputFile(GraphModule::UndirectedGraph* graph, string inputFilePath);
 
             static void buildGraphFromInputFile(GraphModule::DirectedGraph* graph, string inputFilePath);
 
-            static void checkGraphKindFromInputFile(string graphFilePath, string expectedKind);
+            static void checkGraphKindFromInputFile(const string& graphFilePath, const string& expectedKind);
 
             template <typename Graph>
-            static unique_ptr<Graph> buildGraph(string graphFilePath);
+            static unique_ptr<Graph> buildGraph(const string &graphFilePath);
     };
 }
 
 // Inline in header because of templates.
 template <typename Graph>
-unique_ptr<Graph> GraphActivity::Activities::buildGraph(string graphFilePath)
+unique_ptr<Graph> GraphActivity::Activities::buildGraph(const string &graphFilePath)
 {
     path current_path = filesystem::current_path();
     string file_path = string(current_path.c_str()) + "/inputs/" + graphFilePath;

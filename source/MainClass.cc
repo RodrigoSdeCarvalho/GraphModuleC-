@@ -1,13 +1,9 @@
 #include <iostream>
 #include <filesystem>
 #include <string>
-#include <cstdio>
 #include <vector>
-#include <memory>
-#include <fstream>
 #include <algorithm>
 #include <dirent.h>
-#include <unistd.h>
 #include <map>
 
 #include "MainClass.h"
@@ -33,7 +29,7 @@ void MainClass::Main(int argc, char *argv[])
         int Question = stoi(argv[2]);
         string graphFileOrFlag = argv[3];
 
-        bool defaultFlag = false;
+        bool defaultFlag;
         if (graphFileOrFlag == "-d")
         {
             defaultFlag = true;
@@ -80,7 +76,7 @@ bool MainClass::checkArguments(int argc, char *argv[])
         bool activityIsValid = find_if(validActivities.begin(), validActivities.end(),[&](const std::string& file) { return file == activity; }) != validActivities.end();
         bool graphFileIsValid = find_if(validGraphFiles.begin(), validGraphFiles.end(),[&](const std::string& file) { return file == graphFileOrFlag; }) != validGraphFiles.end();
         bool questionIsValid = find_if(validQuestions.begin(), validQuestions.end(),[&](const int& file) { return file == question; }) != validQuestions.end();
-        bool flagIsValid = graphFileOrFlag == "-d" ? true : false;
+        bool flagIsValid = graphFileOrFlag == "-d";
 
         if (activityIsValid && questionIsValid && (graphFileIsValid || flagIsValid))
         {   
@@ -101,7 +97,7 @@ bool MainClass::checkArguments(int argc, char *argv[])
     }
 }
 
-vector<string> MainClass::getInputFiles(string activity) {
+vector<string> MainClass::getInputFiles(const string& activity) {
     DIR* inputFolder;
     struct dirent* folderEntry;
 
@@ -112,7 +108,7 @@ vector<string> MainClass::getInputFiles(string activity) {
     if ((inputFolder = opendir(folderPath.c_str())) != nullptr) {
         while ((folderEntry = readdir(inputFolder)) != nullptr) {
             if (folderEntry->d_type == DT_REG) {
-                inputs.push_back(string(folderEntry->d_name));
+                inputs.emplace_back(folderEntry->d_name);
             }
         }
         closedir(inputFolder);
@@ -121,7 +117,7 @@ vector<string> MainClass::getInputFiles(string activity) {
     return inputs;
 }
 
-void MainClass::runActivity(string Activity, int question, string graphFile, bool defaultFlag)
+void MainClass::runActivity(const string& Activity, int question, const string& graphFile, bool defaultFlag)
 {
     if (Activity == "A1")
     {

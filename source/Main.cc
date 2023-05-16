@@ -1,6 +1,5 @@
 //Main file
 
-#include <iostream>
 #include "MainClass.h"
 
 using namespace std;

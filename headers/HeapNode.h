@@ -25,16 +25,16 @@ namespace GraphModule
             int getLeft();
             int getRight();
 
-            bool operator >(const HeapNode& other);
-            bool operator >(int x);
-            bool operator <(const HeapNode& other);
-            bool operator <(int x);
-            bool operator <=(const HeapNode& other);
-            bool operator <=(int x);
-            bool operator >=(const HeapNode& other);
-            bool operator >=(int x);
-            bool operator ==(const HeapNode& other);
-            bool operator !=(const HeapNode& other);
+            bool operator >(const HeapNode& other) const;
+            bool operator >(int x) const;
+            bool operator <(const HeapNode& other) const;
+            bool operator <(int x) const;
+            bool operator <=(const HeapNode& other) const;
+            bool operator <=(int x) const;
+            bool operator >=(const HeapNode& other) const;
+            bool operator >=(int x) const;
+            bool operator ==(const HeapNode& other) const;
+            bool operator !=(const HeapNode& other) const;
 
             ~HeapNode();
     };

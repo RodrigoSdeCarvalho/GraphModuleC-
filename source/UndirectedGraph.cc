@@ -1,18 +1,16 @@
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <queue>
-#include <limits>
-#include <string>
 #include <unordered_map>
 #include <tuple>
 #include <algorithm>
 #include <memory>
 
 #include "UndirectedGraph.h"
-#include "AbstractGraph.h"
 #include "Node.h"
 #include "Connection.h"
 #include "MinHeap.h"
@@ -34,14 +32,12 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
     int degree = connections.size();
 
     
-    for (int nodeIndex = 0; nodeIndex < this->nodes.size(); nodeIndex++)
+    for (const auto& nodeToCheck : this->nodes)
     {
-        shared_ptr<Node> nodeToCheck = this->nodes[nodeIndex];
         vector<shared_ptr<Connection>> connectionsToCheck = nodeToCheck->getConnections();
 
-        for (int connIndex = 0; connIndex < connectionsToCheck.size(); connIndex++)
+        for (const auto& connectionToCheck : connectionsToCheck)
         {
-            shared_ptr<Connection> connectionToCheck = connectionsToCheck[connIndex];
             shared_ptr<Node> nodeConnectedTo = connectionToCheck->getEndNode();
 
             if (nodeConnectedTo->getNumber() == node->getNumber())
@@ -54,7 +50,7 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
     return degree;
 }
 
-void UndirectedGraph::addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, int weight)
+void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, int weight)
 {
     
     weak_ptr<Node> node1WeakPtr(node1);
@@ -102,9 +98,8 @@ tuple<vector<int>, vector<int>> UndirectedGraph::BFS(int startNodeIndex)
         Q.pop(); // Remove the first element in the queue.
         vector<shared_ptr<Connection>> connections = nodes[u]->getConnections(); // Get the connections of the start node.
 
-        for (int i = 0; i != connections.size(); ++i)
+        for (const auto& conn : connections)
         {
-            shared_ptr<Connection> conn = connections[i];
             shared_ptr<Node> vNode = (conn)->getEndNode(); // Get the end node of the connection.
             int v = vNode->getNumber() - 1; // Get the index of the end node of the connection.
             if (!V[v])
@@ -120,7 +115,7 @@ tuple<vector<int>, vector<int>> UndirectedGraph::BFS(int startNodeIndex)
     return make_tuple(D, A);
 }
 
-void UndirectedGraph::printBFS(int startNodeIndex, vector<int> D, vector<int> A)
+void UndirectedGraph::printBFS(vector<int> D)
 {
     // Print the levels and vertices found in each level.
     for (int level = 0; level <= numberOfVertices; level++) {
@@ -190,7 +185,7 @@ vector<int> UndirectedGraph::eulerianCycle(int startNodeIndex)
     else
     {
         bool allVisited = true; 
-        for (auto line : new_C) // Searches for a false value in C, if there is at least one, all visited is false. 
+        for (const auto& line : new_C) // Searches for a false value in C, if there is at least one, all visited is false.
         {
   	        for (auto element : line)
             {
@@ -213,7 +208,7 @@ tuple<bool, vector<int>, vector<vector<int>>> UndirectedGraph::searchEulerianSub
 {
     vector<int> cycle;
     int v = beginNodeIndex;
-    vector<vector<int>> adjMatrix = C;
+    vector<vector<int>> adjMatrix = std::move(C);
     cycle.push_back(v);
     int t = v;
 
@@ -221,7 +216,7 @@ tuple<bool, vector<int>, vector<vector<int>>> UndirectedGraph::searchEulerianSub
     {
         int u = -1;
         auto neighbours = this->nodes[v]->getNeighbours();
-        for (auto neighbour : neighbours)
+        for (const auto& neighbour : neighbours)
         {
             int neighbourIndex = neighbour->getNumber() - 1;
             if (!adjMatrix[neighbourIndex][v]) { // Selects an edge that C=false
@@ -244,7 +239,7 @@ tuple<bool, vector<int>, vector<vector<int>>> UndirectedGraph::searchEulerianSub
         int node = *i;
         auto neighbours = this->nodes[node]->getNeighbours();
         
-        for (auto neighbour : neighbours) 
+        for (const auto& neighbour : neighbours)
         {
             int neighbourIndex = neighbour->getNumber() - 1;
             if (!adjMatrix[neighbourIndex][node]) 
@@ -283,7 +278,6 @@ void UndirectedGraph::printEulerianCycle(vector<int> cycle)
         }
     }
     cout << endl;
-    return;
 }
 
 tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
@@ -317,13 +311,13 @@ tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
         C[u->getNumber() - 1] = true;
         visitedNodes++;
         vector<shared_ptr<Connection>> uConnections = u->getConnections();
-        for (int i =0; i < uConnections.size(); i++)
+        for (auto & uConnection : uConnections)
         {
-            int otherNodeNumber = uConnections[i]->getEndNode()->getNumber();
-            if (C[otherNodeNumber - 1] == false)
+            int otherNodeNumber = uConnection->getEndNode()->getNumber();
+            if (!C[otherNodeNumber - 1])
             {
-                shared_ptr<Node> v = uConnections[i]->getEndNode();
-                int w = uConnections[i]->getWeight();
+                shared_ptr<Node> v = uConnection->getEndNode();
+                int w = uConnection->getWeight();
                 if (D[v->getNumber() - 1] > D[u->getNumber() - 1] + w) 
                 {
                     D[v->getNumber() - 1] = D[u->getNumber() - 1] + w;
@@ -439,7 +433,7 @@ vector<vector<int>> UndirectedGraph::kruskal()
 
 }
 
-void UndirectedGraph::printKruskal(vector<vector<int>> A)
+void UndirectedGraph::printKruskal(const vector<vector<int>>& A)
 {
 
 }
@@ -480,7 +474,7 @@ vector<int> UndirectedGraph::prim(int startNodeIndex)
 
 		int u = (*min).first;
 		vector<shared_ptr<Node>> neighbours = this->nodes[u]->getNeighbours();
-		for (shared_ptr<Node> neighbour : neighbours)
+		for (const shared_ptr<Node>& neighbour : neighbours)
         {
             tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[u]->getConnectionWith(neighbour);
 			int v = neighbour->getNumber(); // neighbour's Index
@@ -501,7 +495,7 @@ vector<int> UndirectedGraph::prim(int startNodeIndex)
 void UndirectedGraph::printPrim(vector<int> A)
 {
     float weightSum = 0;
-	string message = "";
+	string message;
 	for (int i = 2; i < this->numberOfVertices; ++i)
     {
 		shared_ptr<Node> vertice = this->nodes[A[i]];
@@ -520,6 +514,4 @@ void UndirectedGraph::printPrim(vector<int> A)
 }
 
 UndirectedGraph::~UndirectedGraph()
-{
-
-}
+= default;

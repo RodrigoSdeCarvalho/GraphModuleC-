@@ -24,9 +24,9 @@ namespace GraphActivity
 
             static bool checkArguments(int argc, char *argv[]);
 
-            static vector<string> getInputFiles(string activity);
+            static vector<string> getInputFiles(const string& activity);
 
-            static void runActivity(string Activity, int Question, string graphFile, bool defaultFlag);
+            static void runActivity(const string& Activity, int Question, const string& graphFile, bool defaultFlag);
     };
 }
 

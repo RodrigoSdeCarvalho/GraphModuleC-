@@ -17,19 +17,19 @@ namespace GraphModule
         public:
             MinHeap();
 
-            void insert(shared_ptr<Node> node, int priority);
+            void insert(const shared_ptr<Node>& node, int priority);
 
             int minPriority();
 
             shared_ptr<Node> popMin();
 
-            int size();
+            int size() const;
 
-            bool contains(shared_ptr<Node> node);
+            bool contains(const shared_ptr<Node>& node);
 
-            void updatePriority(shared_ptr<Node> node, int priority);
+            void updatePriority(const shared_ptr<Node>& node, int priority);
 
-            int getIndexOfHeapNode(shared_ptr<HeapNode> heapNode);
+            int getIndexOfHeapNode(const shared_ptr<HeapNode>& heapNode);
 
             void updatePriority(int nodeKey, int priority);
 
@@ -38,9 +38,9 @@ namespace GraphModule
             vector<shared_ptr<HeapNode>> heapNodes;
         private:
 
-            void heapifyUp(shared_ptr<HeapNode> heapNode);
-            void heapifyDown(shared_ptr<HeapNode> heapNode);
-            void swap(shared_ptr<HeapNode> heapNode1, shared_ptr<HeapNode> heapNode2);
+            void heapifyUp(const shared_ptr<HeapNode>& heapNode);
+            void heapifyDown(const shared_ptr<HeapNode>& heapNode);
+            void swap(const shared_ptr<HeapNode>& heapNode1, const shared_ptr<HeapNode>& heapNode2);
     };
 }
 

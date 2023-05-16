@@ -4,15 +4,12 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
-#include <limits>
 #include <algorithm>
 #include <memory>
 
 #include "AbstractGraph.h"
 #include "Node.h"
 #include "Connection.h"
-#include "MinHeap.h"
-#include "HeapNode.h"
 
 using namespace std;
 using namespace GraphModule;
@@ -30,10 +27,11 @@ int AbstractGraph::getNumberOfVertices()
 vector<int> AbstractGraph::getNodeKeys()
 {
     vector<int> nodeKeys;
-    for (int i = 0; i < this->nodes.size(); i++)
-    {
-        nodeKeys.push_back(this->nodes[i]->getNumber());
-    }
+    nodeKeys.reserve(this->nodes.size());
+    for (auto & node : this->nodes)
+        {
+            nodeKeys.push_back(node->getNumber());
+        }
     return nodeKeys;
 }
 
@@ -42,7 +40,7 @@ vector<shared_ptr<Node>> AbstractGraph::getNodes()
     return this->nodes;
 }
 
-void AbstractGraph::addNode(shared_ptr<Node> node)
+void AbstractGraph::addNode(const shared_ptr<Node>& node)
 {
     this->nodes.push_back(node);
     this->numberOfVertices++;
@@ -50,13 +48,11 @@ void AbstractGraph::addNode(shared_ptr<Node> node)
 
 void AbstractGraph::showNodes()
 {
-    for (int i = 0; i < this->nodes.size(); i++)
+    for (auto & node : this->nodes)
     {
-        cout << "Vertex name " << this->nodes[i]->getName() << " with number " << this->nodes[i]->getNumber() << endl;
+        cout << "Vertex name " << node->getName() << " with number " << node->getNumber() << endl;
     }
 }
 
 AbstractGraph::~AbstractGraph()
-{
-    
-}
+= default;

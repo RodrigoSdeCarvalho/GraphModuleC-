@@ -24,11 +24,11 @@ namespace GraphModule
 
             vector<shared_ptr<Connection>> getConnections();
 
-            void addConnections(vector<weak_ptr<Connection>> connectionsToAdd);
+            void addConnections(const vector<weak_ptr<Connection>>& connectionsToAdd);
 
-            tuple<bool, shared_ptr<Connection>> getConnectionWith(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
+            tuple<bool, shared_ptr<Connection>> getConnectionWith(const shared_ptr<Node>& NodeConnectedOnTheOtherEnd);
 
-            shared_ptr<Connection> getOutgoingConnectionTo(shared_ptr<Node> NodeConnectedOnTheOtherEnd);
+            shared_ptr<Connection> getOutgoingConnectionTo(const shared_ptr<Node>& NodeConnectedOnTheOtherEnd);
 
             vector<shared_ptr<Node>> getNeighbours();
 
@@ -36,11 +36,11 @@ namespace GraphModule
 
             vector<shared_ptr<Connection>> getOutgoingConnections();
 
-            void addConnection(weak_ptr<Connection> connectionToAdd);
+            void addConnection(const weak_ptr<Connection>& connectionToAdd);
 
-            void addIncomingConnection(weak_ptr<Connection> connectionToAdd);
+            void addIncomingConnection(const weak_ptr<Connection>& connectionToAdd);
 
-            void addOutgoingConnection(weak_ptr<Connection> connectionToAdd);
+            void addOutgoingConnection(const weak_ptr<Connection>& connectionToAdd);
 
             vector<shared_ptr<Node>> getOutgoingNeighbours();
 

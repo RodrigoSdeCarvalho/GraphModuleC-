@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <tuple>
 #include "Connection.h"
@@ -13,8 +14,8 @@ using namespace GraphModule;
 Connection::Connection(float weight, weak_ptr<Node> startNode, weak_ptr<Node> endNode, bool goesBothWays)
 {
     this->weight = weight;
-    this->startNode = startNode;
-    this->endNode = endNode;
+    this->startNode = std::move(startNode);
+    this->endNode = std::move(endNode);
     this->goesBothWays = goesBothWays;
 }
 
@@ -55,6 +56,4 @@ tuple<shared_ptr<Node>, shared_ptr<Node>> Connection::getNodes()
 }
 
 Connection::~Connection()
-{
-
-}
+= default;

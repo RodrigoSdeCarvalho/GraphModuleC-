@@ -21,13 +21,13 @@ namespace GraphModule
         public:
             UndirectedGraph();
 
-            int getDegreeOfNode(int nodeKey);
+            int getDegreeOfNode(int nodeKey) override;
 
-            void addEdge(shared_ptr<Node> node1, shared_ptr<Node> node2, int weight);
+            void addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, int weight);
 
             tuple<vector<int>, vector<int>> BFS(int startNodeIndex);
 
-            void printBFS(int startNodeIndex, vector<int> D, vector<int> A);
+            void printBFS(vector<int> D);
 
             vector<int> eulerianCycle(int startNodeIndex);
 
@@ -45,13 +45,13 @@ namespace GraphModule
 
             vector<vector<int>> kruskal();
 
-            void printKruskal(vector<vector<int>> A);
+            void printKruskal(const vector<vector<int>>& A);
 
             vector<int> prim(int startNodeIndex);
 
             void printPrim(vector<int> A);
 
-            ~UndirectedGraph();
+            ~UndirectedGraph() override;
 
         private:
             int numberOfEdges;
