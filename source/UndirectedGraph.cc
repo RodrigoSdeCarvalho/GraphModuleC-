@@ -443,22 +443,22 @@ vector<int> UndirectedGraph::prim(int startNodeIndex)
     int r = startNodeIndex;
 
     vector<float> K;
-    K[r] = 0;
 
     vector<int> A;
 
-    for (int i = 0; i < this->numberOfVertices; ++i) 
+    for (int i = 0; i < this->numberOfVertices; ++i)
     {
-        K[i] = 1000000;
-        A[i] = -1;
+        K.push_back(1000000);
+        A.push_back(-1);
     }
+
+    K[r] = 0;
 
     unordered_map<int, float> Q;
 	for (int i = 1; i < this->numberOfVertices; ++i)
     {
 		Q.emplace(i, K[i]);
     }
-
     while (!Q.empty())
     {
 		auto min = Q.begin();
@@ -470,9 +470,9 @@ vector<int> UndirectedGraph::prim(int startNodeIndex)
             }
 		}
 
+		int u = (*min).first;
 		Q.erase(min);
 
-		int u = (*min).first;
 		vector<shared_ptr<Node>> neighbours = this->nodes[u]->getNeighbours();
 		for (const shared_ptr<Node>& neighbour : neighbours)
         {
@@ -494,23 +494,26 @@ vector<int> UndirectedGraph::prim(int startNodeIndex)
 
 void UndirectedGraph::printPrim(vector<int> A)
 {
+    cout << "Prim:" << endl;
     float weightSum = 0;
-	string message;
-	for (int i = 2; i < this->numberOfVertices; ++i)
+    string message;
+    for (int i = 2; i < this->numberOfVertices; ++i)
     {
-		shared_ptr<Node> vertice = this->nodes[A[i]];
-        
-        tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[i]->getConnectionWith(vertice);
-        shared_ptr<Connection> connectionWithV = get<1>(returnedValues);
-        weightSum += connectionWithV->getWeight();
-		if (i != 2)
+        int nodeIndex = A[i];
+        if (nodeIndex >= 0 && nodeIndex < this->numberOfVertices)
         {
-			message += ", ";
+            if (!message.empty())
+            {
+                message += ", ";
+            }
+            message += to_string(i) + "-" + to_string(nodeIndex);
+            auto nodeOnTheOtherEnd = get<1>(this->nodes[i]->getConnectionWith(this->nodes[nodeIndex]));
+            weightSum += nodeOnTheOtherEnd->getWeight();
         }
-		message += to_string(i) + "-" + to_string(A[i]);
-	}
+    }
 
-	cout << weightSum << "\n" << message << endl;
+    cout << weightSum << endl;
+    cout << message << endl;
 }
 
 UndirectedGraph::~UndirectedGraph()
