@@ -243,8 +243,15 @@ void DirectedGraph::DFSVisitTopologicalSorting(int v, vector<bool> &C, vector<in
 void DirectedGraph::printTopologicalSorting(const vector<shared_ptr<Node>> &O)
 {
     for (auto & i : O)
-    {
-        cout << i->getName() << " -> ";
+    {   
+        if (i == O.back())
+        {
+            cout << i->getName() << ".\n";
+        }
+        else
+        {
+            cout << i->getName() << " -> ";
+        }
     }
 }
 
