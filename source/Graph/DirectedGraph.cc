@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <memory>
 
-#include "DirectedGraph.h"
-#include "Node.h"
-#include "Connection.h"
+#include "Graph/DirectedGraph.h"
+#include "Graph/Node.h"
+#include "Graph/Connection.h"
 
 using namespace std;
 using namespace GraphModule;

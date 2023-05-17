@@ -1,0 +1,11 @@
+# Makefile Definitions
+
+# Paths
+PROJDIR := $(abspath $(dir $(filter %makedefs, $(MAKEFILE_LIST))))
+TOP := $(PROJDIR)
+HEADERS := $(TOP)/headers
+SRC := $(TOP)/source
+OBJDIR := $(TOP)/objects
+
+# Flags
+CC_FLAGS := -c -W -Wall -ansi -pedantic -g -I$(HEADERS) -std=c++17

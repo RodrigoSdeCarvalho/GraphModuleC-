@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <memory>
 
-#include "AbstractGraph.h"
-#include "Node.h"
-#include "Connection.h"
+#include "Graph/AbstractGraph.h"
+#include "Graph/Node.h"
+#include "Graph/Connection.h"
 
 using namespace std;
 using namespace GraphModule;

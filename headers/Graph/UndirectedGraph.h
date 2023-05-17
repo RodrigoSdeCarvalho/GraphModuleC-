@@ -7,7 +7,7 @@
 #include <memory>
 #include <tuple>
 
-#include "AbstractGraph.h"
+#include "Graph/AbstractGraph.h"
 
 using namespace std;
 

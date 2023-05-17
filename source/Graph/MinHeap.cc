@@ -1,9 +1,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "MinHeap.h"
-#include "HeapNode.h"
-#include "Node.h"
+#include "Graph/MinHeap.h"
+#include "Graph/HeapNode.h"
+#include "Graph/Node.h"
 
 #include <memory>
 

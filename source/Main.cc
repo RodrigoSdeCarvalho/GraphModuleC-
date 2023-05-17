@@ -1,6 +1,7 @@
 //Main file
 
-#include "MainClass.h"
+#include "Activities/MainClass.h"
+#include "Graph/DirectedGraph.h"
 
 using namespace std;
 

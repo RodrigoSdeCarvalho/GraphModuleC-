@@ -1,9 +1,9 @@
-#include "HeapNode.h"
+#include "Graph/HeapNode.h"
 #include <cmath>
 #include <memory>
 #include <utility>
 
-#include "Node.h"
+#include "Graph/Node.h"
 
 using namespace std;
 using namespace GraphModule;

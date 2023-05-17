@@ -2,11 +2,11 @@
 #include <utility>
 #include <vector>
 #include <tuple>
-#include "Connection.h"
+#include "Graph/Connection.h"
 #include <tuple>
 #include <memory>
 
-#include "Node.h"
+#include "Graph/Node.h"
 
 using namespace std;
 using namespace GraphModule;

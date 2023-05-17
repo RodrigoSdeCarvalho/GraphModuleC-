@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "AbstractGraph.h"
+#include "Graph/AbstractGraph.h"
 
 using namespace std;
 

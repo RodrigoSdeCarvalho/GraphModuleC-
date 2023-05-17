@@ -10,11 +10,11 @@
 #include <algorithm>
 #include <memory>
 
-#include "UndirectedGraph.h"
-#include "Node.h"
-#include "Connection.h"
-#include "MinHeap.h"
-#include "HeapNode.h"
+#include "Graph/UndirectedGraph.h"
+#include "Graph/Node.h"
+#include "Graph/Connection.h"
+#include "Graph/MinHeap.h"
+#include "Graph/HeapNode.h"
 
 using namespace std;
 using namespace GraphModule;

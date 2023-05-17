@@ -6,11 +6,11 @@
 #include <dirent.h>
 #include <map>
 
-#include "MainClass.h"
-#include "UndirectedGraph.h"
-#include "DirectedGraph.h"
-#include "Node.h"
-#include "Activities.h"
+#include "Activities/MainClass.h"
+#include "Graph/UndirectedGraph.h"
+#include "Graph/DirectedGraph.h"
+#include "Graph/Node.h"
+#include "Activities/Activities.h"
 
 using namespace std;
 using namespace filesystem;

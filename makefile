@@ -1,60 +1,45 @@
+# Makefile Definitions
+include makedefs
+
 # Name of the project
-PROJ_NAME=Main
+PROJ_NAME = Main
 
-# .c files
-CC_SOURCE=$(wildcard ./source/*.cc)
-
-# .h files
-H_SOURCE=$(wildcard ./headers/*.h)
-
-# Object files
-OBJ=$(subst .cc,.o,$(subst source,objects,$(CC_SOURCE)))
+# Paths to other makefiles
+ACTIVITIES_MAKEFILE := $(SRC)/Activities/makefile
+GRAPH_MAKEFILE := $(SRC)/Graph/makefile
+MAIN_MAKEFILE := $(SRC)/makefile
 
 # Compiler and linker
-CC=g++
+CC = g++
 
-# Flags for compiler
-CC_FLAGS=-c         \
-         -W         \
-         -Wall      \
-         -ansi      \
-         -pedantic  \
-		 -g         \
-		 -I ./headers \
-         -std=c++17 \
 # Command used at clean target
 RM = rm -rf
 
-# Add empty variable to add flags over command line. Mainly a hotfix to suppress warnings.
-CDBG +=
-CFLAGS += $(CDBG)
+# Default target
+all: build
 
-#
-# Compilation and linking
-#
-all: objFolder $(PROJ_NAME)
+# Object files
+OBJ = $(OBJDIR)/Main.o $(wildcard $(OBJDIR)/*.o)
 
+# Creates Main executable
 $(PROJ_NAME): $(OBJ)
-	@ echo 'Building binary using GCC linker: $@'
+	@echo 'Building binary using GCC linker: $@'
 	$(CC) $^ -o $@
-	@ echo 'Finished building binary: $@'
-	@ echo ' '
+	@echo 'Finished building binary: $@'
+	@echo ' '
 
-./objects/%.o: ./source/%.cc ./headers/%.h
-	@ echo 'Building target using GCC compiler: $<'
-	$(CC) $< $(CC_FLAGS) -o $@
-	@ echo ' '
+build: compileSource
+	@$(MAKE) -s $(PROJ_NAME)
 
-./objects/Main.o: ./source/Main.cc $(H_SOURCE)
-	@ echo 'Building target using GCC compiler: $<'
-	$(CC) $< $(CC_FLAGS) -o $@
-	@ echo ' '
-
-objFolder:
-	@ mkdir -p objects
+compileSource:
+	@mkdir -p $(OBJDIR)
+	@$(MAKE) -s -C $(SRC)/Graph -f $(GRAPH_MAKEFILE)
+	@$(MAKE) -s -C $(SRC)/Activities -f $(ACTIVITIES_MAKEFILE)
+	@$(MAKE) -s -C $(SRC) -f $(MAIN_MAKEFILE)
 
 clean:
-	@ $(RM) ./objects/*.o $(PROJ_NAME) *~
-	@ rmdir objects
+	@$(MAKE) -s -C $(SRC)/Activities -f $(ACTIVITIES_MAKEFILE) clean
+	@$(MAKE) -s -C $(SRC)/Graph -f $(GRAPH_MAKEFILE) clean
+	@rm -rf $(PROJ_NAME) $(OBJDIR) *~
 
 .PHONY: all clean
