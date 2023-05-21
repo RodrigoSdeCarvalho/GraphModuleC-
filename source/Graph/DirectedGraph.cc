@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <stack>
+#include <list>
 #include <algorithm>
 #include <memory>
 
@@ -40,153 +42,109 @@ int DirectedGraph::getOutDegreeOfNode(int nodeKey)
     return (node->getOutgoingConnections()).size();
 }
 
-vector<int> DirectedGraph::stronglyConnectedComponents()
+// A recursive function to print DFS starting from v
+void DirectedGraph::DFSUtil(int v, bool visited[])
 {
-    tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DFSVectors = this->DFS();
-
-    vector<bool> C = get<0>(DFSVectors);
-    vector<int> T = get<1>(DFSVectors);
-    vector<int> A = get<2>(DFSVectors);
-    vector<int> F = get<3>(DFSVectors);
-
-    unique_ptr<DirectedGraph> transposedGraph = buildTransposedGraph();
-
-    vector<int> transposedA = transposedGraph->alteredDFS(C, A, T, F);
-
-    return transposedA;
+    // Mark the current node as visited and print it
+    visited[v] = true;
+    cout << v+1;
+ 
+    // Recur for all the vertices adjacent to this vertex
+    list<int>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+    {
+        if (!visited[*i])
+        {
+            cout<<",";
+            DFSUtil(*i, visited);
+        }
+    }
 }
+ 
+unique_ptr<DirectedGraph> DirectedGraph::getTranspose()
+{    
+    int V = this->numberOfVertices;
+    auto transp_graph = new DirectedGraph();
+    transp_graph->adj = new list<int>[V]; 
 
-unique_ptr<DirectedGraph> DirectedGraph::buildTransposedGraph()
-{
-    auto graph = new DirectedGraph();
-
-    //builds graph with transposed A
-    for (int index = 0; index < this->numberOfVertices; index++)
-    {   //adds nodes
-        shared_ptr<Node> nodeSharedPtr = make_shared<Node>(this->nodes[index]->getNumber(), this->nodes[index]->getName());
-        graph->addNode(nodeSharedPtr);
+    for (int v = 0; v < V; v++)
+    {
+        // Recur for all the vertices adjacent to this vertex
+        list<int>::iterator i;
+        for(i = adj[v].begin(); i != adj[v].end(); ++i)
+        {
+            transp_graph->adj[*i].push_back(v);
+        }
     }
-    for (int index = 0; index < this->numberOfArcs; index++)
-    {   //adds arcs
-        shared_ptr<Node> startNode = this->arcs[index]->getEndNode();
-        shared_ptr<Node> endNode = this->arcs[index]->getStartNode();
-        float weight = this->arcs[index]->getWeight();
-        graph->addArc(startNode, endNode, weight);
-    }
-
-    unique_ptr<DirectedGraph> graphUniquePtr(graph);
-
+    unique_ptr<DirectedGraph> graphUniquePtr(transp_graph);
     return graphUniquePtr;
 }
 
-tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DirectedGraph::DFS()
+void DirectedGraph::fillOrder(int v, bool visited[], stack<int> &Stack)
 {
-    vector<bool> C;
-    vector<int> T;
-    vector<int> A;
-    vector<int> F;
-    int time = 0;
-
-    for (int i = 0; i < this->numberOfVertices; ++i) 
-    { // initializes values
-        C.push_back(false);
-        T.push_back(1000000);
-        A.push_back(-1);
-        F.push_back(1000000);
-	}
-
-	for (int vertex = 0; vertex < this->numberOfVertices; ++vertex)
+    // Mark the current node as visited and print it
+    visited[v] = true;
+ 
+    // Recur for all the vertices adjacent to this vertex
+    list<int>::iterator i;
+    for(i = adj[v].begin(); i != adj[v].end(); ++i)
     {
-		if (!C[vertex])
-        { // if there is a vertex not visited
-			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(vertex, C, A, T, F, time);
-            C = get<0>(DFSVisitValues);
-            T = get<1>(DFSVisitValues);
-            A = get<2>(DFSVisitValues);
-            F = get<3>(DFSVisitValues);
-            time = get<4>(DFSVisitValues);
-        }
-	}
-
-    return make_tuple(C, T, A, F);
-}
-
-tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DirectedGraph::DFSVisit(int vertex, vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time)
-{
-    C[vertex] = true;
-	time++;
-	T[vertex] = time;
-
-	vector<shared_ptr<Node>> outgoingNeighbours = this->nodes[vertex]->getOutgoingNeighbours();
-
-    for (const shared_ptr<Node>& neighbor : outgoingNeighbours)
-    {
-        int neighborVertice = neighbor->getNumber() - 1;
-		if (!C[neighborVertice]) {
-            A[neighborVertice] = vertex;
-			tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisitValues = this->DFSVisit(neighborVertice, C, A, T, F, time);
-            C = get<0>(DFSVisitValues);
-            T = get<1>(DFSVisitValues);
-            A = get<2>(DFSVisitValues);
-            F = get<3>(DFSVisitValues);
-            time = get<4>(DFSVisitValues);
-        }
-	}
-
-	time++;
-	F[vertex] = time;
-    return make_tuple(C, T, A, F, time);
-}
-
-vector<int> DirectedGraph::alteredDFS(vector<bool> C,vector<int> A,vector<int> T, vector<int> F)
-{
-    int time = 0;
-    for (int i = 0; i < this->numberOfVertices; ++i)
-    {
-        C.push_back(false);
-        T.push_back(1000000);
-        A.push_back(-1);
-        F.push_back(1000000);
-	}
-	
-	bool temp = true;
-	while (temp)
-    { //T in decrescent order
-		temp = false;
-		int max = -1;
-		int maxVertice = -1;
-		for (int i = 0; i < this->numberOfVertices; ++i)
+        if(!visited[*i])
         {
-			if (F[i] > max && !C[i])
-            {
-				temp = true;
-				max = F[i];
-				maxVertice = i;
-			}
-		}
-		if (maxVertice != -1)
-        {
-			DFSVisit(maxVertice, C, A, T, F, time);
-		}
-	}
-    return A;
-}
-
-void DirectedGraph::printStronglyConnectedComponents(vector<int> A)
-{
-    bool firstComponent = true;
-    for (int i = 0; i < this->numberOfVertices; i++) {
-        if (A[i] == -1) {
-            if (!firstComponent) {
-                cout << "\n";
-            }
-            cout << i + 1;
-            firstComponent = false;
-        } else {
-            cout << ", " << i + 1;
+            fillOrder(*i, visited, Stack);
         }
     }
-    cout << "\n";
+ 
+    // All vertices reachable from v are processed by now, push v
+    Stack.push(v);
+}
+ 
+// The main function that finds and prints all strongly connected
+// components
+void DirectedGraph::stronglyConnectedComponents()
+{
+    int V = this->numberOfVertices;
+    adj = new list<int>[V];
+
+    for(auto conn:this->arcs){
+        int i = conn->getStartNode()->getNumber() - 1;
+        int j = conn->getEndNode()->getNumber() - 1 ;
+        adj[i].push_back(j);
+    }
+
+    stack<int> Stack;
+    
+    // Mark all the vertices as not visited (For first DFS)
+    bool *visited = new bool[V];
+    for(int i = 0; i < V; i++)
+        visited[i] = false;
+ 
+    // Fill vertices in stack according to their finishing times
+    for(int i = 0; i < V; i++)
+        if(visited[i] == false)
+            fillOrder(i, visited, Stack);
+ 
+    // Create a reversed graph
+    unique_ptr<DirectedGraph> transposedGraph = getTranspose();
+ 
+    // Mark all the vertices as not visited (For second DFS)
+    for(int i = 0; i < V; i++)
+        visited[i] = false;
+ 
+    // Now process all vertices in order defined by Stack
+    while (Stack.empty() == false)
+    {
+        // Pop a vertex from stack
+        int v = Stack.top();
+        Stack.pop();
+ 
+        // Print Strongly connected component of the popped vertex
+        if (visited[v] == false)
+        {
+            transposedGraph->DFSUtil(v, visited);
+            cout << endl;
+        }
+    }
 }
 
 vector<shared_ptr<Node>> DirectedGraph::topologicalSorting()

@@ -106,7 +106,7 @@ void Activities::runA1(int question, const string& graphFile)
 void Activities::A2Main(int question, string graphFile, bool defaultFlag)
 {
     map<int, string> defaultGraphFileForQuestion = {
-        {1, "dirigido1.txt"},
+        {1, "dirigido2.txt"},
         {2, "manha.txt"},
         {3, "arvore_geradora_min.txt"},
     };
@@ -132,8 +132,9 @@ void Activities::runA2(int question, const string& graphFile)
         checkGraphKindFromInputFile(graphFilePath, "directed");
         auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
         cout << "Strongly Connected Components"<< endl;
-        vector<int> transposedA = directedGraph->stronglyConnectedComponents();
-        directedGraph->printStronglyConnectedComponents(transposedA);
+        directedGraph->stronglyConnectedComponents();
+        /*vector<int> transposedA = directedGraph->stronglyConnectedComponents();
+        directedGraph->printStronglyConnectedComponents(transposedA);*/
         
     }
 
@@ -150,21 +151,8 @@ void Activities::runA2(int question, const string& graphFile)
     {
         checkGraphKindFromInputFile(graphFilePath, "undirected");
         auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
-        int i;
-        cout << "The graph has the vertices below:" << endl;
-        undirectedGraph->showNodes();
-        cout << endl;
-        cout << "Enter the start vertex: ";
-        cin >> i;
-        if (i < 1 || i > undirectedGraph->getNumberOfVertices())
-        {
-            cout << "Invalid vertex" << endl;
-            return;
-        }
-        cout << endl;
-        cout << "Running Prim on vertex " << i << " in file " << graphFile << endl;
-        i--;
-        vector<int> A = undirectedGraph->prim(i);
+        cout << "Prim:" << endl;
+        vector<int> A = undirectedGraph->prim();
         undirectedGraph->printPrim(A);
     }
 }

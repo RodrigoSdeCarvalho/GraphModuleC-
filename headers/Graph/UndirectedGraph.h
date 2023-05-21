@@ -6,10 +6,14 @@
 #include <string>
 #include <memory>
 #include <tuple>
+#include <list>
 
 #include "Graph/AbstractGraph.h"
 
 using namespace std;
+
+// iPair ==>  Integer Pair
+typedef pair<int, float> iPair;
 
 namespace GraphModule
 {
@@ -47,7 +51,7 @@ namespace GraphModule
 
             void printKruskal(const vector<vector<int>>& A);
 
-            vector<int> prim(int startNodeIndex);
+            vector<int> prim();
 
             void printPrim(vector<int> A);
 
@@ -56,6 +60,7 @@ namespace GraphModule
         private:
             int numberOfEdges;
             vector<shared_ptr<Connection>> edges;
+            list< pair<int, float> > *adj;
     };
 }
 

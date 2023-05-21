@@ -438,80 +438,100 @@ void UndirectedGraph::printKruskal(const vector<vector<int>>& A)
 
 }
 
-vector<int> UndirectedGraph::prim(int startNodeIndex)
+
+vector<int> UndirectedGraph::prim()
 {
-    int r = startNodeIndex;
+    int V = this->numberOfVertices;
+    adj = new list<iPair>[V];
 
-    vector<float> K;
-
-    vector<int> A;
-
-    for (int i = 0; i < this->numberOfVertices; ++i)
-    {
-        K.push_back(1000000);
-        A.push_back(-1);
+    for(auto conn:this->edges){
+        int i = conn->getStartNode()->getNumber() - 1;
+        int j = conn->getEndNode()->getNumber() - 1;
+        float w = conn->getWeight();
+        adj[i].push_back(make_pair(j, w));
+        adj[j].push_back(make_pair(i, w));
     }
-
-    K[r] = 0;
-
-    unordered_map<int, float> Q;
-	for (int i = 1; i < this->numberOfVertices; ++i)
+    
+    // Create a priority queue to store vertices that
+    // are being primMST. This is weird syntax in C++.
+    priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
+ 
+    int src = 0; // Taking vertex 0 as source
+ 
+    // Create a vector for keys and initialize all
+    // keys as infinite (INF)
+    vector<int> key(V, 1000000);
+ 
+    // To store parent array which in turn store MST
+    vector<int> parent(V, -1);
+ 
+    // To keep track of vertices included in MST
+    vector<bool> inMST(V, false);
+ 
+    // Insert source itself in priority queue and initialize
+    // its key as 0.
+    pq.push(make_pair(0, src));
+    key[src] = 0;
+ 
+    /* Looping till priority queue becomes empty */
+    while (!pq.empty())
     {
-		Q.emplace(i, K[i]);
-    }
-    while (!Q.empty())
-    {
-		auto min = Q.begin();
-		for (auto j = Q.begin(); j != Q.end(); ++j)
-        { //finds argmin
-			if ((*min).second > (*j).second)
-            {
-				min = j;
-            }
-		}
-
-		int u = (*min).first;
-		Q.erase(min);
-
-		vector<shared_ptr<Node>> neighbours = this->nodes[u]->getNeighbours();
-		for (const shared_ptr<Node>& neighbour : neighbours)
+        // The first vertex in pair is the minimum key
+        // vertex, extract it from priority queue.
+        // vertex label is stored in second of pair (it
+        // has to be done this way to keep the vertices
+        // sorted key (key must be first item
+        // in pair)
+        int u = pq.top().second;
+        pq.pop();
+         
+          //Different key values for same vertex may exist in the priority queue.
+          //The one with the least key value is always processed first.
+          //Therefore, ignore the rest.
+          if(inMST[u] == true){
+            continue;
+        }
+       
+        inMST[u] = true;  // Include vertex in MST
+ 
+        // 'i' is used to get all adjacent vertices of a vertex
+        list< pair<int, float> >::iterator i;
+        for (i = adj[u].begin(); i != adj[u].end(); ++i)
         {
-            tuple<bool,shared_ptr<Connection>> returnedValues = this->nodes[u]->getConnectionWith(neighbour);
-			int v = neighbour->getNumber(); // neighbour's Index
-            shared_ptr<Connection> connectionWithV = get<1>(returnedValues);
-            float weight = connectionWithV->getWeight();
-			if (Q.find(v) != Q.end() && weight < K[v])
+            // Get vertex label and weight of current adjacent
+            // of u.
+            int v = (*i).first;
+            int weight = (*i).second;
+ 
+            //  If v is not in MST and weight of (u,v) is smaller
+            // than current key of v
+            if (inMST[v] == false && key[v] > weight)
             {
-				A[v] = u;
-				K[v] = weight;
-				Q[v] = K[v];
-			}
-		}
-	}
-
-    return A;
+                // Updating key of v
+                key[v] = weight;
+                pq.push(make_pair(key[v], v));
+                parent[v] = u;
+            }
+        }
+    }
+    return parent;
 }
 
 void UndirectedGraph::printPrim(vector<int> A)
 {
-    cout << "Prim:" << endl;
+    // Print edges of MST using parent array
     float weightSum = 0;
     string message;
-    for (int i = 2; i < this->numberOfVertices; ++i)
-    {
-        int nodeIndex = A[i];
-        if (nodeIndex >= 0 && nodeIndex < this->numberOfVertices)
-        {
-            if (!message.empty())
+    for (int i = 1; i < this->numberOfVertices; ++i){
+        if (!message.empty())
             {
                 message += ", ";
             }
-            message += to_string(i) + "-" + to_string(nodeIndex);
-            auto nodeOnTheOtherEnd = get<1>(this->nodes[i]->getConnectionWith(this->nodes[nodeIndex]));
-            weightSum += nodeOnTheOtherEnd->getWeight();
-        }
-    }
+        message += to_string(A[i]+1) + "-" + to_string(i+1);
 
+        auto nodeOnTheOtherEnd = get<1>(this->nodes[i]->getConnectionWith(this->nodes[A[i]]));
+        weightSum += nodeOnTheOtherEnd->getWeight();
+    }
     cout << weightSum << endl;
     cout << message << endl;
 }

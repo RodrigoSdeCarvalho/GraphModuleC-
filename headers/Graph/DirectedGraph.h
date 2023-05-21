@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <list>
+#include <stack>
 #include <memory>
 #include "Graph/AbstractGraph.h"
 
@@ -25,17 +27,17 @@ namespace GraphModule
 
             int getOutDegreeOfNode(int nodeKey);
 
-            vector<int> stronglyConnectedComponents();
+            // The main function that finds and prints strongly connected
+            // components
+            void stronglyConnectedComponents();
 
-            unique_ptr<DirectedGraph> buildTransposedGraph();
-            
-            tuple<vector<bool>,vector<int>,vector<int>,vector<int>> DFS();
+            void fillOrder(int v, bool visited[], stack<int> &Stack);
 
-            tuple<vector<bool>,vector<int>,vector<int>,vector<int>, int> DFSVisit(int vertice, vector<bool> C,vector<int> A,vector<int> T, vector<int> F, int time);
+            // A recursive function to print DFS starting from v
+            void DFSUtil(int v, bool visited[]);
 
-            vector<int> alteredDFS(vector<bool> C,vector<int> A,vector<int> T, vector<int> F);
-
-            void printStronglyConnectedComponents(vector<int> A);
+            // Function that returns reverse (or transpose) of this graph
+            unique_ptr<DirectedGraph> getTranspose();
 
             vector<shared_ptr<Node>> topologicalSorting();
 
@@ -47,11 +49,12 @@ namespace GraphModule
 
             ~DirectedGraph() override;
 
-            //ADD METHODS FOR A2 AND A3 HERE.
+            //ADD METHODS FOR A3 HERE.
 
         private:
             int numberOfArcs;
             vector<shared_ptr<Connection>> arcs;
+            list<int> *adj;
     };
 }
 
