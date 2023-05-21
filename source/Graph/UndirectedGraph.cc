@@ -50,7 +50,7 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
     return degree;
 }
 
-void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, int weight)
+void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, float weight)
 {
     
     weak_ptr<Node> node1WeakPtr(node1);
@@ -438,13 +438,13 @@ void UndirectedGraph::printKruskal(const vector<vector<int>>& A)
 
 }
 
-
 vector<int> UndirectedGraph::prim()
 {
     int V = this->numberOfVertices;
-    adj = new list<iPair>[V];
+    adj = new list<node_weight_pair>[V];
 
-    for(auto conn:this->edges){
+    for(auto conn:this->edges)
+    { // Builds the adjacency matrix
         int i = conn->getStartNode()->getNumber() - 1;
         int j = conn->getEndNode()->getNumber() - 1;
         float w = conn->getWeight();
@@ -452,74 +452,50 @@ vector<int> UndirectedGraph::prim()
         adj[j].push_back(make_pair(i, w));
     }
     
-    // Create a priority queue to store vertices that
-    // are being primMST. This is weird syntax in C++.
-    priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
+    priority_queue< node_weight_pair, vector <node_weight_pair> , greater<node_weight_pair> > heap; // Heap as a priory queue
  
-    int src = 0; // Taking vertex 0 as source
+    int start_node = 0; // Vertex 0 as the arbitrary start node 
  
-    // Create a vector for keys and initialize all
-    // keys as infinite (INF)
-    vector<int> key(V, 1000000);
+    vector<float> K(V, 1000000); // Vector to keep track of weight values
  
-    // To store parent array which in turn store MST
-    vector<int> parent(V, -1);
+    vector<int> A(V, -1);
  
-    // To keep track of vertices included in MST
-    vector<bool> inMST(V, false);
+    vector<bool> visited(V, false);
  
-    // Insert source itself in priority queue and initialize
-    // its key as 0.
-    pq.push(make_pair(0, src));
-    key[src] = 0;
+    heap.push(make_pair(0, start_node)); // Initialization
+    K[start_node] = 0;
  
-    /* Looping till priority queue becomes empty */
-    while (!pq.empty())
+    while (!heap.empty())
     {
-        // The first vertex in pair is the minimum key
-        // vertex, extract it from priority queue.
-        // vertex label is stored in second of pair (it
-        // has to be done this way to keep the vertices
-        // sorted key (key must be first item
-        // in pair)
-        int u = pq.top().second;
-        pq.pop();
-         
-          //Different key values for same vertex may exist in the priority queue.
-          //The one with the least key value is always processed first.
-          //Therefore, ignore the rest.
-          if(inMST[u] == true){
+        int u = heap.top().second; // Extract the minimum
+        heap.pop();
+        
+        if(visited[u] == true)
+        {
             continue;
         }
-       
-        inMST[u] = true;  // Include vertex in MST
+
+        visited[u] = true;  // Visited
  
-        // 'i' is used to get all adjacent vertices of a vertex
         list< pair<int, float> >::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i)
         {
-            // Get vertex label and weight of current adjacent
-            // of u.
             int v = (*i).first;
-            int weight = (*i).second;
- 
-            //  If v is not in MST and weight of (u,v) is smaller
-            // than current key of v
-            if (inMST[v] == false && key[v] > weight)
+            float weight = (*i).second;
+
+            if (visited[v] == false && K[v] > weight)
             {
-                // Updating key of v
-                key[v] = weight;
-                pq.push(make_pair(key[v], v));
-                parent[v] = u;
+                K[v] = weight;
+                heap.push(make_pair(K[v], v));
+                A[v] = u;
             }
         }
     }
-    return parent;
+    return A;
 }
 
 void UndirectedGraph::printPrim(vector<int> A)
 {
-    // Print edges of MST using parent array
     float weightSum = 0;
     string message;
     for (int i = 1; i < this->numberOfVertices; ++i){

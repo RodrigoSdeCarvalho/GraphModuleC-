@@ -42,26 +42,23 @@ int DirectedGraph::getOutDegreeOfNode(int nodeKey)
     return (node->getOutgoingConnections()).size();
 }
 
-// A recursive function to print DFS starting from v
-void DirectedGraph::DFSUtil(int v, bool visited[])
+void DirectedGraph::DFSVisit(int v, bool C[])
 {
-    // Mark the current node as visited and print it
-    visited[v] = true;
-    cout << v+1;
+    C[v] = true;
+    cout << v+1; // Prints current v node
  
-    // Recur for all the vertices adjacent to this vertex
     list<int>::iterator i;
     for (i = adj[v].begin(); i != adj[v].end(); ++i)
-    {
-        if (!visited[*i])
+    { // iters for the connections
+        if (!C[*i])
         {
             cout<<",";
-            DFSUtil(*i, visited);
+            DFSVisit(*i, C);
         }
     }
 }
  
-unique_ptr<DirectedGraph> DirectedGraph::getTranspose()
+unique_ptr<DirectedGraph> DirectedGraph::BuildTransposedGraph()
 {    
     int V = this->numberOfVertices;
     auto transp_graph = new DirectedGraph();
@@ -69,10 +66,9 @@ unique_ptr<DirectedGraph> DirectedGraph::getTranspose()
 
     for (int v = 0; v < V; v++)
     {
-        // Recur for all the vertices adjacent to this vertex
         list<int>::iterator i;
         for(i = adj[v].begin(); i != adj[v].end(); ++i)
-        {
+        { // Inverts connections of arcs
             transp_graph->adj[*i].push_back(v);
         }
     }
@@ -80,68 +76,64 @@ unique_ptr<DirectedGraph> DirectedGraph::getTranspose()
     return graphUniquePtr;
 }
 
-void DirectedGraph::fillOrder(int v, bool visited[], stack<int> &Stack)
+void DirectedGraph::DFS(int v, bool C[], stack<int> &Stack)
 {
-    // Mark the current node as visited and print it
-    visited[v] = true;
+    C[v] = true;
  
-    // Recur for all the vertices adjacent to this vertex
     list<int>::iterator i;
     for(i = adj[v].begin(); i != adj[v].end(); ++i)
     {
-        if(!visited[*i])
+        if(!C[*i])
         {
-            fillOrder(*i, visited, Stack);
+            DFS(*i, C, Stack);
         }
     }
  
-    // All vertices reachable from v are processed by now, push v
-    Stack.push(v);
+    Stack.push(v); // Adds to stack once all have been visited in regards to v node
 }
  
-// The main function that finds and prints all strongly connected
-// components
 void DirectedGraph::stronglyConnectedComponents()
 {
     int V = this->numberOfVertices;
     adj = new list<int>[V];
 
-    for(auto conn:this->arcs){
+    for(auto conn:this->arcs)
+    { // Builds adjacency matrix
         int i = conn->getStartNode()->getNumber() - 1;
         int j = conn->getEndNode()->getNumber() - 1 ;
         adj[i].push_back(j);
     }
 
     stack<int> Stack;
-    
-    // Mark all the vertices as not visited (For first DFS)
-    bool *visited = new bool[V];
+
+    bool *C = new bool[V];
     for(int i = 0; i < V; i++)
-        visited[i] = false;
+    { // Initializes values of C to keep track of visited nodes during DFS
+        C[i] = false;
+    }
  
-    // Fill vertices in stack according to their finishing times
     for(int i = 0; i < V; i++)
-        if(visited[i] == false)
-            fillOrder(i, visited, Stack);
+    { // Puts in stack according to their finishing times
+        if(C[i] == false)
+        {
+            DFS(i, C, Stack);
+        }
+    }
  
-    // Create a reversed graph
-    unique_ptr<DirectedGraph> transposedGraph = getTranspose();
+    unique_ptr<DirectedGraph> transposedGraph = BuildTransposedGraph();
  
-    // Mark all the vertices as not visited (For second DFS)
     for(int i = 0; i < V; i++)
-        visited[i] = false;
+    { // Reset values for the second DFS
+        C[i] = false;
+    }
  
-    // Now process all vertices in order defined by Stack
     while (Stack.empty() == false)
     {
-        // Pop a vertex from stack
         int v = Stack.top();
         Stack.pop();
- 
-        // Print Strongly connected component of the popped vertex
-        if (visited[v] == false)
+        if (C[v] == false)
         {
-            transposedGraph->DFSUtil(v, visited);
+            transposedGraph->DFSVisit(v, C);
             cout << endl;
         }
     }

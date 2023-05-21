@@ -27,17 +27,13 @@ namespace GraphModule
 
             int getOutDegreeOfNode(int nodeKey);
 
-            // The main function that finds and prints strongly connected
-            // components
             void stronglyConnectedComponents();
 
-            void fillOrder(int v, bool visited[], stack<int> &Stack);
+            void DFS(int v, bool C[], stack<int> &Stack);
 
-            // A recursive function to print DFS starting from v
-            void DFSUtil(int v, bool visited[]);
+            void DFSVisit(int v, bool C[]);
 
-            // Function that returns reverse (or transpose) of this graph
-            unique_ptr<DirectedGraph> getTranspose();
+            unique_ptr<DirectedGraph> BuildTransposedGraph();
 
             vector<shared_ptr<Node>> topologicalSorting();
 

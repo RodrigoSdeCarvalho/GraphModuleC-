@@ -12,8 +12,7 @@
 
 using namespace std;
 
-// iPair ==>  Integer Pair
-typedef pair<int, float> iPair;
+typedef pair<int, float> node_weight_pair; // node_weight_pair ==>  Integer Pair
 
 namespace GraphModule
 {
@@ -27,7 +26,7 @@ namespace GraphModule
 
             int getDegreeOfNode(int nodeKey) override;
 
-            void addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, int weight);
+            void addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, float weight);
 
             tuple<vector<int>, vector<int>> BFS(int startNodeIndex);
 
@@ -60,7 +59,7 @@ namespace GraphModule
         private:
             int numberOfEdges;
             vector<shared_ptr<Connection>> edges;
-            list< pair<int, float> > *adj;
+            list<pair<int, float> > *adj;
     };
 }
 

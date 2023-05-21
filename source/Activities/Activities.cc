@@ -222,7 +222,7 @@ void Activities::buildGraphFromInputFile(UndirectedGraph* graph, string inputFil
             {
                 shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
                 shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
-                int weight = stoi(tokens[2]);
+                float weight = stof(tokens[2]);
                 graph->addEdge(startNode, endNode, weight);
             }
         }
