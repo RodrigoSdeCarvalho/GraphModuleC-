@@ -428,16 +428,6 @@ void UndirectedGraph::printFloydWarshall(vector<vector<int>> D)
     }
 }
 
-vector<vector<int>> UndirectedGraph::kruskal()
-{
-
-}
-
-void UndirectedGraph::printKruskal(const vector<vector<int>>& A)
-{
-
-}
-
 vector<int> UndirectedGraph::prim()
 {
     int V = this->numberOfVertices;
@@ -511,6 +501,13 @@ void UndirectedGraph::printPrim(vector<int> A)
     cout << weightSum << endl;
     cout << message << endl;
 }
+
+tuple<int, vector<int>> UndirectedGraph::coloring()
+{
+    /*Crie um programa que recebe um grafo não-dirigido e não-ponderado como
+    argumento. Ao final, informe a coloração mínima e qual número cromático foi utilizado em cada vertice*/
+
+} 
 
 UndirectedGraph::~UndirectedGraph()
 = default;

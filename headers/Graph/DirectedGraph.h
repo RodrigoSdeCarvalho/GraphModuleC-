@@ -43,6 +43,10 @@ namespace GraphModule
 
             void addArc(const shared_ptr<Node> &startNode, const shared_ptr<Node> &endNode, float weight);
 
+            void hopcroftKarp()
+
+            void edmontsKarp()
+
             ~DirectedGraph() override;
 
             //ADD METHODS FOR A3 HERE.

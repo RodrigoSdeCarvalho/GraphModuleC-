@@ -157,14 +157,53 @@ void Activities::runA2(int question, const string& graphFile)
     }
 }
 
-void Activities::A3Main(int question, const string& graphFile, bool defaultFlag)
+void Activities::A3Main(int question, string graphFile, bool defaultFlag)
 {
-    //Implement A3.
+    map<int, string> defaultGraphFileForQuestion = {
+        {1, "fluxo.txt"},
+        {2, "gr128_10.txt"},
+        {3, "cor3.txt"},
+    };
+
+    if (defaultFlag)
+    {
+        graphFile = defaultGraphFileForQuestion[question];
+    }
+
+    runA3(question, graphFile);
 }
 
 void Activities::runA3(int question, const string& graphFile)
 {
-    //Implement A3.
+    cout << "A3 Question " << question << " on " << graphFile << endl;
+
+    cout << endl;
+
+    string graphFilePath = "A3/" + graphFile;
+
+    if (question == 1)
+    {
+        checkGraphKindFromInputFile(graphFilePath, "directed");
+        auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
+        cout << "Edmonds-Karp Algorithm"<< endl;
+        /*Fuction calls here*/
+    }
+
+    else if (question == 2)
+    {
+        checkGraphKindFromInputFile(graphFilePath, "directed");
+        auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
+        cout << "Hopcroft-Karp Algorithm" << endl;
+        /*Fuction calls here*/
+    }
+
+    else if (question == 3)
+    {
+        checkGraphKindFromInputFile(graphFilePath, "undirected");
+        auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
+        cout << "Undirected Graph Coloring" << endl;
+        /*Fuction calls here*/
+    }
 }
 
 void Activities::buildGraphFromInputFile(UndirectedGraph* graph, string inputFilePath)

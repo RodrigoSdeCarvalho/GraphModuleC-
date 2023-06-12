@@ -46,13 +46,11 @@ namespace GraphModule
 
             void printFloydWarshall(vector<vector<int>> D);
 
-            vector<vector<int>> kruskal();
-
-            void printKruskal(const vector<vector<int>>& A);
-
             vector<int> prim();
 
             void printPrim(vector<int> A);
+
+            tuple<int, vector<int>> coloring();
 
             ~UndirectedGraph() override;
 

@@ -220,5 +220,23 @@ void DirectedGraph::addArc(const shared_ptr<Node> &startNode, const shared_ptr<N
     this->numberOfArcs++;
 }
 
+void DirectedGraph::hopcroftKarp()
+{
+    /*Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado
+    e informe qual o valor do emparelhamento máximo e quais arestas pertencem a ele. Utilize o algoritmo de Hopcroft-Karp.*/
+
+
+}
+
+void DirectedGraph::edmontsKarp()
+{
+    /*Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final,
+    imprima na tela o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
+    
+
+}
+
+
+
 DirectedGraph::~DirectedGraph()
 = default;
