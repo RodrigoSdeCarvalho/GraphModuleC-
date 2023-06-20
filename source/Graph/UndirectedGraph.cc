@@ -502,12 +502,88 @@ void UndirectedGraph::printPrim(vector<int> A)
     cout << message << endl;
 }
 
-tuple<int, vector<int>> UndirectedGraph::coloring()
+vector<int>  UndirectedGraph::coloring()
 {
-    /*Crie um programa que recebe um grafo não-dirigido e não-ponderado como
-    argumento. Ao final, informe a coloração mínima e qual número cromático foi utilizado em cada vertice*/
+    /* Crie um programa que recebe um grafo não-dirigido e não-ponderado como argumento. Ao final, informe:
+    /* - [X] a coloração mínima e 
+    /* - [X] qual número cromático foi utilizado em cada vertice */
 
+    int V = this->numberOfVertices;
+    color_adj = new list<int>[V]; // Adjacency list for coloring algorithm
+    vector<int> colors; // Array to save the final results of the coloring
+
+    for(auto conn:this->edges)
+    { // Builds the adjacency matrix
+        int i = conn->getStartNode()->getNumber() - 1;
+        int j = conn->getEndNode()->getNumber() - 1;
+        color_adj[i].push_back(j);
+        color_adj[j].push_back(i);
+    }
+ 
+    for (int u = 0; u < V; u++)
+    {  // Initialize values, only the first is 0 for now
+        if (u == 0)
+        {
+            colors.push_back(0);
+        }
+        else
+        {
+            colors.push_back(-1);
+        }
+    }
+
+    bool used_color[V]; // Array to indicate if color is already being used (True) by adjacent vertices
+    for (int i = 0; i < V; i++)
+    {
+        used_color[i] = false;
+    }
+
+    for (int u = 1; u < V; u++)
+    {  // Coloring process
+        
+        list<int>::iterator i;
+        for (i = color_adj[u].begin(); i != color_adj[u].end(); ++i)
+        { // Setting adjancent vertices colors as used
+            if (colors[*i] != -1)
+                used_color[colors[*i]] = true;
+        }
+
+        int color;
+        for (color = 0; color < V; color++)
+        { // Finds another color
+            if (used_color[color] == false)
+            {
+                break;
+            }
+        }
+        colors[u] = color;
+
+
+        for (i = color_adj[u].begin(); i != color_adj[u].end(); ++i)
+        { // Resetting for next iteration
+            if (colors[*i] != -1)
+            {
+                used_color[colors[*i]] = false;
+            }
+        }
+    }
+    
+    return colors;
 } 
+
+void UndirectedGraph::printColoring(vector<int> colors){
+    int V = this->numberOfVertices;
+    unordered_map <int, int> mp;
+
+    for (int i = 0; i < V; i++){
+        mp[colors[i]]++;
+        cout << "Vértice " << i+1 << " = Cor " << colors[i] +1 << endl;
+    }
+    
+    cout<< "\nColoração mínima igual a "<< mp.size()<<endl;
+    
+}
+
 
 UndirectedGraph::~UndirectedGraph()
 = default;

@@ -222,21 +222,78 @@ void DirectedGraph::addArc(const shared_ptr<Node> &startNode, const shared_ptr<N
 
 void DirectedGraph::hopcroftKarp()
 {
-    /*Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado
-    e informe qual o valor do emparelhamento máximo e quais arestas pertencem a ele. Utilize o algoritmo de Hopcroft-Karp.*/
+    /* Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado e informe:
+    /* - [ ] Qual o valor do emparelhamento máximo e 
+    /* - [ ] Quais arestas pertencem a ele. 
+    /* Utilize o algoritmo de Hopcroft-Karp.*/
 
+    //https://www.geeksforgeeks.org/hopcroft-karp-algorithm-for-maximum-matching-set-2-implementation/
 
 }
 
-void DirectedGraph::edmontsKarp()
+int DirectedGraph::edmontsKarp(int beginNodeIndex, int endNodeIndex)
 {
-    /*Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final,
-    imprima na tela o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
+    /* Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final, imprima na tela:
+    /* - [ ] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
+
+    int maxFlow = 0;
+    while(int flow = this->bfs(beginNodeIndex, endNodeIndex) != 0)
+    {
+        maxFlow += flow;
+        int currNode = endNodeIndex;
+        while(currNode != beginNodeIndex)
+        {
+            int prevNode = parList[currNode];
+            flowPassed[prevNode][currNode] += flow;
+            flowPassed[currNode][prevNode] -= flow;
+            currNode = prevNode;
+        }
+    }
+    return maxFlow;
+}
+
+int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex)
+{
     
 
+    memset(parList, -1, sizeof(parList));
+    memset(currentPathC, 0, sizeof(currentPathC));
+    queue<int> q;//declare queue vector
+    q.push(beginNodeIndex);
+    parList[beginNodeIndex] = -1;//initialize parlist’s source node
+    currentPathC[beginNodeIndex] = 999;//initialize currentpath’s source node
+    while(!q.empty())// if q is not empty
+    {
+        int currNode = q.front();
+        q.pop();
+        for(int i=0; i<g[currNode].size(); i++)
+        {
+            int to = g[currNode][i];
+            if(parList[to] == -1)
+            {
+                if(c[currNode][to] - flowPassed[currNode][to] > 0)
+                {
+                    parList[to] = currNode;
+                    currentPathC[to] = min(currentPathC[currNode],
+                    c[currNode][to] - flowPassed[currNode][to]);
+                    if(to == endNodeIndex)
+                    {
+                        return currentPathC[endNodeIndex];
+                    }
+                    q.push(to);
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 
+
+void DirectedGraph::printEdmontsKarp(int max_flow)
+{
+    cout << "Fluxo maximo igual a "<< max_flow <<endl;
+}
 
 DirectedGraph::~DirectedGraph()
 = default;

@@ -97,7 +97,7 @@ void Activities::runA1(int question, const string& graphFile)
     else if (question == 5)
     {
         cout << "Floyd Warshall" << " in file " << graphFile << endl;
-        vector<vector<int>> D = graph->floydWarshall(); // Might be better to have a print function here as well
+        vector<vector<int>> D = graph->floydWarshall(); 
         graph->printFloydWarshall(D);
         cout << endl;
     }
@@ -133,9 +133,6 @@ void Activities::runA2(int question, const string& graphFile)
         auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
         cout << "Strongly Connected Components"<< endl;
         directedGraph->stronglyConnectedComponents();
-        /*vector<int> transposedA = directedGraph->stronglyConnectedComponents();
-        directedGraph->printStronglyConnectedComponents(transposedA);*/
-        
     }
 
     else if (question == 2)
@@ -161,7 +158,7 @@ void Activities::A3Main(int question, string graphFile, bool defaultFlag)
 {
     map<int, string> defaultGraphFileForQuestion = {
         {1, "fluxo.txt"},
-        {2, "gr128_10.txt"},
+        {2, "pequeno.txt"},
         {3, "cor3.txt"},
     };
 
@@ -186,7 +183,13 @@ void Activities::runA3(int question, const string& graphFile)
         checkGraphKindFromInputFile(graphFilePath, "directed");
         auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
         cout << "Edmonds-Karp Algorithm"<< endl;
-        /*Fuction calls here*/
+        int startIndex, endIndex;
+        cout << "Enter the start vertex: ";
+        cin >> startIndex;
+        cout << "Enter the end vertex: ";
+        cin >> endIndex;
+        int max_flow = directedGraph->edmontsKarp(startIndex, endIndex);
+        directedGraph->printEdmontsKarp(max_flow);
     }
 
     else if (question == 2)
@@ -202,7 +205,8 @@ void Activities::runA3(int question, const string& graphFile)
         checkGraphKindFromInputFile(graphFilePath, "undirected");
         auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
         cout << "Undirected Graph Coloring" << endl;
-        /*Fuction calls here*/
+        vector<int> vertices_colors = undirectedGraph->coloring();
+        undirectedGraph->printColoring(vertices_colors);
     }
 }
 

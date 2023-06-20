@@ -43,9 +43,11 @@ namespace GraphModule
 
             void addArc(const shared_ptr<Node> &startNode, const shared_ptr<Node> &endNode, float weight);
 
-            void hopcroftKarp()
+            void hopcroftKarp();
 
-            void edmontsKarp()
+            int edmontsKarp(int beginNodeIndex, int endNodeIndex);
+
+            void printEdmontsKarp(int max_flow);
 
             ~DirectedGraph() override;
 
@@ -55,6 +57,13 @@ namespace GraphModule
             int numberOfArcs;
             vector<shared_ptr<Connection>> arcs;
             list<int> *adj;
+
+            // Variables for EdmondsKarp 
+            int c[10][10]; // capacity
+            int flowPassed[10][10];
+            vector<int> g[10]; // grafo
+            int parList[10];
+            int currentPathC[10];
     };
 }
 

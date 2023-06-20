@@ -50,14 +50,17 @@ namespace GraphModule
 
             void printPrim(vector<int> A);
 
-            tuple<int, vector<int>> coloring();
+            vector<int> coloring();
+
+            void printColoring(vector<int>  colors);
 
             ~UndirectedGraph() override;
 
         private:
             int numberOfEdges;
             vector<shared_ptr<Connection>> edges;
-            list<pair<int, float> > *adj;
+            list<pair<int, float> > *adj; //used for Prim
+            list<int> *color_adj; //used for Coloring 
     };
 }
 
