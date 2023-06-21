@@ -235,7 +235,7 @@ void DirectedGraph::hopcroftKarp()
 int DirectedGraph::edmondsKarp(int beginNodeIndex, int endNodeIndex)
 {
     /* Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final, imprima na tela:
-    /  - [ ] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
+    /  - [X] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
 
     int V = this->numberOfVertices; // Number of vertices in the graph.
     vector<vector<float>> graphAdjacency; // Adjacency matrix
@@ -247,30 +247,23 @@ int DirectedGraph::edmondsKarp(int beginNodeIndex, int endNodeIndex)
     { // Builds adjacency matrices. Initialize with wieghts, if there isn't, initialize with 0.
         vector<float> connections;
         for (int v = 0; v < V; v++)
-        {
-            tuple<bool, shared_ptr<Connection>> returnedValues = this->nodes[u]->getConnectionWith(this->nodes[v]);
-            if (get<0>(returnedValues))
-            {
-                float n = get<1>(returnedValues)->getWeight();
-                connections.push_back(n); 
-                cout<<n<<" ";
-            }
-            else 
-            {
-                connections.push_back(0);
-                cout<<0<< " ";
-            }
+        {    
+            connections.push_back(0);
         }
-        cout<<endl;
         graphAdjacency.push_back(connections);
+    } 
+    for (u = 0; u < V; u++) 
+    { // this is so bad it makes me wanna puke
+        vector<shared_ptr<Connection>> cons = this->nodes[u]->getOutgoingConnections();
+        for (auto m : cons) 
+        {
+            graphAdjacency[m->getStartNode()->getNumber()-1][m->getEndNode()->getNumber()-1] = m->getWeight();
+        }
     }
     this->residualNetwork = graphAdjacency;
-
-
-    cout << BFS(beginNodeIndex, endNodeIndex, parent)<<endl;
-    while (int m = BFS(beginNodeIndex, endNodeIndex, parent)) 
+    
+    while (BFS(beginNodeIndex, endNodeIndex, parent)) 
     {
-        cout << "Passed, m = " << m <<endl;
         float path_flow = 1000000;
         for (v = endNodeIndex; v != beginNodeIndex; v = parent[v]) 
         {
@@ -278,53 +271,36 @@ int DirectedGraph::edmondsKarp(int beginNodeIndex, int endNodeIndex)
             path_flow = min(path_flow, this->residualNetwork[u][v]);
         }
  
-        // update residual capacities of the edges and
-        // reverse edges along the path
         for (v = endNodeIndex; v != beginNodeIndex; v = parent[v]) 
-        {
+        { // Updates and changes arcs
             u = parent[v];
             this->residualNetwork[u][v] -= path_flow;
             this->residualNetwork[v][u] += path_flow;
         }
-        // Add path flow to overall flow
         max_flow += path_flow;
     }
- 
-    // Return the overall flow
     return max_flow;
 }
 
 int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex, int parent[])
 {
-    // Create a visited array and mark all vertices as not visited
     int V = this->numberOfVertices;
     bool visited[V];
-    memset(visited, 0, sizeof(visited));
-    
-    for (int u = 0; u < V; u++){
-        for (int v = 0; v < V; v++)
-            cout << this->residualNetwork[u][v];
-        cout<<endl;
-        }
-    cout<<endl;
-
-    // Create a queue, enqueue source vertex and mark source vertex as visited
     queue<int> Q;
+
+    memset(visited, 0, sizeof(visited)); //Initialize as false
     Q.push(beginNodeIndex);
     visited[beginNodeIndex] = true;
     parent[beginNodeIndex] = -1;
     
-    // Standard BFS Loop
     while (!Q.empty()) 
     {
         int u = Q.front();
         Q.pop();
-        cout << "U = " << u << endl;
         for (int v = 0; v < V; v++) 
         {
             if (visited[v] == false && this->residualNetwork[u][v] > 0) 
             {
-                // If we find a connection to the sink node, then there is no point in BFS anymore We just have to set its parent and can return true
                 if (v == endNodeIndex) 
                 {
                     parent[v] = u;
@@ -333,19 +309,16 @@ int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex, int parent[])
                 Q.push(v);
                 parent[v] = u;
                 visited[v] = true;
-                cout<< "V: " << v << endl;
             }
         }
 
     }
-    // We didn't reach sink in BFS starting from source, so
-    // return false
     return 0;
 }
 
 void DirectedGraph::printEdmontsKarp(int max_flow)
 {
-    cout << "Fluxo maximo igual a "<< max_flow <<endl;
+    cout << "\nMax flow equals "<< max_flow <<endl;
 }
 
 DirectedGraph::~DirectedGraph()

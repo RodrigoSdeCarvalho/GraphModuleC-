@@ -57,7 +57,7 @@ namespace GraphModule
             int numberOfArcs;
             vector<shared_ptr<Connection>> arcs;
             list<int> *adj;
-           vector<vector<float>> residualNetwork; // Residual Graph Adjacency matrix for edmondsKarp
+            vector<vector<float>> residualNetwork; // Residual Graph Adjacency matrix for edmondsKarp
     };
 }
 

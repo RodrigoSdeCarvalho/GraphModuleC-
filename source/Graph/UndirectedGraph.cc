@@ -576,10 +576,10 @@ void UndirectedGraph::printColoring(vector<int> colors){
 
     for (int i = 0; i < V; i++){
         mp[colors[i]]++;
-        cout << "Vértice " << i+1 << " = Cor " << colors[i] +1 << endl;
+        cout << "Node " << i+1 << " = Color " << colors[i] +1 << endl;
     }
     
-    cout<< "\nColoração mínima igual a "<< mp.size()<<endl;
+    cout<< "\nMinimum coloring equals "<< mp.size()<<endl;
     
 }
 

@@ -332,7 +332,6 @@ void Activities::buildGraphFromInputFile(DirectedGraph* graph, string inputFileP
                 shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
                 shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
                 float weight = stof(tokens[2]);
-                cout << "weight = " << weight << endl;
 
                 graph->addArc(startNode, endNode, weight);
             }
