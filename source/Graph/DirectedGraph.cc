@@ -236,8 +236,12 @@ int DirectedGraph::edmontsKarp(int beginNodeIndex, int endNodeIndex)
     /* Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final, imprima na tela:
     /* - [ ] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
 
+    // https://www.geeksforgeeks.org/ford-fulkerson-algorithm-for-maximum-flow-problem/
+    // https://cp-algorithms.com/graph/edmonds_karp.html#edmonds-karp-algorithm
+
     int maxFlow = 0;
-    while(int flow = this->bfs(beginNodeIndex, endNodeIndex) != 0)
+    int flow;
+    while(flow = this->BFS(beginNodeIndex, endNodeIndex))
     {
         maxFlow += flow;
         int currNode = endNodeIndex;
@@ -254,18 +258,16 @@ int DirectedGraph::edmontsKarp(int beginNodeIndex, int endNodeIndex)
 
 int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex)
 {
-    
-
     memset(parList, -1, sizeof(parList));
     memset(currentPathC, 0, sizeof(currentPathC));
-    queue<int> q;//declare queue vector
-    q.push(beginNodeIndex);
+    queue<int> Q;//declare queue vector
+    Q.push(beginNodeIndex);
     parList[beginNodeIndex] = -1;//initialize parlist’s source node
     currentPathC[beginNodeIndex] = 999;//initialize currentpath’s source node
-    while(!q.empty())// if q is not empty
+    while(!Q.empty())// if q is not empty
     {
-        int currNode = q.front();
-        q.pop();
+        int currNode = Q.front();
+        Q.pop();
         for(int i=0; i<g[currNode].size(); i++)
         {
             int to = g[currNode][i];
@@ -280,7 +282,7 @@ int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex)
                     {
                         return currentPathC[endNodeIndex];
                     }
-                    q.push(to);
+                    Q.push(to);
                 }
             }
         }
