@@ -600,7 +600,7 @@ void UndirectedGraph::configureBipartiteGraph()
 
     
     adjacency = new list<int>[m+1];
-    for(auto conn:this->arcs)
+    for(auto conn:this->edges)
     { // Builds adjacency matrix
         int i = conn->getStartNode()->getNumber() - 1;
         int j = conn->getEndNode()->getNumber() - 1 ;
