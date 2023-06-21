@@ -221,17 +221,6 @@ void DirectedGraph::addArc(const shared_ptr<Node> &startNode, const shared_ptr<N
     this->numberOfArcs++;
 }
 
-void DirectedGraph::hopcroftKarp()
-{
-    /* Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado e informe:
-    /  - [ ] Qual o valor do emparelhamento máximo e 
-    /  - [ ] Quais arestas pertencem a ele. 
-    /  Utilize o algoritmo de Hopcroft-Karp.*/
-
-    //https://www.geeksforgeeks.org/hopcroft-karp-algorithm-for-maximum-matching-set-2-implementation/
-
-}
-
 int DirectedGraph::edmondsKarp(int beginNodeIndex, int endNodeIndex)
 {
     /* Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final, imprima na tela:

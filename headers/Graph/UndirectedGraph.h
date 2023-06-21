@@ -54,6 +54,16 @@ namespace GraphModule
 
             void printColoring(vector<int>  colors);
 
+            void configureBipartiteGraph();
+            
+            int hopcroftKarp();
+
+            bool bipartiteGraphDFS(int u);
+
+            bool bipartiteGraphBFS();
+            
+            void printHopcroftKarp(int maximum_matching);
+
             ~UndirectedGraph() override;
 
         private:
@@ -61,6 +71,12 @@ namespace GraphModule
             vector<shared_ptr<Connection>> edges;
             list<pair<int, float> > *adj; //used for Prim
             list<int> *color_adj; //used for Coloring 
+            
+            // Varibles below used on hopcroftKarp
+            list<int> *adjacency;
+            int m = 0;
+            int n = 0;
+            int *pairU, *pairV, *dist;
     };
 }
 

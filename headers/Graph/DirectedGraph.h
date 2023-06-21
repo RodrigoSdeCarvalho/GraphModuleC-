@@ -43,8 +43,6 @@ namespace GraphModule
 
             void addArc(const shared_ptr<Node> &startNode, const shared_ptr<Node> &endNode, float weight);
 
-            void hopcroftKarp();
-
             int edmondsKarp(int beginNodeIndex, int endNodeIndex);
 
             int BFS(int beginNodeIndex, int endNodeIndex, int parent[]);

@@ -136,6 +136,18 @@ vector<shared_ptr<Connection>> Node::getOutgoingConnections()
     return outgoingConnectionsToReturn;
 }
 
+int Node::numberOfOutgoingConnections()
+{
+    vector<shared_ptr<Connection>> connections = getOutgoingConnections();
+    return connections.size();
+}
+
+int Node::numberOfIncomingConnections()
+{
+    vector<shared_ptr<Connection>> connections = getIncomingConnections();
+    return connections.size();
+}
+
 void Node::addIncomingConnection(const weak_ptr<Connection>& connectionToAdd)
 {
     this->incomingConnections.push_back(connectionToAdd);
