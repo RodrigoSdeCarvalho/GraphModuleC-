@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <queue>
@@ -223,74 +224,124 @@ void DirectedGraph::addArc(const shared_ptr<Node> &startNode, const shared_ptr<N
 void DirectedGraph::hopcroftKarp()
 {
     /* Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado e informe:
-    /* - [ ] Qual o valor do emparelhamento máximo e 
-    /* - [ ] Quais arestas pertencem a ele. 
-    /* Utilize o algoritmo de Hopcroft-Karp.*/
+    /  - [ ] Qual o valor do emparelhamento máximo e 
+    /  - [ ] Quais arestas pertencem a ele. 
+    /  Utilize o algoritmo de Hopcroft-Karp.*/
 
     //https://www.geeksforgeeks.org/hopcroft-karp-algorithm-for-maximum-matching-set-2-implementation/
 
 }
 
-int DirectedGraph::edmontsKarp(int beginNodeIndex, int endNodeIndex)
+int DirectedGraph::edmondsKarp(int beginNodeIndex, int endNodeIndex)
 {
     /* Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final, imprima na tela:
-    /* - [ ] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
+    /  - [ ] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
 
-    // https://www.geeksforgeeks.org/ford-fulkerson-algorithm-for-maximum-flow-problem/
-    // https://cp-algorithms.com/graph/edmonds_karp.html#edmonds-karp-algorithm
+    int V = this->numberOfVertices; // Number of vertices in the graph.
+    vector<vector<float>> graphAdjacency; // Adjacency matrix
+    int parent[V]; // BFS result array
+    int u, v;
+    int max_flow = 0;
 
-    int maxFlow = 0;
-    int flow;
-    while(flow = this->BFS(beginNodeIndex, endNodeIndex))
-    {
-        maxFlow += flow;
-        int currNode = endNodeIndex;
-        while(currNode != beginNodeIndex)
+    for (u = 0; u < V; u++) 
+    { // Builds adjacency matrices. Initialize with wieghts, if there isn't, initialize with 0.
+        vector<float> connections;
+        for (int v = 0; v < V; v++)
         {
-            int prevNode = parList[currNode];
-            flowPassed[prevNode][currNode] += flow;
-            flowPassed[currNode][prevNode] -= flow;
-            currNode = prevNode;
-        }
-    }
-    return maxFlow;
-}
-
-int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex)
-{
-    memset(parList, -1, sizeof(parList));
-    memset(currentPathC, 0, sizeof(currentPathC));
-    queue<int> Q;//declare queue vector
-    Q.push(beginNodeIndex);
-    parList[beginNodeIndex] = -1;//initialize parlist’s source node
-    currentPathC[beginNodeIndex] = 999;//initialize currentpath’s source node
-    while(!Q.empty())// if q is not empty
-    {
-        int currNode = Q.front();
-        Q.pop();
-        for(int i=0; i<g[currNode].size(); i++)
-        {
-            int to = g[currNode][i];
-            if(parList[to] == -1)
+            tuple<bool, shared_ptr<Connection>> returnedValues = this->nodes[u]->getConnectionWith(this->nodes[v]);
+            if (get<0>(returnedValues))
             {
-                if(c[currNode][to] - flowPassed[currNode][to] > 0)
-                {
-                    parList[to] = currNode;
-                    currentPathC[to] = min(currentPathC[currNode],
-                    c[currNode][to] - flowPassed[currNode][to]);
-                    if(to == endNodeIndex)
-                    {
-                        return currentPathC[endNodeIndex];
-                    }
-                    Q.push(to);
-                }
+                float n = get<1>(returnedValues)->getWeight();
+                connections.push_back(n); 
+                cout<<n<<" ";
+            }
+            else 
+            {
+                connections.push_back(0);
+                cout<<0<< " ";
             }
         }
+        cout<<endl;
+        graphAdjacency.push_back(connections);
     }
-    return 0;
+    this->residualNetwork = graphAdjacency;
+
+
+    cout << BFS(beginNodeIndex, endNodeIndex, parent)<<endl;
+    while (int m = BFS(beginNodeIndex, endNodeIndex, parent)) 
+    {
+        cout << "Passed, m = " << m <<endl;
+        float path_flow = 1000000;
+        for (v = endNodeIndex; v != beginNodeIndex; v = parent[v]) 
+        {
+            u = parent[v];
+            path_flow = min(path_flow, this->residualNetwork[u][v]);
+        }
+ 
+        // update residual capacities of the edges and
+        // reverse edges along the path
+        for (v = endNodeIndex; v != beginNodeIndex; v = parent[v]) 
+        {
+            u = parent[v];
+            this->residualNetwork[u][v] -= path_flow;
+            this->residualNetwork[v][u] += path_flow;
+        }
+        // Add path flow to overall flow
+        max_flow += path_flow;
+    }
+ 
+    // Return the overall flow
+    return max_flow;
 }
 
+int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex, int parent[])
+{
+    // Create a visited array and mark all vertices as not visited
+    int V = this->numberOfVertices;
+    bool visited[V];
+    memset(visited, 0, sizeof(visited));
+    
+    for (int u = 0; u < V; u++){
+        for (int v = 0; v < V; v++)
+            cout << this->residualNetwork[u][v];
+        cout<<endl;
+        }
+    cout<<endl;
 
+    // Create a queue, enqueue source vertex and mark source vertex as visited
+    queue<int> Q;
+    Q.push(beginNodeIndex);
+    visited[beginNodeIndex] = true;
+    parent[beginNodeIndex] = -1;
+    
+    // Standard BFS Loop
+    while (!Q.empty()) 
+    {
+        int u = Q.front();
+        Q.pop();
+        cout << "U = " << u << endl;
+        for (int v = 0; v < V; v++) 
+        {
+            if (visited[v] == false && this->residualNetwork[u][v] > 0) 
+            {
+                // If we find a connection to the sink node, then there is no point in BFS anymore We just have to set its parent and can return true
+                if (v == endNodeIndex) 
+                {
+                    parent[v] = u;
+                    return 1;
+                }
+                Q.push(v);
+                parent[v] = u;
+                visited[v] = true;
+                cout<< "V: " << v << endl;
+            }
+        }
+
+    }
+    // We didn't reach sink in BFS starting from source, so
+    // return false
+    return 0;
+}
 
 void DirectedGraph::printEdmontsKarp(int max_flow)
 {

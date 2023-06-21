@@ -505,8 +505,8 @@ void UndirectedGraph::printPrim(vector<int> A)
 vector<int>  UndirectedGraph::coloring()
 {
     /* Crie um programa que recebe um grafo não-dirigido e não-ponderado como argumento. Ao final, informe:
-    /* - [X] a coloração mínima e 
-    /* - [X] qual número cromático foi utilizado em cada vertice */
+    /  - [X] a coloração mínima e 
+    /  - [X] qual número cromático foi utilizado em cada vertice */
 
     int V = this->numberOfVertices;
     color_adj = new list<int>[V]; // Adjacency list for coloring algorithm
@@ -557,7 +557,6 @@ vector<int>  UndirectedGraph::coloring()
             }
         }
         colors[u] = color;
-
 
         for (i = color_adj[u].begin(); i != color_adj[u].end(); ++i)
         { // Resetting for next iteration

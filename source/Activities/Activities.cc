@@ -157,7 +157,7 @@ void Activities::runA2(int question, const string& graphFile)
 void Activities::A3Main(int question, string graphFile, bool defaultFlag)
 {
     map<int, string> defaultGraphFileForQuestion = {
-        {1, "fluxo.txt"},
+        {1, "fluxo2.txt"},
         {2, "pequeno.txt"},
         {3, "cor3.txt"},
     };
@@ -182,13 +182,17 @@ void Activities::runA3(int question, const string& graphFile)
     {
         checkGraphKindFromInputFile(graphFilePath, "directed");
         auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
+        cout << "The graph has the vertices below:" << endl;
+        directedGraph->showNodes();
+        cout << endl;
+
         cout << "Edmonds-Karp Algorithm"<< endl;
         int startIndex, endIndex;
         cout << "Enter the start vertex: ";
         cin >> startIndex;
         cout << "Enter the end vertex: ";
         cin >> endIndex;
-        int max_flow = directedGraph->edmontsKarp(startIndex, endIndex);
+        int max_flow = directedGraph->edmondsKarp(startIndex-1, endIndex-1);
         directedGraph->printEdmontsKarp(max_flow);
     }
 
@@ -328,6 +332,7 @@ void Activities::buildGraphFromInputFile(DirectedGraph* graph, string inputFileP
                 shared_ptr<Node> startNode = graph->getNodes()[stoi(tokens[0]) - 1];
                 shared_ptr<Node> endNode = graph->getNodes()[stoi(tokens[1]) - 1];
                 float weight = stof(tokens[2]);
+                cout << "weight = " << weight << endl;
 
                 graph->addArc(startNode, endNode, weight);
             }

@@ -45,25 +45,19 @@ namespace GraphModule
 
             void hopcroftKarp();
 
-            int edmontsKarp(int beginNodeIndex, int endNodeIndex);
+            int edmondsKarp(int beginNodeIndex, int endNodeIndex);
+
+            int BFS(int beginNodeIndex, int endNodeIndex, int parent[]);
 
             void printEdmontsKarp(int max_flow);
 
             ~DirectedGraph() override;
 
-            //ADD METHODS FOR A3 HERE.
-
         private:
             int numberOfArcs;
             vector<shared_ptr<Connection>> arcs;
             list<int> *adj;
-
-            // Variables for EdmondsKarp 
-            int c[10][10]; // capacity
-            int flowPassed[10][10];
-            vector<int> g[10]; // grafo
-            int parList[10];
-            int currentPathC[10];
+           vector<vector<float>> residualNetwork; // Residual Graph Adjacency matrix for edmondsKarp
     };
 }
 
