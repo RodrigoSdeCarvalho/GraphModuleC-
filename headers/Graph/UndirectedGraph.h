@@ -74,8 +74,8 @@ namespace GraphModule
             
             // Varibles below used on hopcroftKarp
             list<int> *adjacency;
-            int m = 0;
-            int n = 0;
+            int m = 0; // Domain
+            int n = 0; // Contra domain
             int *pairU, *pairV, *dist;
     };
 }

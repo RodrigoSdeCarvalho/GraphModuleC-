@@ -56,6 +56,8 @@ void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<No
     weak_ptr<Node> node1WeakPtr(node1);
     weak_ptr<Node> node2WeakPtr(node2);
 
+    
+
     shared_ptr<Connection> connection1SharedPtr = make_shared<Connection>(weight, node1WeakPtr, node2WeakPtr, true);
     shared_ptr<Connection> connection2SharedPtr = make_shared<Connection>(weight, node2WeakPtr, node1WeakPtr, true);
     
