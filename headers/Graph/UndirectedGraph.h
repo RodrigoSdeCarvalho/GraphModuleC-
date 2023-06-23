@@ -9,6 +9,7 @@
 #include <list>
 
 #include "Graph/AbstractGraph.h"
+#define NIL 0
 
 using namespace std;
 
@@ -56,13 +57,13 @@ namespace GraphModule
 
             void configureBipartiteGraph();
             
-            int hopcroftKarp();
+            tuple<int, vector<int>> hopcroftKarp();
 
             bool bipartiteGraphDFS(int u);
 
             bool bipartiteGraphBFS();
             
-            void printHopcroftKarp(int maximum_matching);
+            void printHopcroftKarp(int maximum_matching, vector<int> path);
 
             ~UndirectedGraph() override;
 
@@ -70,12 +71,15 @@ namespace GraphModule
             int numberOfEdges;
             vector<shared_ptr<Connection>> edges;
             list<pair<int, float> > *adj; //used for Prim
-            list<int> *color_adj; //used for Coloring 
+            list<int> *color_adj; //used for Coloring
+
             
             // Varibles below used on hopcroftKarp
             list<int> *adjacency;
-            int m = 0; // Domain
-            int n = 0; // Contra domain
+            vector<int> domain;
+            vector<int> contradomain;
+            int m; // Domain size 
+            int n; // Contra domain size
             int *pairU, *pairV, *dist;
     };
 }

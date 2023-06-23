@@ -19,6 +19,7 @@
 using namespace std;
 using namespace GraphModule;
 
+
 UndirectedGraph::UndirectedGraph()
 {
     this->numberOfEdges = 0;
@@ -56,7 +57,20 @@ void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<No
     weak_ptr<Node> node1WeakPtr(node1);
     weak_ptr<Node> node2WeakPtr(node2);
 
+    int n1 = node1->getNumber();
+    int n2 = node2->getNumber();
     
+    // Use std::find to check if the value is present in the vector
+    auto findDomain = std::find(domain.begin(), domain.end(), n1);
+    auto findContraDomain = std::find(contradomain.begin(), contradomain.end(), n2);
+
+    if (findDomain == domain.end()) {
+        domain.push_back(n1);
+    }
+
+    if (findContraDomain == contradomain.end()) {
+        contradomain.push_back(n2);
+    }
 
     shared_ptr<Connection> connection1SharedPtr = make_shared<Connection>(weight, node1WeakPtr, node2WeakPtr, true);
     shared_ptr<Connection> connection2SharedPtr = make_shared<Connection>(weight, node2WeakPtr, node1WeakPtr, true);
@@ -302,9 +316,9 @@ tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
     A[startNodeIndex] = -1; // Set the parent of the start node to -1.
 
     MinHeap minHeap = MinHeap(); // Create a min heap. 
-    for (int n = 0; n < numberOfVertices; n++)
+    for (int i = 0; i < numberOfVertices; i++)
     {
-        minHeap.insert(this->nodes[n], D[n]);
+        minHeap.insert(this->nodes[i], D[i]);
     }
 
     while (visitedNodes < numberOfVertices)
@@ -586,21 +600,9 @@ void UndirectedGraph::printColoring(vector<int> colors){
 }
 
 void UndirectedGraph::configureBipartiteGraph()
-{
-    int V = this->numberOfVertices;
-    for (int i = 0; i < V; i++)
-    {
-        if (this->nodes[i]->numberOfOutgoingConnections())
-        {
-            m += 1;
-        }
-        else
-        {
-            n += 1;
-        }
-    }
-
-    
+{   
+    m = domain.size();
+    n = contradomain.size(); 
     adjacency = new list<int>[m+1];
     for(auto conn:this->edges)
     { // Builds adjacency matrix
@@ -610,7 +612,7 @@ void UndirectedGraph::configureBipartiteGraph()
     }
 }
 
-int UndirectedGraph::hopcroftKarp()
+tuple<int, vector<int>> UndirectedGraph::hopcroftKarp()
 {
     /* Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado e informe:
     /  - [ ] Qual o valor do emparelhamento máximo e 
@@ -635,12 +637,13 @@ int UndirectedGraph::hopcroftKarp()
  
     // Initialize NIL as pair of all vertices
     for (int u=0; u<=m; u++)
-        pairU[u] = 0;
+        pairU[u] = NIL; 
     for (int v=0; v<=n; v++)
-        pairV[v] = 0;
+        pairV[v] = NIL;
  
     // Initialize result
     int result = 0;
+    vector<int> final_path;
  
     // Keep updating the result while there is an
     // augmenting path.
@@ -651,15 +654,18 @@ int UndirectedGraph::hopcroftKarp()
  
             // If current vertex is free and there is
             // an augmenting path from current vertex
-            if (pairU[u]==0 && bipartiteGraphDFS(u))
+            if (pairU[u]==NIL && bipartiteGraphDFS(u))
+            {
+                final_path.push_back(u);
                 result++;
+            }
     }
-    return result;
+    return make_tuple(result, final_path);
 }
 
 bool UndirectedGraph::bipartiteGraphDFS(int u)
 {
-    if (u != 0)
+    if (u != NIL)
     {
         list<int>::iterator i;
         for (i=adjacency[u].begin(); i!=adjacency[u].end(); ++i)
@@ -696,7 +702,7 @@ bool UndirectedGraph::bipartiteGraphBFS()
     for (int u=1; u<=m; u++)
     {
         // If this is a free vertex, add it to queue
-        if (pairU[u]==0)
+        if (pairU[u]==NIL)
         {
             // u is not matched
             dist[u] = 0;
@@ -709,7 +715,7 @@ bool UndirectedGraph::bipartiteGraphBFS()
     }
  
     // Initialize distance to NIL as infinite
-    dist[0] = 1000000;
+    dist[NIL] = 1000000;
  
     // Q is going to contain vertices of left side only.
     while (!Q.empty())
@@ -719,7 +725,7 @@ bool UndirectedGraph::bipartiteGraphBFS()
         Q.pop();
  
         // If this node is not NIL and can provide a shorter path to NIL
-        if (dist[u] < dist[0])
+        if (dist[u] < dist[NIL])
         {
             // Get all adjacent vertices of the dequeued vertex u
             list<int>::iterator i;
@@ -741,14 +747,17 @@ bool UndirectedGraph::bipartiteGraphBFS()
  
     // If we could come back to NIL using alternating path of distinct
     // vertices then there is an augmenting path
-    return (dist[0] != 1000000);
+    return (dist[NIL] != 1000000);
 }
 
-void UndirectedGraph::printHopcroftKarp(int maximum_matching)
+void UndirectedGraph::printHopcroftKarp(int maximum_matching, vector<int> path)
 {
-
+    cout<< "Matching Size = " << maximum_matching <<endl;
+    for (auto node : path) {
+        cout << node << " ";
+    }
+    cout<<endl;
 }
-
 
 UndirectedGraph::~UndirectedGraph()
 = default;
