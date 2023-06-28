@@ -36,6 +36,10 @@ namespace GraphModule
 
             vector<shared_ptr<Connection>> getOutgoingConnections();
 
+            int numberOfIncomingConnections();
+
+            int numberOfOutgoingConnections();
+
             void addConnection(const weak_ptr<Connection>& connectionToAdd);
 
             void addIncomingConnection(const weak_ptr<Connection>& connectionToAdd);

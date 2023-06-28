@@ -43,14 +43,19 @@ namespace GraphModule
 
             void addArc(const shared_ptr<Node> &startNode, const shared_ptr<Node> &endNode, float weight);
 
-            ~DirectedGraph() override;
+            int edmondsKarp(int beginNodeIndex, int endNodeIndex);
 
-            //ADD METHODS FOR A3 HERE.
+            int BFS(int beginNodeIndex, int endNodeIndex, int parent[]);
+
+            void printEdmontsKarp(int max_flow);
+
+            ~DirectedGraph() override;
 
         private:
             int numberOfArcs;
             vector<shared_ptr<Connection>> arcs;
             list<int> *adj;
+            vector<vector<float>> residualNetwork; // Residual Graph Adjacency matrix for edmondsKarp
     };
 }
 

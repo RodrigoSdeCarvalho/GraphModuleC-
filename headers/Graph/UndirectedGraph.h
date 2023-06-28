@@ -9,6 +9,7 @@
 #include <list>
 
 #include "Graph/AbstractGraph.h"
+#define NIL 0
 
 using namespace std;
 
@@ -46,20 +47,40 @@ namespace GraphModule
 
             void printFloydWarshall(vector<vector<int>> D);
 
-            vector<vector<int>> kruskal();
-
-            void printKruskal(const vector<vector<int>>& A);
-
             vector<int> prim();
 
             void printPrim(vector<int> A);
+
+            vector<int> coloring();
+
+            void printColoring(vector<int>  colors);
+
+            void configureBipartiteGraph();
+            
+            tuple<int, vector<int>> hopcroftKarp();
+
+            bool bipartiteGraphDFS(int u);
+
+            bool bipartiteGraphBFS();
+            
+            void printHopcroftKarp(int maximum_matching, vector<int> path);
 
             ~UndirectedGraph() override;
 
         private:
             int numberOfEdges;
             vector<shared_ptr<Connection>> edges;
-            list<pair<int, float> > *adj;
+            list<pair<int, float> > *adj; //used for Prim
+            list<int> *color_adj; //used for Coloring
+
+            
+            // Varibles below used on hopcroftKarp
+            list<int> *adjacency;
+            vector<int> domain;
+            vector<int> contradomain;
+            int m; // Domain size 
+            int n; // Contra domain size
+            int *pairU, *pairV, *dist;
     };
 }
 

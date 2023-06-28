@@ -35,7 +35,7 @@ namespace GraphActivity
 
             static void runA2(int question, const string& graphFile);
 
-            static void A3Main(int question, const string& graphFile, bool defaultFlag);
+            static void A3Main(int question, string graphFile, bool defaultFlag);
 
             static void runA3(int question, const string& graphFile);
 

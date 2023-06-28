@@ -19,6 +19,7 @@
 using namespace std;
 using namespace GraphModule;
 
+
 UndirectedGraph::UndirectedGraph()
 {
     this->numberOfEdges = 0;
@@ -55,6 +56,21 @@ void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<No
     
     weak_ptr<Node> node1WeakPtr(node1);
     weak_ptr<Node> node2WeakPtr(node2);
+
+    int n1 = node1->getNumber();
+    int n2 = node2->getNumber();
+    
+    // std::find to check if the value is present in the vector
+    auto findDomain = find(domain.begin(), domain.end(), n1);
+    auto findContraDomain = find(contradomain.begin(), contradomain.end(), n2);
+
+    if (findDomain == domain.end()) {
+        domain.push_back(n1);
+    }
+
+    if (findContraDomain == contradomain.end()) {
+        contradomain.push_back(n2);
+    }
 
     shared_ptr<Connection> connection1SharedPtr = make_shared<Connection>(weight, node1WeakPtr, node2WeakPtr, true);
     shared_ptr<Connection> connection2SharedPtr = make_shared<Connection>(weight, node2WeakPtr, node1WeakPtr, true);
@@ -300,9 +316,9 @@ tuple<vector<int>, vector<int>> UndirectedGraph::dijkstra(int startNodeIndex)
     A[startNodeIndex] = -1; // Set the parent of the start node to -1.
 
     MinHeap minHeap = MinHeap(); // Create a min heap. 
-    for (int n = 0; n < numberOfVertices; n++)
+    for (int i = 0; i < numberOfVertices; i++)
     {
-        minHeap.insert(this->nodes[n], D[n]);
+        minHeap.insert(this->nodes[i], D[i]);
     }
 
     while (visitedNodes < numberOfVertices)
@@ -428,16 +444,6 @@ void UndirectedGraph::printFloydWarshall(vector<vector<int>> D)
     }
 }
 
-vector<vector<int>> UndirectedGraph::kruskal()
-{
-
-}
-
-void UndirectedGraph::printKruskal(const vector<vector<int>>& A)
-{
-
-}
-
 vector<int> UndirectedGraph::prim()
 {
     int V = this->numberOfVertices;
@@ -510,6 +516,250 @@ void UndirectedGraph::printPrim(vector<int> A)
     }
     cout << weightSum << endl;
     cout << message << endl;
+}
+
+vector<int>  UndirectedGraph::coloring()
+{
+    /* Crie um programa que recebe um grafo não-dirigido e não-ponderado como argumento. Ao final, informe:
+    /  - [X] a coloração mínima e 
+    /  - [X] qual número cromático foi utilizado em cada vertice */
+
+    int V = this->numberOfVertices;
+    color_adj = new list<int>[V]; // Adjacency list for coloring algorithm
+    vector<int> colors; // Array to save the final results of the coloring
+
+    for(auto conn:this->edges)
+    { // Builds the adjacency matrix
+        int i = conn->getStartNode()->getNumber() - 1;
+        int j = conn->getEndNode()->getNumber() - 1;
+        color_adj[i].push_back(j);
+        color_adj[j].push_back(i);
+    }
+ 
+    for (int u = 0; u < V; u++)
+    {  // Initialize values, only the first is 0 for now
+        if (u == 0)
+        {
+            colors.push_back(0);
+        }
+        else
+        {
+            colors.push_back(-1);
+        }
+    }
+
+    bool used_color[V]; // Array to indicate if color is already being used (True) by adjacent vertices
+    for (int i = 0; i < V; i++)
+    {
+        used_color[i] = false;
+    }
+
+    for (int u = 1; u < V; u++)
+    {  // Coloring process
+        
+        list<int>::iterator i;
+        for (i = color_adj[u].begin(); i != color_adj[u].end(); ++i)
+        { // Setting adjancent vertices colors as used
+            if (colors[*i] != -1)
+                used_color[colors[*i]] = true;
+        }
+
+        int color;
+        for (color = 0; color < V; color++)
+        { // Finds another color
+            if (used_color[color] == false)
+            {
+                break;
+            }
+        }
+        colors[u] = color;
+
+        for (i = color_adj[u].begin(); i != color_adj[u].end(); ++i)
+        { // Resetting for next iteration
+            if (colors[*i] != -1)
+            {
+                used_color[colors[*i]] = false;
+            }
+        }
+    }
+    
+    return colors;
+} 
+
+void UndirectedGraph::printColoring(vector<int> colors){
+    int V = this->numberOfVertices;
+    unordered_map <int, int> mp;
+
+    for (int i = 0; i < V; i++){
+        mp[colors[i]]++;
+        cout << "Node " << i+1 << " = Color " << colors[i] +1 << endl;
+    }
+    
+    cout<< "\nMinimum coloring equals "<< mp.size()<<endl;
+    
+}
+
+void UndirectedGraph::configureBipartiteGraph()
+{   
+    m = domain.size();
+    n = contradomain.size(); 
+    adjacency = new list<int>[m+1];
+    for(int idx = 0; idx < this->edges.size(); idx++)
+    { // Builds adjacency matrix
+        if (idx%2==0){
+            int i = this->edges[idx]->getStartNode()->getNumber();
+            int j = this->edges[idx]->getEndNode()->getNumber()-1;
+            //cout << i << "-" << j << endl;
+            adjacency[i].push_back(j);
+        } 
+    }
+}
+
+tuple<int, vector<int>> UndirectedGraph::hopcroftKarp()
+{
+    /* Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado e informe:
+    /  - [ ] Qual o valor do emparelhamento máximo e 
+    /  - [ ] Quais arestas pertencem a ele. 
+    /  Utilize o algoritmo de Hopcroft-Karp.*/
+
+    configureBipartiteGraph();
+
+    // pairU[u] stores pair of u in matching where u
+    // is a vertex on left side of Bipartite Graph.
+    // If u doesn't have any pair, then pairU[u] is NIL
+    pairU = new int[m+1];
+ 
+    // pairV[v] stores pair of v in matching. If v
+    // doesn't have any pair, then pairU[v] is NIL
+    pairV = new int[n+1];
+ 
+    // dist[u] stores distance of left side vertices
+    // dist[u] is one more than dist[u'] if u is next
+    // to u'in augmenting path
+    dist = new int[m+1];
+ 
+    // Initialize NIL as pair of all vertices
+    for (int u=0; u<=m; u++)
+        pairU[u] = NIL; 
+    for (int v=0; v<=n; v++)
+        pairV[v] = NIL;
+ 
+    // Initialize result
+    int result = 0;
+    vector<int> final_path;
+ 
+    // Keep updating the result while there is an
+    // augmenting path.
+    while (bipartiteGraphBFS())
+    {
+        // Find a free vertex
+        for (int u=1; u<=m; u++)
+ 
+            // If current vertex is free and there is
+            // an augmenting path from current vertex
+            if (pairU[u]==NIL && bipartiteGraphDFS(u))
+            {
+                final_path.push_back(u);
+                result++;
+            }
+    }
+    return make_tuple(result, final_path);
+}
+
+bool UndirectedGraph::bipartiteGraphDFS(int u)
+{
+    if (u != NIL)
+    {
+        list<int>::iterator i;
+        for (i=adjacency[u].begin(); i!=adjacency[u].end(); ++i)
+        {
+            // Adjacent to u
+            int v = *i;
+ 
+            // Follow the distances set by BFS
+            if (dist[pairV[v]] == dist[u]+1)
+            {
+                // If dfs for pair of v also returns
+                // true
+                if (bipartiteGraphDFS(pairV[v]))
+                {
+                    pairV[v] = u;
+                    pairU[u] = v;
+                    return true;
+                }
+            }
+        }
+ 
+        // If there is no augmenting path beginning with u.
+        dist[u] = 1000000;
+        return false;
+    }
+    return true;
+}
+
+bool UndirectedGraph::bipartiteGraphBFS()
+{
+    queue<int> Q; //an integer queue
+ 
+    // First layer of vertices (set distance as 0)
+    for (int u=1; u<=m; u++)
+    {
+        // If this is a free vertex, add it to queue
+        if (pairU[u]==NIL)
+        {
+            // u is not matched
+            dist[u] = 0;
+            Q.push(u);
+        }
+ 
+        // Else set distance as infinite so that this vertex
+        // is considered next time
+        else dist[u] = 1000000;
+    }
+ 
+    // Initialize distance to NIL as infinite
+    dist[NIL] = 1000000;
+ 
+    // Q is going to contain vertices of left side only.
+    while (!Q.empty())
+    {
+        // Dequeue a vertex
+        int u = Q.front();
+        Q.pop();
+ 
+        // If this node is not NIL and can provide a shorter path to NIL
+        if (dist[u] < dist[NIL])
+        {
+            // Get all adjacent vertices of the dequeued vertex u
+            list<int>::iterator i;
+            for (i=adjacency[u].begin(); i!=adjacency[u].end(); ++i)
+            {
+                int v = *i;
+ 
+                // If pair of v is not considered so far
+                // (v, pairV[V]) is not yet explored edge.
+                if (dist[pairV[v]] == 1000000)
+                {
+                    // Consider the pair and add it to queue
+                    dist[pairV[v]] = dist[u] + 1;
+                    Q.push(pairV[v]);
+                }
+            }
+        }
+    }
+ 
+    // If we could come back to NIL using alternating path of distinct
+    // vertices then there is an augmenting path
+    return (dist[NIL] != 1000000);
+}
+
+void UndirectedGraph::printHopcroftKarp(int maximum_matching, vector<int> path)
+{
+    cout<< "Matching Size = " << maximum_matching <<endl;
+    for (auto node : path) {
+        cout << node << " ";
+    }
+    cout<<endl;
 }
 
 UndirectedGraph::~UndirectedGraph()

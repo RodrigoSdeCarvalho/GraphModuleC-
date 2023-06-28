@@ -97,7 +97,7 @@ void Activities::runA1(int question, const string& graphFile)
     else if (question == 5)
     {
         cout << "Floyd Warshall" << " in file " << graphFile << endl;
-        vector<vector<int>> D = graph->floydWarshall(); // Might be better to have a print function here as well
+        vector<vector<int>> D = graph->floydWarshall(); 
         graph->printFloydWarshall(D);
         cout << endl;
     }
@@ -133,9 +133,6 @@ void Activities::runA2(int question, const string& graphFile)
         auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
         cout << "Strongly Connected Components"<< endl;
         directedGraph->stronglyConnectedComponents();
-        /*vector<int> transposedA = directedGraph->stronglyConnectedComponents();
-        directedGraph->printStronglyConnectedComponents(transposedA);*/
-        
     }
 
     else if (question == 2)
@@ -157,14 +154,67 @@ void Activities::runA2(int question, const string& graphFile)
     }
 }
 
-void Activities::A3Main(int question, const string& graphFile, bool defaultFlag)
+void Activities::A3Main(int question, string graphFile, bool defaultFlag)
 {
-    //Implement A3.
+    map<int, string> defaultGraphFileForQuestion = {
+        {1, "fluxo2.txt"},
+        {2, "pequeno.txt"},
+        {3, "cor3.txt"},
+    };
+
+    if (defaultFlag)
+    {
+        graphFile = defaultGraphFileForQuestion[question];
+    }
+
+    runA3(question, graphFile);
 }
 
 void Activities::runA3(int question, const string& graphFile)
 {
-    //Implement A3.
+    cout << "A3 Question " << question << " on " << graphFile << endl;
+
+    cout << endl;
+
+    string graphFilePath = "A3/" + graphFile;
+
+    if (question == 1)
+    {
+        checkGraphKindFromInputFile(graphFilePath, "directed");
+        auto directedGraph = buildGraph<DirectedGraph>(graphFilePath);
+        cout << "The graph has the vertices below:" << endl;
+        directedGraph->showNodes();
+        cout << endl;
+
+        cout << "Edmonds-Karp Algorithm"<< endl;
+        int startIndex, endIndex;
+        cout << "Enter the start vertex: ";
+        cin >> startIndex;
+        cout << "Enter the end vertex: ";
+        cin >> endIndex;
+        int max_flow = directedGraph->edmondsKarp(startIndex-1, endIndex-1);
+        directedGraph->printEdmontsKarp(max_flow);
+    }
+
+    else if (question == 2)
+    {
+        checkGraphKindFromInputFile(graphFilePath, "undirected");
+        auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
+        cout << "Hopcroft-Karp Algorithm" << endl;
+        tuple<int, vector<int>> returnedValues = undirectedGraph->hopcroftKarp();
+        int maximum_matching = get<0>(returnedValues);
+        vector<int> path = get<1>(returnedValues);
+        undirectedGraph->printHopcroftKarp(maximum_matching, path);
+    }
+
+    else if (question == 3)
+    {
+        checkGraphKindFromInputFile(graphFilePath, "undirected");
+        auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
+        cout << "Undirected Graph Coloring" << endl;
+        vector<int> vertices_colors = undirectedGraph->coloring();
+        undirectedGraph->printColoring(vertices_colors);
+    }
 }
 
 void Activities::buildGraphFromInputFile(UndirectedGraph* graph, string inputFilePath)

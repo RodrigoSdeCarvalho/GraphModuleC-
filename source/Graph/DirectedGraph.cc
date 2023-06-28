@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <queue>
@@ -218,6 +219,95 @@ void DirectedGraph::addArc(const shared_ptr<Node> &startNode, const shared_ptr<N
     endNode->addIncomingConnection(connectionWeakPtr);
 
     this->numberOfArcs++;
+}
+
+int DirectedGraph::edmondsKarp(int beginNodeIndex, int endNodeIndex)
+{
+    /* Crie um programa que receba um grafo dirigido e ponderado como argumento. Ao final, imprima na tela:
+    /  - [X] o valor do fluxo maximo resultante da execucao do algoritmo de Edmonds-Karp.*/
+
+    int V = this->numberOfVertices; // Number of vertices in the graph.
+    vector<vector<float>> graphAdjacency; // Adjacency matrix
+    int parent[V]; // BFS result array
+    int u, v;
+    int max_flow = 0;
+
+    for (u = 0; u < V; u++) 
+    { // Builds adjacency matrices. Initialize with wieghts, if there isn't, initialize with 0.
+        vector<float> connections;
+        for (int v = 0; v < V; v++)
+        {    
+            connections.push_back(0);
+        }
+        graphAdjacency.push_back(connections);
+    } 
+    for (u = 0; u < V; u++) 
+    { // this is so bad it makes me wanna puke
+        vector<shared_ptr<Connection>> cons = this->nodes[u]->getOutgoingConnections();
+        for (auto m : cons) 
+        {
+            graphAdjacency[m->getStartNode()->getNumber()-1][m->getEndNode()->getNumber()-1] = m->getWeight();
+        }
+    }
+    this->residualNetwork = graphAdjacency;
+    
+    while (BFS(beginNodeIndex, endNodeIndex, parent)) 
+    {
+        float path_flow = 1000000;
+        for (v = endNodeIndex; v != beginNodeIndex; v = parent[v]) 
+        {
+            u = parent[v];
+            path_flow = min(path_flow, this->residualNetwork[u][v]);
+        }
+ 
+        for (v = endNodeIndex; v != beginNodeIndex; v = parent[v]) 
+        { // Updates and changes arcs
+            u = parent[v];
+            this->residualNetwork[u][v] -= path_flow;
+            this->residualNetwork[v][u] += path_flow;
+        }
+        max_flow += path_flow;
+    }
+    return max_flow;
+}
+
+int DirectedGraph::BFS(int beginNodeIndex, int endNodeIndex, int parent[])
+{
+    int V = this->numberOfVertices;
+    bool visited[V];
+    queue<int> Q;
+
+    memset(visited, 0, sizeof(visited)); //Initialize as false
+    Q.push(beginNodeIndex);
+    visited[beginNodeIndex] = true;
+    parent[beginNodeIndex] = -1;
+    
+    while (!Q.empty()) 
+    {
+        int u = Q.front();
+        Q.pop();
+        for (int v = 0; v < V; v++) 
+        {
+            if (visited[v] == false && this->residualNetwork[u][v] > 0) 
+            {
+                if (v == endNodeIndex) 
+                {
+                    parent[v] = u;
+                    return 1;
+                }
+                Q.push(v);
+                parent[v] = u;
+                visited[v] = true;
+            }
+        }
+
+    }
+    return 0;
+}
+
+void DirectedGraph::printEdmontsKarp(int max_flow)
+{
+    cout << "\nMax flow equals "<< max_flow <<endl;
 }
 
 DirectedGraph::~DirectedGraph()
