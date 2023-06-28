@@ -652,7 +652,7 @@ tuple<int, vector<int>> UndirectedGraph::hopcroftKarp()
     {
         // Find a free vertex
         for (int u=1; u<=m; u++)
- 
+
             // If current vertex is free and there is
             // an augmenting path from current vertex
             if (pairU[u]==NIL && bipartiteGraphDFS(u))
