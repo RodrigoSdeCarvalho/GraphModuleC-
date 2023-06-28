@@ -57,13 +57,13 @@ namespace GraphModule
 
             void configureBipartiteGraph();
             
-            tuple<int, vector<int>> hopcroftKarp();
+            tuple<int,  int*> hopcroftKarp();
 
             bool bipartiteGraphDFS(int u);
 
             bool bipartiteGraphBFS();
             
-            void printHopcroftKarp(int maximum_matching, vector<int> path);
+            void printHopcroftKarp(int maximum_matching,  int* pairs);
 
             ~UndirectedGraph() override;
 

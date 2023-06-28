@@ -608,16 +608,23 @@ void UndirectedGraph::configureBipartiteGraph()
         if (idx%2==0){
             int i = this->edges[idx]->getStartNode()->getNumber();
             int j = this->edges[idx]->getEndNode()->getNumber();
-            adjacency[i].push_back(j%m);
+            if (j%m == 0)
+            {
+                adjacency[i].push_back(m);
+            }
+            else 
+            {
+                adjacency[i].push_back(j%m);
+            }
         } 
     }
 }
 
-tuple<int, vector<int>> UndirectedGraph::hopcroftKarp()
+tuple<int, int*> UndirectedGraph::hopcroftKarp()
 {
     /* Crie um programa que receba um arquivo de grafo bipartido, nao-dirigido, nao-ponderado e informe:
-    /  - [ ] Qual o valor do emparelhamento máximo e 
-    /  - [ ] Quais arestas pertencem a ele. 
+    /  - [X] Qual o valor do emparelhamento máximo e 
+    /  - [X] Quais arestas pertencem a ele. 
     /  Utilize o algoritmo de Hopcroft-Karp.*/
 
     configureBipartiteGraph();
@@ -644,7 +651,6 @@ tuple<int, vector<int>> UndirectedGraph::hopcroftKarp()
  
     // Initialize result
     int result = 0;
-    vector<int> final_path;
  
     // Keep updating the result while there is an
     // augmenting path.
@@ -652,16 +658,16 @@ tuple<int, vector<int>> UndirectedGraph::hopcroftKarp()
     {
         // Find a free vertex
         for (int u=1; u<=m; u++)
-
+        {
             // If current vertex is free and there is
             // an augmenting path from current vertex
             if (pairU[u]==NIL && bipartiteGraphDFS(u))
             {
-                final_path.push_back(u);
                 result++;
             }
+        }
     }
-    return make_tuple(result, final_path);
+    return make_tuple(result, pairU);
 }
 
 bool UndirectedGraph::bipartiteGraphDFS(int u)
@@ -751,11 +757,13 @@ bool UndirectedGraph::bipartiteGraphBFS()
     return (dist[NIL] != 1000000);
 }
 
-void UndirectedGraph::printHopcroftKarp(int maximum_matching, vector<int> path)
+void UndirectedGraph::printHopcroftKarp(int maximum_matching, int* pairs)
 {
-    cout<< "Matching Size = " << maximum_matching <<endl;
-    for (auto node : path) {
-        cout << node << " ";
+    cout<< "Matching Size: " << maximum_matching <<endl;
+    cout << "Edges: ";
+    for (int i=1; i<=m; i++)
+    {
+        cout << i << "-" << pairs[i]+m << "\n       ";
     }
     cout<<endl;
 }

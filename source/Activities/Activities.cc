@@ -200,11 +200,11 @@ void Activities::runA3(int question, const string& graphFile)
     {
         checkGraphKindFromInputFile(graphFilePath, "undirected");
         auto undirectedGraph = buildGraph<UndirectedGraph>(graphFilePath);
-        cout << "Hopcroft-Karp Algorithm \n" << endl;
-        tuple<int, vector<int>> returnedValues = undirectedGraph->hopcroftKarp();
+        cout << "Hopcroft-Karp Algorithm" << endl;
+        tuple<int, int*> returnedValues = undirectedGraph->hopcroftKarp();
         int maximum_matching = get<0>(returnedValues);
-        vector<int> path = get<1>(returnedValues);
-        undirectedGraph->printHopcroftKarp(maximum_matching, path);
+        int* pairs = get<1>(returnedValues);
+        undirectedGraph->printHopcroftKarp(maximum_matching, pairs);
     }
 
     else if (question == 3)
