@@ -629,40 +629,34 @@ tuple<int, int*> UndirectedGraph::hopcroftKarp()
 
     configureBipartiteGraph();
 
-    // pairU[u] stores pair of u in matching where u
-    // is a vertex on left side of Bipartite Graph.
-    // If u doesn't have any pair, then pairU[u] is NIL
+    // matching of the domain
     pairU = new int[m+1];
  
-    // pairV[v] stores pair of v in matching. If v
-    // doesn't have any pair, then pairU[v] is NIL
+    // matching of the counterdomain
     pairV = new int[n+1];
  
-    // dist[u] stores distance of left side vertices
-    // dist[u] is one more than dist[u'] if u is next
-    // to u'in augmenting path
+    // distance of domain
     dist = new int[m+1];
  
-    // Initialize NIL as pair of all vertices
+    // Initializing as 0 all vertices
     for (int u=0; u<=m; u++)
-        pairU[u] = NIL; 
+    {
+        pairU[u] = 0; 
+    }
     for (int v=0; v<=n; v++)
-        pairV[v] = NIL;
+    {
+        pairV[v] = 0;
+    }
  
-    // Initialize result
     int result = 0;
  
-    // Keep updating the result while there is an
-    // augmenting path.
+    // While there is an augmenting path.
     while (bipartiteGraphBFS())
     {
-        // Find a free vertex
         for (int u=1; u<=m; u++)
         {
-            // If current vertex is free and there is
-            // an augmenting path from current vertex
-            if (pairU[u]==NIL && bipartiteGraphDFS(u))
-            {
+            if (pairU[u]==0 && bipartiteGraphDFS(u))
+            { // If the vertex has no match and there is an augmenting path
                 result++;
             }
         }
@@ -672,30 +666,23 @@ tuple<int, int*> UndirectedGraph::hopcroftKarp()
 
 bool UndirectedGraph::bipartiteGraphDFS(int u)
 {
-    if (u != NIL)
+    if (u != 0)
     {
         list<int>::iterator i;
         for (i=adjacency[u].begin(); i!=adjacency[u].end(); ++i)
         {
-            // Adjacent to u
-            int v = *i;
- 
-            // Follow the distances set by BFS
+            int v = *i; // Adjacent to u
             if (dist[pairV[v]] == dist[u]+1)
-            {
-                // If dfs for pair of v also returns
-                // true
+            { // Distances results from BFS
                 if (bipartiteGraphDFS(pairV[v]))
-                {
+                { // If it is a match
                     pairV[v] = u;
                     pairU[u] = v;
                     return true;
                 }
             }
         }
- 
-        // If there is no augmenting path beginning with u.
-        dist[u] = 1000000;
+        dist[u] = 1000000; // If there is no augmenting path
         return false;
     }
     return true;
@@ -703,58 +690,41 @@ bool UndirectedGraph::bipartiteGraphDFS(int u)
 
 bool UndirectedGraph::bipartiteGraphBFS()
 {
-    queue<int> Q; //an integer queue
- 
-    // First layer of vertices (set distance as 0)
+    queue<int> Q;
     for (int u=1; u<=m; u++)
-    {
-        // If this is a free vertex, add it to queue
-        if (pairU[u]==NIL)
-        {
-            // u is not matched
+    { // Initializing distance as 0
+        if (pairU[u]==0)
+        { // Free vertex, adds it to queue
             dist[u] = 0;
             Q.push(u);
         }
- 
-        // Else set distance as infinite so that this vertex
-        // is considered next time
-        else dist[u] = 1000000;
-    }
- 
-    // Initialize distance to NIL as infinite
-    dist[NIL] = 1000000;
- 
-    // Q is going to contain vertices of left side only.
+        else
+        { // Else set distance as infinite so that this vertex is considered next time
+            dist[u] = 1000000;
+        }
+    } 
+    dist[0] = 1000000; // Initialize distance to 0 as infinite, since it's a void index for the adj matrix
+
     while (!Q.empty())
     {
-        // Dequeue a vertex
         int u = Q.front();
         Q.pop();
- 
-        // If this node is not NIL and can provide a shorter path to NIL
-        if (dist[u] < dist[NIL])
-        {
-            // Get all adjacent vertices of the dequeued vertex u
+        if (dist[u] < dist[0])
+        { // If this node is not the void index and can provide a shorter path
             list<int>::iterator i;
             for (i=adjacency[u].begin(); i!=adjacency[u].end(); ++i)
-            {
+            { // Gets all adjacents of u
                 int v = *i;
- 
-                // If pair of v is not considered so far
-                // (v, pairV[V]) is not yet explored edge.
                 if (dist[pairV[v]] == 1000000)
-                {
-                    // Consider the pair and add it to queue
-                    dist[pairV[v]] = dist[u] + 1;
-                    Q.push(pairV[v]);
+                { // If match of v is not explored so far
+                    dist[pairV[v]] = dist[u] + 1; 
+                    Q.push(pairV[v]); // Adds it to queue
                 }
             }
         }
     }
- 
-    // If we could come back to NIL using alternating path of distinct
-    // vertices then there is an augmenting path
-    return (dist[NIL] != 1000000);
+    // If back to void index by alternating path of distinct vertices then there is an augmenting path
+    return (dist[0] != 1000000);
 }
 
 void UndirectedGraph::printHopcroftKarp(int maximum_matching, int* pairs)

@@ -9,7 +9,6 @@
 #include <list>
 
 #include "Graph/AbstractGraph.h"
-#define NIL 0
 
 using namespace std;
 
@@ -73,14 +72,13 @@ namespace GraphModule
             list<pair<int, float> > *adj; //used for Prim
             list<int> *color_adj; //used for Coloring
 
-            
             // Varibles below used on hopcroftKarp
             list<int> *adjacency;
             vector<int> domain;
             vector<int> contradomain;
             int m; // Domain size 
             int n; // Contra domain size
-            int *pairU, *pairV, *dist;
+            int *pairU, *pairV, *dist; //arrays for matches and distance
     };
 }
 
