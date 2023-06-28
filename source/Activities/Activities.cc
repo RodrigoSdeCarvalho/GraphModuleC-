@@ -204,7 +204,7 @@ void Activities::runA3(int question, const string& graphFile)
         tuple<int, vector<int>> returnedValues = undirectedGraph->hopcroftKarp();
         int maximum_matching = get<0>(returnedValues);
         vector<int> path = get<1>(returnedValues);
-        //undirectedGraph->printHopcroftKarp(maximum_matching, path);
+        undirectedGraph->printHopcroftKarp(maximum_matching, path);
     }
 
     else if (question == 3)

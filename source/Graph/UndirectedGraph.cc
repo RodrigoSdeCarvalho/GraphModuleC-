@@ -60,9 +60,9 @@ void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<No
     int n1 = node1->getNumber();
     int n2 = node2->getNumber();
     
-    // Use std::find to check if the value is present in the vector
-    auto findDomain = std::find(domain.begin(), domain.end(), n1);
-    auto findContraDomain = std::find(contradomain.begin(), contradomain.end(), n2);
+    // std::find to check if the value is present in the vector
+    auto findDomain = find(domain.begin(), domain.end(), n1);
+    auto findContraDomain = find(contradomain.begin(), contradomain.end(), n2);
 
     if (findDomain == domain.end()) {
         domain.push_back(n1);
@@ -604,11 +604,14 @@ void UndirectedGraph::configureBipartiteGraph()
     m = domain.size();
     n = contradomain.size(); 
     adjacency = new list<int>[m+1];
-    for(auto conn:this->edges)
+    for(int idx = 0; idx < this->edges.size(); idx++)
     { // Builds adjacency matrix
-        int i = conn->getStartNode()->getNumber() - 1;
-        int j = conn->getEndNode()->getNumber() - 1 ;
-        adjacency[i].push_back(j);
+        if (idx%2==0){
+            int i = this->edges[idx]->getStartNode()->getNumber();
+            int j = this->edges[idx]->getEndNode()->getNumber()-1;
+            //cout << i << "-" << j << endl;
+            adjacency[i].push_back(j);
+        } 
     }
 }
 
