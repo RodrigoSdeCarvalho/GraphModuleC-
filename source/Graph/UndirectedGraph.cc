@@ -53,14 +53,10 @@ int UndirectedGraph::getDegreeOfNode(int nodeKey)
 
 void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<Node>& node2, float weight)
 {
-    
-    weak_ptr<Node> node1WeakPtr(node1);
-    weak_ptr<Node> node2WeakPtr(node2);
-
     int n1 = node1->getNumber();
     int n2 = node2->getNumber();
     
-    // std::find to check if the value is present in the vector
+    // find to check if the value is present in the vector
     auto findDomain = find(domain.begin(), domain.end(), n1);
     auto findContraDomain = find(contradomain.begin(), contradomain.end(), n2);
 
@@ -71,6 +67,9 @@ void UndirectedGraph::addEdge(const shared_ptr<Node>& node1, const shared_ptr<No
     if (findContraDomain == contradomain.end()) {
         contradomain.push_back(n2);
     }
+
+    weak_ptr<Node> node1WeakPtr(node1);
+    weak_ptr<Node> node2WeakPtr(node2);
 
     shared_ptr<Connection> connection1SharedPtr = make_shared<Connection>(weight, node1WeakPtr, node2WeakPtr, true);
     shared_ptr<Connection> connection2SharedPtr = make_shared<Connection>(weight, node2WeakPtr, node1WeakPtr, true);
@@ -608,9 +607,8 @@ void UndirectedGraph::configureBipartiteGraph()
     { // Builds adjacency matrix
         if (idx%2==0){
             int i = this->edges[idx]->getStartNode()->getNumber();
-            int j = this->edges[idx]->getEndNode()->getNumber()-1;
-            //cout << i << "-" << j << endl;
-            adjacency[i].push_back(j);
+            int j = this->edges[idx]->getEndNode()->getNumber();
+            adjacency[i].push_back(j%m);
         } 
     }
 }
