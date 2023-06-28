@@ -281,7 +281,7 @@ tuple<bool, vector<int>, vector<vector<int>>> UndirectedGraph::searchEulerianSub
 void UndirectedGraph::printEulerianCycle(vector<int> cycle)
 {
 
-    for(int i=0; i < cycle.size(); i++)
+    for(long unsigned int i=0; i < cycle.size(); i++)
     {
         if (cycle.size()==1)
         {
@@ -369,7 +369,7 @@ void UndirectedGraph::printDijkstra(int startNodeIndex, vector<int> D, vector<in
             cout << path.back() << ": " << startNodeIndex + 1 << ",";
         }
 
-        for (int j = 1; j < path.size() - 1; j++)
+        for (long unsigned int j = 1; j < path.size() - 1; j++)
         {
             cout << path[j] << ",";
         }
@@ -603,7 +603,7 @@ void UndirectedGraph::configureBipartiteGraph()
     m = domain.size();
     n = contradomain.size(); 
     adjacency = new list<int>[m+1];
-    for(int idx = 0; idx < this->edges.size(); idx++)
+    for(long unsigned int idx = 0; idx < this->edges.size(); idx++)
     { // Builds adjacency matrix
         if (idx%2==0){
             int i = this->edges[idx]->getStartNode()->getNumber();

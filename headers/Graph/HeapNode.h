@@ -22,8 +22,8 @@ namespace GraphModule
             HeapNode(int key, shared_ptr<Node> node, int priority);
             
             int getParent();
-            int getLeft();
-            int getRight();
+            long unsigned int getLeft();
+            long unsigned int getRight();
 
             bool operator >(const HeapNode& other) const;
             bool operator >(int x) const;

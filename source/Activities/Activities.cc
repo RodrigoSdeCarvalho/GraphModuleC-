@@ -258,7 +258,7 @@ void Activities::buildGraphFromInputFile(UndirectedGraph* graph, string inputFil
                 int index = stoi(tokens[0]);
                 string name;
 
-                for (int i = 1; i < tokens.size() - 1; i++)
+                for (long unsigned int i = 1; i < tokens.size() - 1; i++)
                 {
                     name += tokens[i] + " ";
                 }
@@ -320,7 +320,7 @@ void Activities::buildGraphFromInputFile(DirectedGraph* graph, string inputFileP
                 int index = stoi(tokens[0]);
                 string name;
 
-                for (int i = 1; i < tokens.size() - 1; i++)
+                for (long unsigned int i = 1; i < tokens.size() - 1; i++)
                 {
                     name += tokens[i] + " ";
                 }

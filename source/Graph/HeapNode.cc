@@ -20,12 +20,12 @@ int HeapNode::getParent()
     return floor((key - 1) / 2);
 }
 
-int HeapNode::getLeft() 
+long unsigned int HeapNode::getLeft() 
 {
     return 2 * key + 1;
 }
 
-int HeapNode::getRight() 
+long unsigned int HeapNode::getRight() 
 {
     return 2 * key + 2;
 }

@@ -51,7 +51,7 @@ void Node::addConnection(const weak_ptr<Connection>& connectionToAdd)
 
 tuple<bool, shared_ptr<Connection>> Node::getConnectionWith(const shared_ptr<Node>& NodeConnectedOnTheOtherEnd)
 {    
-    for (int connIndex = 0; connIndex < this->connections.size(); connIndex++)
+    for (long unsigned int connIndex = 0; connIndex < this->connections.size(); connIndex++)
     {
         weak_ptr<Connection> conn = this->connections[connIndex];
 
